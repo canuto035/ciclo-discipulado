@@ -2,640 +2,424 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ciclo — Portal de Discipulado</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ciclo de Discipulado — Portal</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --r:#C0392B;--rd:#922B21;--rl:#FADBD8;--r2:#F9EBEA;
-  --g:#1E8449;--gl:#D5F5E3;
-  --y:#B7950B;--yl:#FEF9E7;
-  --o:#CA6F1E;--ol:#FDEBD0;
-  --b:#1A5276;--bl:#D6EAF8;
-  --ink:#0D1117;--ink2:#2C3E50;--muted:#95A5A6;
-  --sur:#F7F8FA;--sur2:#EEF0F3;--white:#FFF;
-  --bdr:#DDE1E7;
-  --shadow:0 2px 16px rgba(0,0,0,.07);
-  --shadow-lg:0 8px 40px rgba(0,0,0,.13);
+--bg:#071018;--bg2:#0A151D;--card:#101B24;--bdr:#1D2C35;
+--green:#2EE58C;--green-d:#1BA968;--green-glow:rgba(46,229,140,.15);
+--blue:#35A7FF;--yellow:#F2C14E;--orange:#FF9F43;
+--txt:#E8F0F4;--txt2:#8FA3AF;--txt3:#5C7180;
+--r-sm:10px;--r:14px;--r-lg:20px;
 }
 html{scroll-behavior:smooth}
-body{font-family:'Inter',sans-serif;background:var(--sur);color:var(--ink);min-height:100vh;overflow-x:hidden}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:9px;height:9px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:6px}
+::-webkit-scrollbar-thumb:hover{background:#2A3E4B}
 
-/* ─── HEADER ─── */
-.hdr{
-  background:linear-gradient(135deg,#7B241C 0%,var(--rd) 40%,var(--r) 100%);
-  padding:0 32px;position:sticky;top:0;z-index:200;
-  box-shadow:0 4px 24px rgba(146,43,33,.35);
-}
-.hdr-inner{max-width:1440px;margin:0 auto;height:64px;display:flex;align-items:center;gap:20px}
-.hdr-logo{display:flex;align-items:center;gap:10px}
-.hdr-cross{font-size:1.5rem;animation:pulse 3s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.65}}
-.hdr-title{font-family:'Syne',sans-serif;font-size:1.2rem;color:#fff;letter-spacing:-.3px}
-.hdr-sub{font-size:.72rem;color:rgba(255,255,255,.65);margin-top:1px}
-.hdr-spacer{flex:1}
-.hdr-search{
-  display:flex;align-items:center;gap:8px;
-  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);
-  border-radius:24px;padding:7px 14px;transition:all .2s;
-}
-.hdr-search:focus-within{background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.4)}
-.hdr-search input{background:transparent;border:none;outline:none;color:#fff;font-size:.85rem;font-family:'Inter',sans-serif;width:180px}
-.hdr-search input::placeholder{color:rgba(255,255,255,.5)}
-.hdr-search span{color:rgba(255,255,255,.5);font-size:.9rem}
-.hdr-badge{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:20px;padding:5px 14px;font-size:.75rem;font-weight:700;color:#fff;white-space:nowrap}
+/* HEADER */
+.hdr{position:sticky;top:0;z-index:300;background:rgba(7,16,24,.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--bdr)}
+.hdr-in{max-width:1450px;margin:0 auto;height:62px;padding:0 24px;display:flex;align-items:center;gap:18px}
+.logo{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.logo-mark{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--green),var(--green-d));display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:800;color:#04160D;box-shadow:0 0 20px var(--green-glow)}
+.logo-txt h1{font-family:'Syne',sans-serif;font-size:1.02rem;font-weight:800;letter-spacing:-.3px;line-height:1.1}
+.logo-txt p{font-size:.68rem;color:var(--txt3);margin-top:1px}
+.hdr-sp{flex:1}
+.search{display:flex;align-items:center;gap:8px;background:var(--bg2);border:1px solid var(--bdr);border-radius:22px;padding:8px 15px;transition:.2s}
+.search:focus-within{border-color:var(--green);box-shadow:0 0 0 3px var(--green-glow)}
+.search svg{width:14px;height:14px;stroke:var(--txt3);flex-shrink:0}
+.search input{background:none;border:none;outline:none;color:var(--txt);font-size:.84rem;font-family:inherit;width:170px}
+.search input::placeholder{color:var(--txt3)}
+.pill{background:var(--green-glow);border:1px solid rgba(46,229,140,.3);color:var(--green);border-radius:20px;padding:5px 13px;font-size:.73rem;font-weight:700;white-space:nowrap}
 
-/* ─── LAYOUT ─── */
-.wrap{max-width:1440px;margin:0 auto;padding:28px 24px 60px}
+.wrap{max-width:1450px;margin:0 auto;padding:26px 24px 70px}
 
-/* ─── STAT CARDS ─── */
-.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:24px}
-.stat{
-  background:var(--white);border-radius:16px;padding:20px 22px;
-  box-shadow:var(--shadow);position:relative;overflow:hidden;
-  transition:transform .2s,box-shadow .2s;cursor:default;
-}
-.stat:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)}
-.stat::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:16px 16px 0 0}
-.stat.s-r::before{background:var(--r)}
-.stat.s-g::before{background:var(--g)}
-.stat.s-b::before{background:var(--b)}
-.stat.s-y::before{background:var(--y)}
-.stat.s-o::before{background:var(--o)}
-.stat-icon{font-size:1.4rem;margin-bottom:10px}
-.stat-val{font-family:'Syne',sans-serif;font-size:2.6rem;font-weight:800;line-height:1;margin-bottom:4px}
-.stat.s-r .stat-val{color:var(--r)}
-.stat.s-g .stat-val{color:var(--g)}
-.stat.s-b .stat-val{color:var(--b)}
-.stat.s-y .stat-val{color:var(--y)}
-.stat.s-o .stat-val{color:var(--o)}
-.stat-lbl{font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--muted)}
+/* HERO */
+.hero{position:relative;background:linear-gradient(135deg,#0C1A24 0%,#0A1620 55%,#0B1D1A 100%);border:1px solid var(--bdr);border-radius:var(--r-lg);padding:38px 40px;margin-bottom:20px;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-140px;right:-100px;width:420px;height:420px;background:radial-gradient(circle,rgba(46,229,140,.11),transparent 65%);pointer-events:none}
+.hero::after{content:'';position:absolute;bottom:-160px;left:35%;width:340px;height:340px;background:radial-gradient(circle,rgba(53,167,255,.07),transparent 68%);pointer-events:none}
+.hero-in{position:relative;z-index:1;max-width:660px}
+.eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:.66rem;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--green);background:var(--green-glow);border:1px solid rgba(46,229,140,.22);padding:5px 12px;border-radius:20px;margin-bottom:16px}
+.dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
+.hero h2{font-family:'Syne',sans-serif;font-size:2.5rem;font-weight:800;line-height:1.08;letter-spacing:-1.2px;margin-bottom:12px}
+.hero h2 em{font-style:normal;background:linear-gradient(100deg,var(--green),#7BFFC4);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{font-size:.95rem;color:var(--txt2);line-height:1.55;margin-bottom:24px;max-width:490px}
+.hero-btns{display:flex;gap:10px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:11px 20px;border-radius:11px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;font-family:inherit;transition:.2s;text-decoration:none}
+.btn-p{background:linear-gradient(135deg,var(--green),var(--green-d));color:#04160D;box-shadow:0 4px 18px var(--green-glow)}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 8px 26px rgba(46,229,140,.28)}
+.btn-s{background:rgba(255,255,255,.045);color:var(--txt);border:1px solid var(--bdr)}
+.btn-s:hover{background:rgba(255,255,255,.09);border-color:#2A3E4B}
 
-/* ─── ROW PANELS ─── */
-.panels{display:grid;grid-template-columns:1fr 1.6fr;gap:18px;margin-bottom:24px}
-.panel{background:var(--white);border-radius:16px;padding:24px;box-shadow:var(--shadow)}
-.panel-title{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:18px;display:flex;align-items:center;gap:8px}
-.panel-title::after{content:'';flex:1;height:1px;background:var(--bdr)}
+/* KPIs */
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:13px;margin-bottom:20px}
+.kpi{position:relative;background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:19px 20px;overflow:hidden;transition:.22s}
+.kpi:hover{transform:translateY(-3px);border-color:#2A3E4B}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.k-g::before{background:var(--green)}.k-b::before{background:var(--blue)}
+.k-y::before{background:var(--yellow)}.k-o::before{background:var(--orange)}
+.k-t::before{background:linear-gradient(90deg,var(--green),var(--blue))}
+.kpi-v{font-family:'Syne',sans-serif;font-size:2.15rem;font-weight:800;line-height:1;margin-bottom:5px;letter-spacing:-1px}
+.k-g .kpi-v{color:var(--green)}.k-b .kpi-v{color:var(--blue)}
+.k-y .kpi-v{color:var(--yellow)}.k-o .kpi-v{color:var(--orange)}
+.k-t .kpi-v{color:var(--txt)}
+.kpi-l{font-size:.67rem;font-weight:600;letter-spacing:.9px;text-transform:uppercase;color:var(--txt3)}
 
-/* TOP LIST */
-.top-item{display:flex;align-items:center;gap:12px;padding:9px 12px;border-radius:10px;cursor:pointer;transition:background .15s;margin-bottom:4px}
-.top-item:hover{background:var(--r2)}
-.top-rank{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:.85rem;font-weight:800;flex-shrink:0}
-.top-rank.r1{background:#FFD700;color:#7D6608}
-.top-rank.r2{background:#C0C0C0;color:#424242}
-.top-rank.r3{background:#CD7F32;color:#5D4037}
-.top-rank.rn{background:var(--sur2);color:var(--muted)}
-.top-name{flex:1;font-weight:600;font-size:.88rem}
-.top-bar-wrap{width:70px}
-.top-bar-track{height:5px;background:var(--sur2);border-radius:10px;overflow:hidden}
-.top-bar-fill{height:100%;border-radius:10px;transition:width .8s ease}
-.top-pct{font-size:.78rem;font-weight:800;width:34px;text-align:right}
+/* PANELS */
+.panels{display:grid;grid-template-columns:.85fr 1.15fr;gap:16px;margin-bottom:22px}
+.panel{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:22px}
+.p-title{display:flex;align-items:center;gap:9px;font-size:.7rem;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:var(--txt3);margin-bottom:17px}
+.p-title::after{content:'';flex:1;height:1px;background:var(--bdr)}
 
-/* MOD BARS */
-.mod-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
-.mod-row-name{font-size:.78rem;font-weight:500;width:210px;flex-shrink:0;color:var(--ink2)}
-.mod-track{flex:1;height:7px;background:var(--sur2);border-radius:20px;overflow:hidden}
-.mod-fill{height:100%;border-radius:20px;transition:width 1s ease}
-.mod-count{font-size:.72rem;font-weight:700;color:var(--muted);width:42px;text-align:right;white-space:nowrap}
+.rank-i{display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:var(--r-sm);cursor:pointer;transition:.15s;margin-bottom:3px}
+.rank-i:hover{background:rgba(46,229,140,.06)}
+.rank-n{width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:.76rem;font-weight:800;flex-shrink:0}
+.rk1{background:linear-gradient(135deg,var(--green),var(--green-d));color:#04160D}
+.rk2{background:rgba(53,167,255,.16);color:var(--blue)}
+.rk3{background:rgba(242,193,78,.16);color:var(--yellow)}
+.rkn{background:rgba(255,255,255,.05);color:var(--txt3)}
+.rank-nm{flex:1;font-size:.84rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rank-b{width:52px;height:4px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden;flex-shrink:0}
+.rank-bf{height:100%;border-radius:4px;transition:width .9s cubic-bezier(.4,0,.2,1)}
+.rank-p{font-size:.76rem;font-weight:800;width:34px;text-align:right;flex-shrink:0}
 
-/* ─── TOOLBAR ─── */
-.toolbar{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
-.filter-group{display:flex;gap:6px;flex-wrap:wrap}
-.fbtn{padding:7px 14px;border-radius:20px;border:1.5px solid var(--bdr);background:var(--white);font-size:.78rem;font-weight:600;cursor:pointer;transition:all .18s;font-family:'Inter',sans-serif;color:var(--ink2)}
-.fbtn:hover{border-color:var(--r);color:var(--r)}
-.fbtn.on{background:var(--r);color:#fff;border-color:var(--r)}
-.sort-select{padding:7px 12px;border-radius:20px;border:1.5px solid var(--bdr);background:var(--white);font-size:.78rem;font-family:'Inter',sans-serif;color:var(--ink2);cursor:pointer;outline:none}
-.spacer{flex:1}
-.vtoggle{display:flex;gap:6px}
-.vbtn{width:34px;height:34px;border-radius:10px;border:1.5px solid var(--bdr);background:var(--white);cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:all .18s}
-.vbtn.on{background:var(--r);color:#fff;border-color:var(--r)}
-.result-count{font-size:.78rem;color:var(--muted);font-weight:500}
+.mrow{display:flex;align-items:center;gap:11px;margin-bottom:9px}
+.mrow-n{font-size:.76rem;font-weight:500;color:var(--txt2);width:180px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mrow-t{flex:1;height:6px;background:rgba(255,255,255,.05);border-radius:5px;overflow:hidden}
+.mrow-f{height:100%;border-radius:5px;transition:width 1.1s cubic-bezier(.4,0,.2,1)}
+.mrow-c{font-size:.7rem;font-weight:700;color:var(--txt3);width:44px;text-align:right;flex-shrink:0;font-variant-numeric:tabular-nums}
 
-/* ─── TABLE ─── */
-.tbl-wrap{background:var(--white);border-radius:16px;box-shadow:var(--shadow);overflow:auto}
-table{width:100%;border-collapse:collapse;font-size:.8rem}
-thead th{
-  background:var(--ink);color:#fff;padding:11px 13px;
-  text-align:left;font-weight:600;font-size:.68rem;
-  text-transform:uppercase;letter-spacing:.7px;white-space:nowrap;position:sticky;top:0;
-}
-thead th.sortable{cursor:pointer;user-select:none}
-thead th.sortable:hover{background:#2C3E50}
-thead th .sort-icon{margin-left:4px;opacity:.5}
-thead th.asc .sort-icon::after{content:'↑'}
-thead th.desc .sort-icon::after{content:'↓'}
-thead th:not(.asc):not(.desc) .sort-icon::after{content:'↕'}
-tbody tr{border-bottom:1px solid var(--sur2);transition:background .12s;cursor:pointer}
-tbody tr:hover{background:#FDF5F5}
+/* TOOLBAR */
+.tb{display:flex;align-items:center;gap:9px;margin-bottom:15px;flex-wrap:wrap}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{padding:7px 14px;border-radius:20px;border:1px solid var(--bdr);background:var(--card);color:var(--txt2);font-size:.76rem;font-weight:600;cursor:pointer;transition:.18s;font-family:inherit}
+.chip:hover{border-color:var(--green);color:var(--green)}
+.chip.on{background:var(--green);color:#04160D;border-color:var(--green);font-weight:700}
+.sel{padding:7px 12px;border-radius:20px;border:1px solid var(--bdr);background:var(--card);color:var(--txt2);font-size:.76rem;font-family:inherit;cursor:pointer;outline:none}
+.sel:focus{border-color:var(--green)}
+.cnt{font-size:.75rem;color:var(--txt3);font-weight:500}
+.tb-sp{flex:1}
+.views{display:flex;gap:5px}
+.vb{width:33px;height:33px;border-radius:9px;border:1px solid var(--bdr);background:var(--card);color:var(--txt3);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.18s;font-size:.95rem}
+.vb.on{background:var(--green);color:#04160D;border-color:var(--green)}
+
+/* TABLE */
+.tw{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);overflow:auto}
+table{width:100%;border-collapse:collapse;font-size:.79rem}
+thead th{background:var(--bg2);color:var(--txt3);padding:11px 13px;text-align:left;font-weight:700;font-size:.65rem;text-transform:uppercase;letter-spacing:.85px;white-space:nowrap;border-bottom:1px solid var(--bdr);position:sticky;top:0;z-index:5}
+thead th.srt{cursor:pointer;user-select:none;transition:.15s}
+thead th.srt:hover{color:var(--green)}
+tbody tr{border-bottom:1px solid rgba(29,44,53,.55);cursor:pointer;transition:.13s}
+tbody tr:hover{background:rgba(46,229,140,.045)}
 tbody tr:last-child{border:none}
-td{padding:9px 13px;vertical-align:middle}
-.td-num{color:var(--muted);font-weight:700;font-size:.72rem}
-.td-nome{font-weight:600;font-size:.87rem}
-.td-sub{font-size:.72rem;color:var(--muted);margin-top:1px}
-.td-phone{font-size:.75rem}
-.td-phone a{color:var(--g);text-decoration:none;display:flex;align-items:center;gap:4px}
-.td-phone a:hover{text-decoration:underline}
+td{padding:10px 13px;vertical-align:middle}
+.t-n{color:var(--txt3);font-weight:700;font-size:.7rem;font-variant-numeric:tabular-nums}
+.t-nm{font-weight:600;font-size:.85rem}
+.t-sub{font-size:.68rem;color:var(--txt3);margin-top:1px}
+.wa{color:var(--green);text-decoration:none;font-size:.73rem;display:inline-flex;align-items:center;gap:4px;transition:.15s}
+.wa:hover{color:#7BFFC4}
+.tick{color:var(--green);font-size:.95rem;font-weight:700}
+.tick-n{color:var(--bdr)}
 
-/* Módulo dots */
-.mdot{display:inline-flex;width:20px;height:20px;border-radius:50%;align-items:center;justify-content:center;font-size:.55rem;font-weight:800;margin:1px;transition:transform .15s}
-.mdot:hover{transform:scale(1.3);z-index:1;position:relative}
-.mdot.done{background:var(--gl);color:var(--g);border:1.5px solid var(--g)}
-.mdot.pend{background:var(--sur2);color:var(--bdr);border:1.5px solid var(--bdr)}
+.pg{display:flex;align-items:center;gap:8px;min-width:98px}
+.pg-t{flex:1;height:5px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden}
+.pg-f{height:100%;border-radius:4px;transition:width .7s cubic-bezier(.4,0,.2,1)}
+.pg-l{font-size:.74rem;font-weight:800;width:33px;font-variant-numeric:tabular-nums}
 
-/* Progress */
-.prog-cell{display:flex;align-items:center;gap:8px;min-width:100px}
-.prog-track{flex:1;height:6px;background:var(--sur2);border-radius:10px;overflow:hidden}
-.prog-fill{height:100%;border-radius:10px;transition:width .6s ease}
-.prog-lbl{font-size:.75rem;font-weight:800;width:32px}
+.bdg{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.66rem;font-weight:700;white-space:nowrap}
+.bd-g{background:rgba(46,229,140,.13);color:var(--green)}
+.bd-b{background:rgba(53,167,255,.13);color:var(--blue)}
+.bd-y{background:rgba(242,193,78,.13);color:var(--yellow)}
+.bd-o{background:rgba(255,159,67,.13);color:var(--orange)}
+.bd-n{background:rgba(255,255,255,.05);color:var(--txt3)}
 
-/* Status badge */
-.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.68rem;font-weight:700;white-space:nowrap}
-.b-done{background:var(--gl);color:var(--g)}
-.b-high{background:var(--bl);color:var(--b)}
-.b-mid{background:var(--yl);color:var(--y)}
-.b-low{background:var(--ol);color:var(--o)}
-.b-zero{background:var(--sur2);color:var(--muted)}
+/* CARDS */
+.cards{display:none;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));gap:13px}
+.cards.on{display:grid}
+.pc{background:var(--card);border:1px solid var(--bdr);border-left:3px solid var(--bdr);border-radius:var(--r);padding:17px 18px;cursor:pointer;transition:.2s;animation:up .34s cubic-bezier(.4,0,.2,1) both}
+@keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.pc:hover{transform:translateY(-3px);border-color:#2A3E4B}
+.pc-g{border-left-color:var(--green)}.pc-b{border-left-color:var(--blue)}
+.pc-y{border-left-color:var(--yellow)}.pc-o{border-left-color:var(--orange)}
+.pc-h{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:5px}
+.pc-nm{font-weight:700;font-size:.9rem;line-height:1.25}
+.pc-mt{font-size:.68rem;color:var(--txt3);margin-bottom:13px}
+.pc-dots{display:flex;flex-wrap:wrap;gap:3px;margin-bottom:13px}
+.dt{width:19px;height:19px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:.5rem;font-weight:800;transition:.15s}
+.dt:hover{transform:scale(1.22)}
+.dt-y{background:rgba(46,229,140,.14);color:var(--green);border:1px solid rgba(46,229,140,.3)}
+.dt-n{background:rgba(255,255,255,.03);color:var(--txt3);border:1px solid var(--bdr)}
+.pc-pg{display:flex;align-items:center;gap:9px}
+.pc-t{flex:1;height:6px;background:rgba(255,255,255,.06);border-radius:5px;overflow:hidden}
+.pc-f{height:100%;border-radius:5px;transition:width .8s cubic-bezier(.4,0,.2,1)}
+.pc-p{font-size:.8rem;font-weight:800;width:37px;text-align:right;font-variant-numeric:tabular-nums}
 
-/* ─── CARDS VIEW ─── */
-.cards-grid{display:none;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
-.cards-grid.on{display:grid}
-.pcard{
-  background:var(--white);border-radius:16px;padding:20px;
-  box-shadow:var(--shadow);cursor:pointer;
-  transition:transform .2s,box-shadow .2s;
-  border-left:4px solid var(--bdr);
-  animation:fadeUp .3s ease both;
+/* MODAL */
+.ov{display:none;position:fixed;inset:0;background:rgba(3,8,12,.82);backdrop-filter:blur(7px);z-index:600;align-items:center;justify-content:center;padding:20px}
+.ov.on{display:flex;animation:fade .2s both}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.md{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r-lg);max-width:560px;width:100%;max-height:92vh;overflow-y:auto;animation:pop .3s cubic-bezier(.34,1.4,.64,1) both}
+@keyframes pop{from{opacity:0;transform:scale(.94) translateY(16px)}to{opacity:1;transform:none}}
+.md-h{position:relative;background:linear-gradient(135deg,#0D2620 0%,#0C1E2C 100%);padding:26px 28px 24px;border-bottom:1px solid var(--bdr);border-radius:var(--r-lg) var(--r-lg) 0 0;overflow:hidden}
+.md-h::before{content:'';position:absolute;top:-90px;right:-60px;width:270px;height:270px;background:radial-gradient(circle,rgba(46,229,140,.15),transparent 66%)}
+.md-x{position:absolute;top:15px;right:15px;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.07);border:1px solid var(--bdr);color:var(--txt2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.95rem;transition:.15s;z-index:2}
+.md-x:hover{background:rgba(255,255,255,.14);color:var(--txt)}
+.md-in{position:relative;z-index:1}
+.md-nm{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;letter-spacing:-.5px;margin-bottom:4px;padding-right:36px}
+.md-mt{font-size:.76rem;color:var(--txt3)}
+.md-r{display:flex;align-items:flex-end;gap:15px;margin-top:17px}
+.md-p{font-family:'Syne',sans-serif;font-size:2.9rem;font-weight:800;line-height:1;color:var(--green);letter-spacing:-1.6px}
+.md-ps{font-size:.73rem;color:var(--txt3);padding-bottom:7px}
+.md-bar{height:5px;background:rgba(255,255,255,.07);border-radius:5px;overflow:hidden;margin-top:15px}
+.md-bf{height:100%;background:linear-gradient(90deg,var(--green),#7BFFC4);border-radius:5px;transition:width .8s cubic-bezier(.4,0,.2,1)}
+.md-b{padding:22px 28px 26px}
+.md-wa{display:flex;align-items:center;gap:10px;background:rgba(46,229,140,.07);border:1px solid rgba(46,229,140,.22);border-radius:11px;padding:11px 15px;margin-bottom:20px;text-decoration:none;transition:.18s}
+.md-wa:hover{background:rgba(46,229,140,.13)}
+.md-wa span:first-child{font-size:1.15rem}
+.md-wa b{color:var(--green);font-size:.84rem;font-weight:600}
+.md-wa i{font-style:normal;font-size:.74rem;color:var(--txt3);margin-left:auto}
+.ml{display:flex;flex-direction:column;gap:6px}
+.mi{display:flex;align-items:center;gap:11px;padding:10px 13px;border-radius:var(--r-sm);border:1px solid transparent;transition:.15s}
+.mi-y{background:rgba(46,229,140,.06);border-color:rgba(46,229,140,.16)}
+.mi-n{background:rgba(255,255,255,.02);border-color:var(--bdr)}
+.mi-ic{font-size:.9rem;width:20px;text-align:center;flex-shrink:0}
+.mi-t{flex:1;min-width:0}
+.mi-nm{font-size:.82rem;font-weight:600;line-height:1.3}
+.mi-y .mi-nm{color:var(--green)}.mi-n .mi-nm{color:var(--txt2)}
+.mi-dt{font-size:.69rem;color:var(--txt3);margin-top:1px}
+.mi-b{background:none;border:1px solid var(--bdr);border-radius:8px;padding:4px 9px;font-size:.66rem;font-weight:600;color:var(--txt3);cursor:pointer;font-family:inherit;transition:.15s;white-space:nowrap;flex-shrink:0}
+.mi-b:hover{border-color:var(--green);color:var(--green)}
+.mi-i{border:1px solid var(--green);border-radius:8px;padding:4px 9px;font-size:.75rem;font-family:inherit;outline:none;background:var(--bg2);color:var(--txt);width:105px;flex-shrink:0}
+
+/* TOAST */
+.tst{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(90px);background:var(--card);border:1px solid var(--green);color:var(--green);padding:12px 20px;border-radius:11px;font-size:.83rem;font-weight:600;z-index:900;transition:transform .38s cubic-bezier(.34,1.4,.64,1);pointer-events:none;box-shadow:0 8px 30px rgba(0,0,0,.5)}
+.tst.on{transform:translateX(-50%) translateY(0)}
+
+/* EMPTY */
+.emp{text-align:center;padding:56px 20px;color:var(--txt3)}
+.emp-i{font-size:2.4rem;margin-bottom:11px;opacity:.5}
+.emp-t{font-size:.94rem;font-weight:600;color:var(--txt2)}
+.emp-s{font-size:.78rem;margin-top:5px}
+
+/* RESPONSIVE */
+@media(max-width:1080px){
+.panels{grid-template-columns:1fr}
+.kpis{grid-template-columns:repeat(3,1fr)}
+.hero h2{font-size:2.05rem}
 }
-@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-.pcard:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)}
-.pcard.pc-done{border-left-color:var(--g)}
-.pcard.pc-high{border-left-color:var(--b)}
-.pcard.pc-mid{border-left-color:var(--y)}
-.pcard.pc-low{border-left-color:var(--o)}
-.pcard.pc-zero{border-left-color:var(--bdr)}
-.pc-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
-.pc-name{font-weight:700;font-size:.95rem}
-.pc-meta{font-size:.72rem;color:var(--muted);margin-bottom:12px}
-.pc-dots{display:flex;flex-wrap:wrap;gap:3px;margin-bottom:14px}
-.pc-prog{display:flex;align-items:center;gap:8px}
-.pc-track{flex:1;height:7px;background:var(--sur2);border-radius:10px;overflow:hidden}
-.pc-fill{height:100%;border-radius:10px;transition:width .8s ease}
-.pc-pct{font-size:.82rem;font-weight:800;width:36px;text-align:right}
-
-/* ─── MODAL ─── */
-.overlay{display:none;position:fixed;inset:0;background:rgba(13,17,23,.6);z-index:500;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
-.overlay.on{display:flex}
-.modal{
-  background:var(--white);border-radius:20px;
-  max-width:580px;width:100%;max-height:92vh;overflow-y:auto;
-  box-shadow:0 24px 80px rgba(0,0,0,.25);
-  animation:modalIn .25s cubic-bezier(.34,1.56,.64,1) both;
-}
-@keyframes modalIn{from{opacity:0;transform:scale(.92) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
-.modal-top{
-  background:linear-gradient(135deg,#7B241C,var(--r));
-  padding:28px 28px 24px;border-radius:20px 20px 0 0;
-  position:relative;
-}
-.modal-close{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.2);border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:1rem;color:#fff;display:flex;align-items:center;justify-content:center;transition:background .15s}
-.modal-close:hover{background:rgba(255,255,255,.35)}
-.modal-nome{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;color:#fff;margin-bottom:4px}
-.modal-info{font-size:.8rem;color:rgba(255,255,255,.7)}
-.modal-pct-row{display:flex;align-items:flex-end;gap:16px;margin-top:16px}
-.modal-pct-big{font-family:'Syne',sans-serif;font-size:3.2rem;font-weight:800;color:#fff;line-height:1}
-.modal-pct-sub{font-size:.78rem;color:rgba(255,255,255,.65);padding-bottom:8px}
-.modal-prog-bar{height:6px;background:rgba(255,255,255,.2);border-radius:10px;overflow:hidden;margin-top:14px}
-.modal-prog-fill{height:100%;background:rgba(255,255,255,.85);border-radius:10px;transition:width .8s ease}
-
-.modal-body{padding:24px 28px}
-.modal-wa{
-  display:flex;align-items:center;gap:10px;
-  background:#E9F5EC;border:1.5px solid #A9DFBF;border-radius:12px;
-  padding:10px 14px;margin-bottom:20px;text-decoration:none;
-  transition:background .15s;
-}
-.modal-wa:hover{background:#D5F5E3}
-.modal-wa span{font-weight:600;color:var(--g);font-size:.88rem}
-.modal-wa .wa-icon{font-size:1.3rem}
-.modal-wa .wa-num{font-size:.78rem;color:var(--muted);margin-left:auto}
-
-.mod-grid{display:flex;flex-direction:column;gap:6px}
-.mod-row-modal{
-  display:flex;align-items:center;gap:12px;
-  padding:10px 14px;border-radius:10px;
-  transition:background .15s;cursor:pointer;
-}
-.mod-row-modal:hover{background:var(--sur)}
-.mod-row-modal.m-done{background:var(--gl)}
-.mod-row-modal.m-pend{background:var(--sur2)}
-.mod-icon{font-size:1rem;width:24px;text-align:center;flex-shrink:0}
-.mod-text{flex:1}
-.mod-text-name{font-size:.85rem;font-weight:600}
-.mod-row-modal.m-done .mod-text-name{color:var(--g)}
-.mod-row-modal.m-pend .mod-text-name{color:var(--ink2)}
-.mod-text-date{font-size:.72rem;margin-top:1px}
-.mod-row-modal.m-done .mod-text-date{color:var(--g)}
-.mod-row-modal.m-pend .mod-text-date{color:var(--muted)}
-.mod-edit-btn{
-  background:none;border:1.5px solid var(--bdr);border-radius:8px;
-  padding:3px 8px;font-size:.68rem;font-weight:600;cursor:pointer;
-  color:var(--muted);font-family:'Inter',sans-serif;transition:all .15s;
-  white-space:nowrap;
-}
-.mod-edit-btn:hover{border-color:var(--r);color:var(--r)}
-.mod-date-input{
-  border:1.5px solid var(--r);border-radius:8px;padding:3px 8px;
-  font-size:.78rem;font-family:'Inter',sans-serif;outline:none;
-  color:var(--ink);background:var(--white);
-}
-
-/* ─── TOAST ─── */
-.toast{
-  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);
-  background:var(--ink);color:#fff;padding:12px 20px;border-radius:12px;
-  font-size:.85rem;font-weight:500;z-index:999;transition:transform .35s cubic-bezier(.34,1.56,.64,1);
-  pointer-events:none;white-space:nowrap;
-}
-.toast.show{transform:translateX(-50%) translateY(0)}
-
-/* ─── EMPTY STATE ─── */
-.empty{text-align:center;padding:60px 20px;color:var(--muted)}
-.empty-icon{font-size:3rem;margin-bottom:12px}
-.empty-text{font-size:1rem;font-weight:600}
-.empty-sub{font-size:.82rem;margin-top:6px}
-
-/* ─── RESPONSIVE ─── */
-@media(max-width:900px){
-  .stats{grid-template-columns:repeat(3,1fr)}
-  .panels{grid-template-columns:1fr}
-  .hdr-search{display:none}
-}
-@media(max-width:600px){
-  .stats{grid-template-columns:repeat(2,1fr)}
-  .hdr-title{font-size:1rem}
-  .wrap{padding:16px 14px 48px}
+@media(max-width:760px){
+.search{display:none}
+.wrap{padding:16px 14px 60px}
+.hero{padding:26px 22px;border-radius:var(--r)}
+.hero h2{font-size:1.72rem;letter-spacing:-.8px}
+.hero p{font-size:.87rem;margin-bottom:19px}
+.hero-btns{flex-direction:column}
+.btn{width:100%;justify-content:center}
+.kpis{grid-template-columns:repeat(2,1fr);gap:10px}
+.kpi{padding:15px 16px}
+.kpi-v{font-size:1.75rem}
+.tw{display:none}
+.cards{display:grid!important}
+.views{display:none}
+.chips{display:grid;grid-template-columns:1fr 1fr;gap:6px;width:100%}
+.chip{text-align:center}
+.sel{width:100%}
+.tb-sp{display:none}
+.mrow-n{width:120px;font-size:.72rem}
+.md{max-height:94vh}
+.md-h{padding:22px 20px 20px}
+.md-b{padding:18px 20px 22px}
+.md-nm{font-size:1.2rem}
+.md-p{font-size:2.4rem}
+.mi-b,.mi-i{min-height:30px}
 }
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <header class="hdr">
-  <div class="hdr-inner">
-    <div class="hdr-logo">
-      <span class="hdr-cross">✝️</span>
-      <div>
-        <div class="hdr-title">Ciclo de Discipulado</div>
-        <div class="hdr-sub">Carazinho · 2026</div>
-      </div>
-    </div>
-    <div class="hdr-spacer"></div>
-    <div class="hdr-search">
-      <span>🔍</span>
-      <input type="text" id="hdrSearch" placeholder="Buscar participante...">
-    </div>
-    <div class="hdr-badge" id="hdrBadge">57 participantes</div>
-  </div>
+<div class="hdr-in">
+<div class="logo">
+<div class="logo-mark">✦</div>
+<div class="logo-txt"><h1>Ciclo de Discipulado</h1><p>Carazinho · 2026</p></div>
+</div>
+<div class="hdr-sp"></div>
+<div class="search">
+<svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+<input type="text" id="q" placeholder="Buscar participante...">
+</div>
+<div class="pill" id="pill">— participantes</div>
+</div>
 </header>
 
 <div class="wrap">
 
-<!-- STAT CARDS -->
-<div class="stats">
-  <div class="stat s-r"><div class="stat-icon">👥</div><div class="stat-val" id="sTotal">0</div><div class="stat-lbl">Total</div></div>
-  <div class="stat s-g"><div class="stat-icon">✅</div><div class="stat-val" id="sDone">0</div><div class="stat-lbl">Concluídos</div></div>
-  <div class="stat s-b"><div class="stat-icon">🔵</div><div class="stat-val" id="sHigh">0</div><div class="stat-lbl">Acima 75%</div></div>
-  <div class="stat s-y"><div class="stat-icon">🟡</div><div class="stat-val" id="sMid">0</div><div class="stat-lbl">Em Andamento</div></div>
-  <div class="stat s-o"><div class="stat-icon">📊</div><div class="stat-val" id="sAvg">0%</div><div class="stat-lbl">Média Geral</div></div>
+<section class="hero">
+<div class="hero-in">
+<div class="eyebrow"><span class="dot"></span>Acompanhamento de progresso</div>
+<h2>Acompanhe o progresso e <em>transforme vidas.</em></h2>
+<p>Uma visão rápida e objetiva da evolução dos participantes ao longo dos 12 módulos de formação espiritual.</p>
+<div class="hero-btns">
+<a href="#lista" class="btn btn-p">Ver participantes →</a>
+<button class="btn btn-s" onclick="document.getElementById('mods').scrollIntoView({behavior:'smooth'})">Ver módulos</button>
+</div>
+</div>
+</section>
+
+<div class="kpis">
+<div class="kpi k-t"><div class="kpi-v" id="k1">0</div><div class="kpi-l">Total</div></div>
+<div class="kpi k-g"><div class="kpi-v" id="k2">0</div><div class="kpi-l">Concluídos</div></div>
+<div class="kpi k-b"><div class="kpi-v" id="k3">0</div><div class="kpi-l">Acima 75%</div></div>
+<div class="kpi k-y"><div class="kpi-v" id="k4">0</div><div class="kpi-l">Em andamento</div></div>
+<div class="kpi k-o"><div class="kpi-v" id="k5">0%</div><div class="kpi-l">Média geral</div></div>
 </div>
 
-<!-- PANELS -->
 <div class="panels">
-  <div class="panel">
-    <div class="panel-title">🏆 Mais avançados</div>
-    <div id="topList"></div>
-  </div>
-  <div class="panel">
-    <div class="panel-title">📚 Progresso por módulo</div>
-    <div id="modBars"></div>
-  </div>
+<div class="panel">
+<div class="p-title">Mais avançados</div>
+<div id="rank"></div>
+</div>
+<div class="panel" id="mods">
+<div class="p-title">Progresso por módulo</div>
+<div id="bars"></div>
+</div>
 </div>
 
-<!-- TOOLBAR -->
-<div class="toolbar">
-  <div class="filter-group">
-    <button class="fbtn on" onclick="setFilter('all',this)">Todos</button>
-    <button class="fbtn" onclick="setFilter('done',this)">✅ 100%</button>
-    <button class="fbtn" onclick="setFilter('high',this)">🔵 +75%</button>
-    <button class="fbtn" onclick="setFilter('mid',this)">🟡 50-74%</button>
-    <button class="fbtn" onclick="setFilter('low',this)">🟠 -50%</button>
-  </div>
-  <select class="sort-select" id="sortSel" onchange="render()">
-    <option value="n">Ordenar: Nº</option>
-    <option value="nome">Ordenar: Nome</option>
-    <option value="pct-desc">Ordenar: Maior %</option>
-    <option value="pct-asc">Ordenar: Menor %</option>
-  </select>
-  <span class="result-count" id="resCount"></span>
-  <div class="spacer"></div>
-  <div class="vtoggle">
-    <button class="vbtn on" id="btnT" onclick="setView('table')" title="Tabela">☰</button>
-    <button class="vbtn" id="btnC" onclick="setView('cards')" title="Cards">⊞</button>
-  </div>
+<div class="tb" id="lista">
+<div class="chips">
+<button class="chip on" onclick="flt('all',this)">Todos</button>
+<button class="chip" onclick="flt('done',this)">100%</button>
+<button class="chip" onclick="flt('high',this)">+75%</button>
+<button class="chip" onclick="flt('mid',this)">50–74%</button>
+<button class="chip" onclick="flt('low',this)">-50%</button>
+</div>
+<select class="sel" id="srt">
+<option value="n">Ordenar: Nº</option>
+<option value="nome">Ordenar: Nome</option>
+<option value="pd">Maior progresso</option>
+<option value="pa">Menor progresso</option>
+</select>
+<span class="cnt" id="cnt"></span>
+<div class="tb-sp"></div>
+<div class="views">
+<button class="vb on" id="vt" onclick="vw('t')">☰</button>
+<button class="vb" id="vc" onclick="vw('c')">⊞</button>
+</div>
 </div>
 
-<!-- TABLE -->
-<div class="tbl-wrap" id="tblWrap">
-  <table>
-    <thead>
-      <tr>
-        <th>Nº</th>
-        <th class="sortable" onclick="sortBy('nome')">Nome<span class="sort-icon"></span></th>
-        <th>WhatsApp</th>
-        <th title="Aliança de Sangue">A.S</th>
-        <th title="Relacionando-me com o Pai">R.P</th>
-        <th title="Cinco Ministérios">5M</th>
-        <th title="Autoridade Espiritual">A.E</th>
-        <th title="Panorama da Obra Divina">P.O</th>
-        <th title="Mente Renova">M.R</th>
-        <th title="Batalha Espiritual">B.E</th>
-        <th title="Perdão">Pd</th>
-        <th title="Dízimo">Dz</th>
-        <th title="Espírito Santo">E.S</th>
-        <th title="Grupo Familiar">G.F</th>
-        <th title="Batismo nas Águas">B.A</th>
-        <th class="sortable" onclick="sortBy('pct')">Progresso<span class="sort-icon"></span></th>
-        <th>Status</th>
-      </tr>
-    </thead>
-    <tbody id="tbody"></tbody>
-  </table>
+<div class="tw" id="tw">
+<table>
+<thead><tr>
+<th>Nº</th><th class="srt" onclick="srtBy('nome')">Nome</th><th>WhatsApp</th>
+<th title="Aliança de Sangue">A.S</th><th title="Relacionando-me com o Pai">R.P</th>
+<th title="Cinco Ministérios">5M</th><th title="Autoridade Espiritual">A.E</th>
+<th title="Panorama da Obra Divina">P.O</th><th title="Mente Renova">M.R</th>
+<th title="Batalha Espiritual">B.E</th><th title="Perdão">Pd</th>
+<th title="Dízimo">Dz</th><th title="Espírito Santo">E.S</th>
+<th title="Grupo Familiar">G.F</th><th title="Batismo nas Águas">B.A</th>
+<th class="srt" onclick="srtBy('pct')">Progresso</th><th>Status</th>
+</tr></thead>
+<tbody id="tb"></tbody>
+</table>
 </div>
 
-<!-- CARDS -->
-<div class="cards-grid" id="cardsGrid"></div>
+<div class="cards" id="cd"></div>
 
-</div><!-- /wrap -->
-
-<!-- MODAL -->
-<div class="overlay" id="overlay" onclick="overlayClick(event)">
-  <div class="modal" id="modal"></div>
 </div>
 
-<!-- TOAST -->
-<div class="toast" id="toast"></div>
+<div class="ov" id="ov" onclick="ovc(event)"><div class="md" id="md"></div></div>
+<div class="tst" id="tst"></div>
 
 <script>
-const MODULOS=[
-  "Aliança de Sangue","Relacionando-me com o Pai","Cinco Ministérios",
-  "Autoridade Espiritual","Panorama da Obra Divina","Mente Renova",
-  "Batalha Espiritual","Perdão","Dízimo","Espírito Santo",
-  "Grupo Familiar","Batismo nas Águas"
-];
-const ABBR=["A.S","R.P","5M","A.E","P.O","M.R","B.E","Pd","Dz","E.S","G.F","B.A"];
-
+const M=["Aliança de Sangue","Relacionando-me com o Pai","Cinco Ministérios","Autoridade Espiritual","Panorama da Obra Divina","Mente Renova","Batalha Espiritual","Perdão","Dízimo","Espírito Santo","Grupo Familiar","Batismo nas Águas"];
+const AB=["A.S","R.P","5M","A.E","P.O","M.R","B.E","Pd","Dz","E.S","G.F","B.A"];
 const RAW=[{"n": 1, "nome": "Joice Tariga", "celular": "+55 54 9120-3918", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "08/08/2026", "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 67}, {"n": 2, "nome": "John Michel", "celular": "+55 54 9347-6064", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 58}, {"n": 3, "nome": "Marisa decora", "celular": "+55 54 9132-6021", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "22/06/2026", "Relacionando-me com o Pai": "21/06/2026", "Cinco Ministérios": null, "Autoridade Espiritual": "03/08/2026", "Panorama da Obra Divina": "21/06/2026", "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 92}, {"n": 4, "nome": "Paulo decora", "celular": "+55 54 8412-5687", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "22/06/2026", "Relacionando-me com o Pai": null, "Cinco Ministérios": "28/07/2026", "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 75}, {"n": 5, "nome": "Juliéri Hartmann", "celular": "+55 54 99997-1543", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 58}, {"n": 6, "nome": "Luana Saraiva", "celular": "+55 54 99612-0444", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "08/08/2026", "Relacionando-me com o Pai": null, "Cinco Ministérios": "28/07/2026", "Autoridade Espiritual": "03/08/2026", "Panorama da Obra Divina": "10/08/2026", "Mente Renova": "01/08/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 92}, {"n": 7, "nome": "Luma Saldanha", "celular": "+55 54 99885-6403", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 58}, {"n": 8, "nome": "Tiago Brandão", "celular": "+55 54 99901-5309", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 58}, {"n": 9, "nome": "Pedro Gustavo", "celular": "+55 54 99620-2101", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 58}, {"n": 10, "nome": "Elisa Schuster", "celular": "+55 54 99119-9818", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 58}, {"n": 11, "nome": "Jéssica Barboza", "celular": "+55 54 99146-4577", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 58}, {"n": 12, "nome": "Fabio da Silva", "celular": "+55 54 99109-3150", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 58}, {"n": 13, "nome": "Marcelo Hubner", "celular": "+55 54 99946-1414", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 58}, {"n": 14, "nome": "Caroline Maciel", "celular": "+55 51 84625-262", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 58}, {"n": 15, "nome": "Karolayne", "celular": "+55 54 99931-1681", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 58}, {"n": 16, "nome": "Micheli", "celular": "+55 54 93370-770", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 58}, {"n": 17, "nome": "Alan Almeida", "celular": "+55 54 9685-7438", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "22/06/2026", "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 67}, {"n": 18, "nome": "Alexandro Almeida", "celular": "+55 54 99904-1448", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "22/06/2026", "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 67}, {"n": 19, "nome": "Miqueias Oliveira Floriano", "celular": "+55 54 99675-9074", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "21/06/2026", "Relacionando-me com o Pai": null, "Cinco Ministérios": "28/07/2026", "Autoridade Espiritual": "03/08/2026", "Panorama da Obra Divina": "21/06/2026", "Mente Renova": "01/08/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 92}, {"n": 20, "nome": "Maicon Assis", "celular": "+55 54 99695-1568", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "22/06/2026", "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 67}, {"n": 21, "nome": "Reginaldo", "celular": "+55 54 99899-9823", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "22/06/2026", "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 67}, {"n": 22, "nome": "Ilton", "celular": "+55 54 99206-167", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "22/06/2026", "Relacionando-me com o Pai": "20/07/2026", "Cinco Ministérios": "28/07/2026", "Autoridade Espiritual": "03/08/2026", "Panorama da Obra Divina": "10/08/2026", "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "18/07/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 100}, {"n": 23, "nome": "Nicoli Ricaldes", "celular": "+55 54 9928-7135", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "18/07/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 58}, {"n": 24, "nome": "Samuel Haubert", "celular": "+55 54 9715-0680", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 58}, {"n": 25, "nome": "Andrigo Pereira", "celular": "+55 54 99997-87625", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": "20/07/2026", "Cinco Ministérios": null, "Autoridade Espiritual": "03/08/2026", "Panorama da Obra Divina": "21/06/2026", "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 83}, {"n": 26, "nome": "Roberto Pagotto", "celular": "+55 54 99819-759", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 58}, {"n": 27, "nome": "Mayse Fragoso", "celular": "+55 54 99611-3901", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "22/06/2026", "Relacionando-me com o Pai": null, "Cinco Ministérios": "21/06/2026", "Autoridade Espiritual": "03/08/2026", "Panorama da Obra Divina": "10/08/2026", "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 92}, {"n": 28, "nome": "Cristiane Almeida", "celular": "+55 54 99965-96560", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "22/06/2026", "Relacionando-me com o Pai": "20/07/2026", "Cinco Ministérios": "28/07/2026", "Autoridade Espiritual": "03/08/2026", "Panorama da Obra Divina": "10/08/2026", "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 100}, {"n": 29, "nome": "Joice da Rosa", "celular": "+55 99 91996-284", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "01/08/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 58}, {"n": 30, "nome": "Franklin Hermano", "celular": "+55 54 99633-8252", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "22/06/2026", "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 67}, {"n": 31, "nome": "Fabiane Orbach", "celular": "+55 54 99926-9813", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 58}, {"n": 32, "nome": "Ana Maria Tozzi", "celular": "+55 41 98497-5741", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": "03/08/2026", "Panorama da Obra Divina": "10/08/2026", "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 75}, {"n": 33, "nome": "Cristiano Tozzi", "celular": "+55 54 99642-1278", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 58}, {"n": 34, "nome": "Polyanna", "celular": "+55 54 99931-5867", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 58}, {"n": 35, "nome": "Luana Frank", "celular": "+55 54 99912-8035", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": "28/07/2026", "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 67}, {"n": 36, "nome": "Nicoly Ose", "celular": "+55 54 98436-6972", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 58}, {"n": 37, "nome": "Yolimar", "celular": "+55 54 99260-8496", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "22/06/2026", "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 67}, {"n": 38, "nome": "José Valmir Moraes", "celular": "+55 54 99605-9341", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 58}, {"n": 39, "nome": "Soeli Cabral Moraes", "celular": "+55 54 99299-8920", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 58}, {"n": 40, "nome": "Lidiane EP REG", "celular": "+55 54 99664-3309", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "22/06/2026", "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 67}, {"n": 41, "nome": "Pedro Norberto", "celular": "", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "22/06/2026", "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 67}, {"n": 42, "nome": "Ana Tozzi", "celular": "", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "22/06/2026", "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": "10/08/2026", "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 75}, {"n": 43, "nome": "Maiara", "celular": "", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "22/06/2026", "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": "03/08/2026", "Panorama da Obra Divina": "10/08/2026", "Mente Renova": "01/08/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "18/07/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 83}, {"n": 44, "nome": "Shara", "celular": "+55 54 99623-2650", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "22/06/2026", "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 67}, {"n": 45, "nome": "Micael", "celular": "+55 54 99939-4279", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "22/06/2026", "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 67}, {"n": 46, "nome": "Djulia", "celular": "", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "22/06/2026", "Relacionando-me com o Pai": null, "Cinco Ministérios": "23/06/2026", "Autoridade Espiritual": "23/06/2026", "Panorama da Obra Divina": "23/06/2026", "Mente Renova": "23/06/2026", "Batalha Espiritual": "23/06/2026", "Perdão": "23/06/2026", "Dízimo": "23/06/2026", "Espírito Santo": "23/06/2026", "Grupo Familiar": "23/06/2026", "Batismo nas Águas": "23/06/2026"}, "pct": 92}, {"n": 47, "nome": "Fabiana", "celular": "", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "22/06/2026", "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 67}, {"n": 48, "nome": "Pollyana", "celular": "", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "22/06/2026", "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 67}, {"n": 49, "nome": "Camila de Paula", "celular": "", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "23/06/2026", "Relacionando-me com o Pai": "23/06/2026", "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": null, "Batalha Espiritual": null, "Perdão": null, "Dízimo": "23/06/2026", "Espírito Santo": null, "Grupo Familiar": null, "Batismo nas Águas": "23/06/2026"}, "pct": 33}, {"n": 50, "nome": "Catiane Trevisan", "celular": "", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "23/06/2026", "Relacionando-me com o Pai": "20/07/2026", "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": null, "Batalha Espiritual": null, "Perdão": null, "Dízimo": null, "Espírito Santo": null, "Grupo Familiar": "23/06/2026", "Batismo nas Águas": "23/06/2026"}, "pct": 33}, {"n": 51, "nome": "Amanda Canuto", "celular": "+55 54 9145-0376", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": "27/06/2026", "Cinco Ministérios": "27/06/2026", "Autoridade Espiritual": "27/06/2026", "Panorama da Obra Divina": "27/06/2026", "Mente Renova": "27/06/2026", "Batalha Espiritual": "27/06/2026", "Perdão": "27/06/2026", "Dízimo": "27/06/2026", "Espírito Santo": "27/06/2026", "Grupo Familiar": "27/06/2026", "Batismo nas Águas": "27/06/2026"}, "pct": 92}, {"n": 52, "nome": "Emanuele", "celular": "", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": "27/06/2026", "Panorama da Obra Divina": null, "Mente Renova": null, "Batalha Espiritual": null, "Perdão": null, "Dízimo": null, "Espírito Santo": null, "Grupo Familiar": null, "Batismo nas Águas": null}, "pct": 8}, {"n": 53, "nome": "Josiane", "celular": "", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": "27/06/2026", "Panorama da Obra Divina": null, "Mente Renova": null, "Batalha Espiritual": null, "Perdão": null, "Dízimo": null, "Espírito Santo": null, "Grupo Familiar": null, "Batismo nas Águas": null}, "pct": 8}, {"n": 54, "nome": "Eduarda Dettner", "celular": "", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": "28/07/2026", "Autoridade Espiritual": "27/06/2026", "Panorama da Obra Divina": null, "Mente Renova": "01/08/2026", "Batalha Espiritual": null, "Perdão": null, "Dízimo": null, "Espírito Santo": null, "Grupo Familiar": null, "Batismo nas Águas": null}, "pct": 25}, {"n": 55, "nome": "Leonardo", "celular": "", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "08/08/2026", "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": "03/08/2026", "Panorama da Obra Divina": null, "Mente Renova": "01/08/2026", "Batalha Espiritual": null, "Perdão": null, "Dízimo": null, "Espírito Santo": null, "Grupo Familiar": null, "Batismo nas Águas": null}, "pct": 25}, {"n": 56, "nome": "Aladir Maria Parize", "celular": "", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "21/06/2026", "Relacionando-me com o Pai": "21/06/2026", "Cinco Ministérios": "21/06/2026", "Autoridade Espiritual": "03/08/2026", "Panorama da Obra Divina": "21/06/2026", "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 100}, {"n": 57, "nome": "Paulo Cesar De Moraes", "celular": "", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": "21/06/2026", "Cinco Ministérios": null, "Autoridade Espiritual": "03/08/2026", "Panorama da Obra Divina": "21/06/2026", "Mente Renova": null, "Batalha Espiritual": null, "Perdão": null, "Dízimo": null, "Espírito Santo": null, "Grupo Familiar": null, "Batismo nas Águas": null}, "pct": 25}, {"n": 58, "nome": "Norton Pellizzari", "celular": "", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "08/08/2026", "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": null, "Batalha Espiritual": null, "Perdão": null, "Dízimo": null, "Espírito Santo": null, "Grupo Familiar": null, "Batismo nas Águas": null}, "pct": 8}];
+const KEY='ciclo_edits_v3';
+let ed=JSON.parse(localStorage.getItem(KEY)||'{}');
+let D=[],f='all',s='n',v='t',dir={nome:1,pct:-1};
 
-// Load edits from localStorage
-const STORE_KEY = 'ciclo_edits';
-let edits = JSON.parse(localStorage.getItem(STORE_KEY)||'{}');
+function build(){D=RAW.map(p=>{const e=ed[p.n];if(!e)return{...p,modulos:{...p.modulos}};const m={...p.modulos,...e};return{...p,modulos:m,pct:Math.round(M.filter(x=>m[x]).length/12*100)}})}
+function col(p){return p>=100?'#2EE58C':p>=75?'#35A7FF':p>=50?'#F2C14E':'#FF9F43'}
+function cls(p){return p>=100?'done':p>=75?'high':p>=50?'mid':'low'}
+function bdg(p){const m={done:['bd-g','Concluído'],high:['bd-b','Avançado'],mid:['bd-y','Em andamento'],low:['bd-o','Iniciado'],zero:['bd-n','Início']};const k=p>=100?'done':p>=75?'high':p>=50?'mid':p>0?'low':'zero';return`<span class="bdg ${m[k][0]}">${m[k][1]}</span>`}
+function wal(c){return c?'https://wa.me/'+c.replace(/\D/g,''):''}
 
-function getData() {
-  return RAW.map(p=>{
-    const e = edits[p.n];
-    if (!e) return {...p, modulos:{...p.modulos}};
-    const mods = {...p.modulos, ...e};
-    const done = MODULOS.filter(m=>mods[m]).length;
-    return {...p, modulos:mods, pct:Math.round(done/12*100)};
-  });
+function dash(){
+build();const t=D.length;
+document.getElementById('k1').textContent=t;
+document.getElementById('k2').textContent=D.filter(p=>p.pct>=100).length;
+document.getElementById('k3').textContent=D.filter(p=>p.pct>=75&&p.pct<100).length;
+document.getElementById('k4').textContent=D.filter(p=>p.pct>=50&&p.pct<75).length;
+document.getElementById('k5').textContent=Math.round(D.reduce((a,p)=>a+p.pct,0)/t)+'%';
+document.getElementById('pill').textContent=t+' participantes';
+document.getElementById('rank').innerHTML=[...D].sort((a,b)=>b.pct-a.pct).slice(0,6).map((p,i)=>
+`<div class="rank-i" onclick="op(${p.n})"><div class="rank-n ${['rk1','rk2','rk3','rkn','rkn','rkn'][i]}">${i+1}</div><span class="rank-nm">${p.nome}</span><div class="rank-b"><div class="rank-bf" style="width:${p.pct}%;background:${col(p.pct)}"></div></div><span class="rank-p" style="color:${col(p.pct)}">${p.pct}%</span></div>`).join('');
+document.getElementById('bars').innerHTML=M.map(m=>{const c=D.filter(p=>p.modulos[m]).length,pc=Math.round(c/t*100);
+return`<div class="mrow"><span class="mrow-n" title="${m}">${m}</span><div class="mrow-t"><div class="mrow-f" style="width:${pc}%;background:${col(pc)}"></div></div><span class="mrow-c">${c}/${t}</span></div>`}).join('');
 }
 
-let DADOS = getData();
-let curFilter='all', curSort='n', curView='table';
-let sortDir={nome:1,pct:-1};
+function flist(){const q=document.getElementById('q').value.toLowerCase();
+let d=D.filter(p=>(p.nome.toLowerCase().includes(q)||p.celular.includes(q))&&(f==='all'||cls(p.pct)===f));
+if(s==='n')d.sort((a,b)=>a.n-b.n);else if(s==='nome')d.sort((a,b)=>dir.nome*a.nome.localeCompare(b.nome,'pt'));
+else if(s==='pd')d.sort((a,b)=>b.pct-a.pct);else if(s==='pa')d.sort((a,b)=>a.pct-b.pct);return d}
 
-function pctColor(p){return p>=100?'#1E8449':p>=75?'#1A5276':p>=50?'#B7950B':'#CA6F1E'}
-function statusCls(p){return p>=100?'done':p>=75?'high':p>=50?'mid':'low'}
-function badge(p){
-  const m={done:['b-done','✅ Concluído'],high:['b-high','🔵 Avançado'],mid:['b-mid','🟡 Em Andamento'],low:['b-low','🟠 Iniciado'],zero:['b-zero','⬜ Início']};
-  const k=p>=100?'done':p>=75?'high':p>=50?'mid':p>0?'low':'zero';
-  return `<span class="badge ${m[k][0]}">${m[k][1]}</span>`;
-}
-function waLink(cel){
-  if(!cel)return'';
-  const n=cel.replace(/\D/g,'');
-  return `https://wa.me/${n}`;
+function rd(){const d=flist();
+document.getElementById('cnt').textContent=d.length===D.length?d.length+' participantes':d.length+' de '+D.length;
+document.getElementById('tb').innerHTML=d.length?d.map(p=>{const c=col(p.pct);
+return`<tr onclick="op(${p.n})"><td class="t-n">${p.n}</td><td><div class="t-nm">${p.nome}</div><div class="t-sub">Retiro: ${p.retiro||'—'}</div></td><td>${p.celular?`<a class="wa" href="${wal(p.celular)}" target="_blank" onclick="event.stopPropagation()">💬 ${p.celular}</a>`:'<span style="color:var(--txt3)">—</span>'}</td>${M.map(m=>`<td style="text-align:center"><span class="${p.modulos[m]?'tick':'tick tick-n'}">${p.modulos[m]?'✓':'·'}</span></td>`).join('')}<td><div class="pg"><div class="pg-t"><div class="pg-f" style="width:${p.pct}%;background:${c}"></div></div><span class="pg-l" style="color:${c}">${p.pct}%</span></div></td><td>${bdg(p.pct)}</td></tr>`}).join('')
+:`<tr><td colspan="17"><div class="emp"><div class="emp-i">🔍</div><div class="emp-t">Nenhum resultado</div><div class="emp-s">Tente outro nome ou filtro</div></div></td></tr>`;
+document.getElementById('cd').innerHTML=d.length?d.map((p,i)=>{const c=col(p.pct);
+return`<div class="pc pc-${cls(p.pct).charAt(0)==='d'?'g':cls(p.pct).charAt(0)==='h'?'b':cls(p.pct).charAt(0)==='m'?'y':'o'}" onclick="op(${p.n})" style="animation-delay:${Math.min(i*.028,.5)}s"><div class="pc-h"><div class="pc-nm">${p.nome}</div>${bdg(p.pct)}</div><div class="pc-mt">nº${p.n} · ${p.celular||'Sem telefone'}</div><div class="pc-dots">${M.map((m,j)=>`<span class="dt ${p.modulos[m]?'dt-y':'dt-n'}" title="${m}${p.modulos[m]?' — '+p.modulos[m]:''}">${AB[j]}</span>`).join('')}</div><div class="pc-pg"><div class="pc-t"><div class="pc-f" style="width:${p.pct}%;background:${c}"></div></div><span class="pc-p" style="color:${c}">${p.pct}%</span></div></div>`}).join('')
+:`<div style="grid-column:1/-1"><div class="emp"><div class="emp-i">🔍</div><div class="emp-t">Nenhum resultado</div></div></div>`;
 }
 
-function initDashboard(){
-  DADOS=getData();
-  const t=DADOS.length, dn=DADOS.filter(p=>p.pct>=100).length;
-  const hi=DADOS.filter(p=>p.pct>=75&&p.pct<100).length;
-  const mi=DADOS.filter(p=>p.pct>=50&&p.pct<75).length;
-  const av=Math.round(DADOS.reduce((s,p)=>s+p.pct,0)/t);
-  document.getElementById('sTotal').textContent=t;
-  document.getElementById('sDone').textContent=dn;
-  document.getElementById('sHigh').textContent=hi;
-  document.getElementById('sMid').textContent=mi;
-  document.getElementById('sAvg').textContent=av+'%';
+function op(n){const p=D.find(x=>x.n===n);if(!p)return;const dn=M.filter(m=>p.modulos[m]).length;
+document.getElementById('md').innerHTML=`<div class="md-h"><button class="md-x" onclick="cm()">✕</button><div class="md-in"><div class="md-nm">${p.nome}</div><div class="md-mt">nº${p.n} · Retiro: ${p.retiro||'—'}</div><div class="md-r"><div><div class="md-p" style="color:${col(p.pct)}">${p.pct}%</div><div class="md-ps">${dn} de 12 módulos concluídos</div></div>${bdg(p.pct)}</div><div class="md-bar"><div class="md-bf" style="width:${p.pct}%"></div></div></div></div><div class="md-b">${p.celular?`<a class="md-wa" href="${wal(p.celular)}" target="_blank"><span>💬</span><b>Abrir WhatsApp</b><i>${p.celular}</i></a>`:''}<div class="p-title" style="margin-bottom:13px">Módulos</div><div class="ml">${M.map((m,i)=>{const d=p.modulos[m];return`<div class="mi ${d?'mi-y':'mi-n'}" id="r${n}_${i}"><span class="mi-ic">${d?'✅':'⬜'}</span><div class="mi-t"><div class="mi-nm">${m}</div><div class="mi-dt" id="d${n}_${i}">${d||'Pendente'}</div></div><button class="mi-b" id="b${n}_${i}" onclick="event.stopPropagation();te(${n},${i})">${d?'Editar':'+ Data'}</button></div>`}).join('')}</div></div>`;
+document.getElementById('ov').classList.add('on')}
 
-  // Top 5
-  const top=[...DADOS].sort((a,b)=>b.pct-a.pct).slice(0,5);
-  document.getElementById('topList').innerHTML=top.map((p,i)=>`
-    <div class="top-item" onclick="openModal(${p.n})">
-      <div class="top-rank ${['r1','r2','r3','rn','rn'][i]}">${i+1}</div>
-      <span class="top-name">${p.nome}</span>
-      <div class="top-bar-wrap">
-        <div class="top-bar-track"><div class="top-bar-fill" style="width:${p.pct}%;background:${pctColor(p.pct)}"></div></div>
-      </div>
-      <span class="top-pct" style="color:${pctColor(p.pct)}">${p.pct}%</span>
-    </div>`).join('');
+function te(n,i){const m=M[i],r=document.getElementById('r'+n+'_'+i),b=document.getElementById('b'+n+'_'+i),ex=r.querySelector('.mi-i');
+if(ex){ex.remove();b.textContent=D.find(x=>x.n===n).modulos[m]?'Editar':'+ Data';b.onclick=e=>{e.stopPropagation();te(n,i)};return}
+const inp=document.createElement('input');inp.type='text';inp.placeholder='DD/MM/AAAA';inp.className='mi-i';
+const cur=D.find(x=>x.n===n).modulos[m];if(cur)inp.value=cur;
+inp.onclick=e=>e.stopPropagation();
+inp.onkeydown=e=>{if(e.key==='Enter'){sv(n,m,inp.value.trim(),i);inp.remove()}if(e.key==='Escape'){inp.remove();b.textContent=cur?'Editar':'+ Data';b.onclick=ev=>{ev.stopPropagation();te(n,i)}}};
+b.after(inp);b.textContent='Salvar';
+b.onclick=e=>{e.stopPropagation();sv(n,m,inp.value.trim(),i);inp.remove()};
+inp.focus();inp.select()}
 
-  // Mod bars
-  document.getElementById('modBars').innerHTML=MODULOS.map(m=>{
-    const cnt=DADOS.filter(p=>p.modulos[m]).length;
-    const pct=Math.round(cnt/t*100);
-    const c=pctColor(pct);
-    return `<div class="mod-row">
-      <span class="mod-row-name">${m}</span>
-      <div class="mod-track"><div class="mod-fill" style="width:${pct}%;background:${c}"></div></div>
-      <span class="mod-count">${cnt}/${t}</span>
-    </div>`;
-  }).join('');
-}
+function sv(n,m,val,i){
+if(!ed[n])ed[n]={};ed[n][m]=val||null;
+localStorage.setItem(KEY,JSON.stringify(ed));build();
+const p=D.find(x=>x.n===n),d=!!p.modulos[m],r=document.getElementById('r'+n+'_'+i),b=document.getElementById('b'+n+'_'+i);
+r.className='mi '+(d?'mi-y':'mi-n');
+r.querySelector('.mi-ic').textContent=d?'✅':'⬜';
+document.getElementById('d'+n+'_'+i).textContent=val||'Pendente';
+b.textContent=d?'Editar':'+ Data';b.onclick=e=>{e.stopPropagation();te(n,i)};
+const dn=M.filter(x=>p.modulos[x]).length;
+document.querySelector('.md-p').textContent=p.pct+'%';
+document.querySelector('.md-p').style.color=col(p.pct);
+document.querySelector('.md-ps').textContent=dn+' de 12 módulos concluídos';
+document.querySelector('.md-bf').style.width=p.pct+'%';
+dash();rd();tst('✓ '+m+' atualizado')}
 
-function filtered(){
-  const q=document.getElementById('hdrSearch').value.toLowerCase();
-  let d=[...DADOS].filter(p=>{
-    const ms=p.nome.toLowerCase().includes(q)||p.celular.includes(q);
-    const mf=curFilter==='all'||statusCls(p.pct)===curFilter;
-    return ms&&mf;
-  });
-  if(curSort==='n') d.sort((a,b)=>a.n-b.n);
-  else if(curSort==='nome') d.sort((a,b)=>sortDir.nome*a.nome.localeCompare(b.nome));
-  else if(curSort==='pct-desc') d.sort((a,b)=>b.pct-a.pct);
-  else if(curSort==='pct-asc') d.sort((a,b)=>a.pct-b.pct);
-  return d;
-}
-
-function render(){
-  const d=filtered();
-  document.getElementById('resCount').textContent=d.length===DADOS.length?`${d.length} participantes`:`${d.length} de ${DADOS.length}`;
-  renderTable(d); renderCards(d);
-}
-
-function renderTable(d){
-  if(!d.length){
-    document.getElementById('tbody').innerHTML=`<tr><td colspan="17"><div class="empty"><div class="empty-icon">🔍</div><div class="empty-text">Nenhum resultado</div><div class="empty-sub">Tente outro nome ou filtro</div></div></td></tr>`;
-    return;
-  }
-  document.getElementById('tbody').innerHTML=d.map(p=>{
-    const c=pctColor(p.pct);
-    const wa=p.celular?`<a href="${waLink(p.celular)}" target="_blank" onclick="event.stopPropagation()">📱 ${p.celular}</a>`:'-';
-    const dots=MODULOS.map((m,i)=>{
-      const done=!!p.modulos[m];
-      return `<span class="mdot ${done?'done':'pend'}" title="${m}${done?' — '+p.modulos[m]:''}">${ABBR[i]}</span>`;
-    }).join('');
-    return `<tr onclick="openModal(${p.n})">
-      <td class="td-num">${p.n}</td>
-      <td><div class="td-nome">${p.nome}</div><div class="td-sub">Retiro: ${p.retiro||'—'}</div></td>
-      <td class="td-phone">${wa}</td>
-      ${MODULOS.map(m=>`<td style="text-align:center">${p.modulos[m]?`<span style="color:var(--g);font-size:1.1rem">✓</span>`:`<span style="color:var(--bdr)">·</span>`}</td>`).join('')}
-      <td><div class="prog-cell"><div class="prog-track"><div class="prog-fill" style="width:${p.pct}%;background:${c}"></div></div><span class="prog-lbl" style="color:${c}">${p.pct}%</span></div></td>
-      <td>${badge(p.pct)}</td>
-    </tr>`;
-  }).join('');
-}
-
-function renderCards(d){
-  const g=document.getElementById('cardsGrid');
-  if(!d.length){g.innerHTML=`<div style="grid-column:1/-1"><div class="empty"><div class="empty-icon">🔍</div><div class="empty-text">Nenhum resultado</div></div></div>`;return;}
-  g.innerHTML=d.map((p,idx)=>{
-    const c=pctColor(p.pct);
-    const dots=MODULOS.map((m,i)=>{const done=!!p.modulos[m];return`<span class="mdot ${done?'done':'pend'}" title="${m}">${ABBR[i]}</span>`;}).join('');
-    return `<div class="pcard pc-${statusCls(p.pct)}" onclick="openModal(${p.n})" style="animation-delay:${idx*0.03}s">
-      <div class="pc-head"><div><div class="pc-name">${p.nome}</div></div>${badge(p.pct)}</div>
-      <div class="pc-meta">nº${p.n} · ${p.celular||'Sem telefone'}</div>
-      <div class="pc-dots">${dots}</div>
-      <div class="pc-prog"><div class="pc-track"><div class="pc-fill" style="width:${p.pct}%;background:${c}"></div></div><span class="pc-pct" style="color:${c}">${p.pct}%</span></div>
-    </div>`;
-  }).join('');
-}
-
-function openModal(n){
-  const p=DADOS.find(x=>x.n===n);
-  if(!p)return;
-  const c=pctColor(p.pct);
-  const done=MODULOS.filter(m=>p.modulos[m]).length;
-  const wa=p.celular?`<a class="modal-wa" href="${waLink(p.celular)}" target="_blank">
-    <span class="wa-icon">💬</span><span>Abrir WhatsApp</span><span class="wa-num">${p.celular}</span>
-  </a>`:'';
-  const mods=MODULOS.map((m,i)=>{
-    const d=p.modulos[m];
-    return `<div class="mod-row-modal ${d?'m-done':'m-pend'}" id="mrow_${n}_${i}">
-      <span class="mod-icon">${d?'✅':'⬜'}</span>
-      <div class="mod-text">
-        <div class="mod-text-name">${m}</div>
-        <div class="mod-text-date" id="mdate_${n}_${i}">${d||'Pendente'}</div>
-      </div>
-      <button class="mod-edit-btn" onclick="event.stopPropagation();toggleEdit(${n},${i},'${m}')" id="medit_${n}_${i}">${d?'Editar':'+ Data'}</button>
-    </div>`;
-  }).join('');
-
-  document.getElementById('modal').innerHTML=`
-    <div class="modal-top">
-      <button class="modal-close" onclick="closeModal()">✕</button>
-      <div class="modal-nome">${p.nome}</div>
-      <div class="modal-info">nº${p.n} · Retiro: ${p.retiro||'—'}</div>
-      <div class="modal-pct-row">
-        <div><div class="modal-pct-big" style="color:#fff">${p.pct}%</div><div class="modal-pct-sub">${done} de 12 módulos concluídos</div></div>
-        ${badge(p.pct)}
-      </div>
-      <div class="modal-prog-bar"><div class="modal-prog-fill" style="width:${p.pct}%"></div></div>
-    </div>
-    <div class="modal-body">
-      ${wa}
-      <div class="panel-title" style="margin-bottom:14px">📋 Módulos</div>
-      <div class="mod-grid">${mods}</div>
-    </div>`;
-  document.getElementById('overlay').classList.add('on');
-}
-
-function toggleEdit(n,i,modName){
-  const row=document.getElementById(`mrow_${n}_${i}`);
-  const dateEl=document.getElementById(`mdate_${n}_${i}`);
-  const btn=document.getElementById(`medit_${n}_${i}`);
-  const existing=row.querySelector('.mod-date-input');
-  if(existing){existing.remove();btn.textContent=DADOS.find(x=>x.n===n).modulos[modName]?'Editar':'+ Data';return;}
-
-  const inp=document.createElement('input');
-  inp.type='text'; inp.placeholder='DD/MM/AAAA'; inp.className='mod-date-input';
-  const cur=DADOS.find(x=>x.n===n).modulos[modName];
-  if(cur)inp.value=cur;
-  inp.onclick=e=>e.stopPropagation();
-  inp.onkeydown=e=>{
-    if(e.key==='Enter'){saveEdit(n,modName,inp.value.trim(),i);inp.remove();btn.textContent='Editar';}
-    if(e.key==='Escape'){inp.remove();btn.textContent=cur?'Editar':'+ Data';}
-  };
-  btn.after(inp);
-  btn.textContent='✓ Salvar';
-  btn.onclick=e=>{e.stopPropagation();saveEdit(n,modName,inp.value.trim(),i);inp.remove();btn.textContent='Editar';};
-  inp.focus();
-}
-
-function saveEdit(n,modName,val,i){
-  if(!edits[n])edits[n]={};
-  edits[n][modName]=val||null;
-  localStorage.setItem(STORE_KEY,JSON.stringify(edits));
-  DADOS=getData();
-  const p=DADOS.find(x=>x.n===n);
-  const done=!!p.modulos[modName];
-  const row=document.getElementById(`mrow_${n}_${i}`);
-  const dateEl=document.getElementById(`mdate_${n}_${i}`);
-  row.className=`mod-row-modal ${done?'m-done':'m-pend'}`;
-  row.querySelector('.mod-icon').textContent=done?'✅':'⬜';
-  row.querySelector('.mod-text-name').style.color='';
-  dateEl.textContent=val||'Pendente';
-  // Update pct in modal top
-  const doneCnt=MODULOS.filter(m=>p.modulos[m]).length;
-  document.querySelector('.modal-pct-big').textContent=p.pct+'%';
-  document.querySelector('.modal-pct-sub').textContent=`${doneCnt} de 12 módulos concluídos`;
-  document.querySelector('.modal-prog-fill').style.width=p.pct+'%';
-  initDashboard(); render();
-  showToast(`✅ ${modName} atualizado`);
-}
-
-function showToast(msg){
-  const t=document.getElementById('toast');
-  t.textContent=msg; t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),2500);
-}
-function closeModal(){document.getElementById('overlay').classList.remove('on')}
-function overlayClick(e){if(e.target===document.getElementById('overlay'))closeModal()}
-function setFilter(f,btn){
-  curFilter=f;
-  document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('on'));
-  btn.classList.add('on'); render();
-}
-function sortBy(col){
-  curSort=col; sortDir[col]*=-1; render();
-}
-function setView(v){
-  curView=v;
-  document.getElementById('btnT').classList.toggle('on',v==='table');
-  document.getElementById('btnC').classList.toggle('on',v==='cards');
-  document.getElementById('tblWrap').style.display=v==='table'?'block':'none';
-  const cg=document.getElementById('cardsGrid');
-  cg.style.display=v==='cards'?'grid':'none';
-  if(v==='cards')cg.classList.add('on');
-}
-document.getElementById('hdrSearch').addEventListener('input',render);
-document.getElementById('sortSel').addEventListener('change',e=>{curSort=e.target.value;render()});
-
-initDashboard();
-render();
+function tst(t){const e=document.getElementById('tst');e.textContent=t;e.classList.add('on');setTimeout(()=>e.classList.remove('on'),2400)}
+function cm(){document.getElementById('ov').classList.remove('on')}
+function ovc(e){if(e.target===document.getElementById('ov'))cm()}
+function flt(x,b){f=x;document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));b.classList.add('on');rd()}
+function srtBy(c){s=c;dir[c]*=-1;rd()}
+function vw(x){v=x;document.getElementById('vt').classList.toggle('on',x==='t');document.getElementById('vc').classList.toggle('on',x==='c');
+document.getElementById('tw').style.display=x==='t'?'block':'none';const cd=document.getElementById('cd');cd.style.display=x==='c'?'grid':'none';if(x==='c')cd.classList.add('on')}
+document.getElementById('q').addEventListener('input',rd);
+document.getElementById('srt').addEventListener('change',e=>{s=e.target.value;rd()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')cm()});
+dash();rd();
 </script>
 </body>
 </html>
