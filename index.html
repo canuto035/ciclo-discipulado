@@ -44,7 +44,22 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .hero{position:relative;background:linear-gradient(135deg,#0C1A24 0%,#0A1620 55%,#0B1D1A 100%);border:1px solid var(--bdr);border-radius:var(--r-lg);padding:38px 40px;margin-bottom:20px;overflow:hidden}
 .hero::before{content:'';position:absolute;top:-140px;right:-100px;width:420px;height:420px;background:radial-gradient(circle,rgba(46,229,140,.11),transparent 65%);pointer-events:none}
 .hero::after{content:'';position:absolute;bottom:-160px;left:35%;width:340px;height:340px;background:radial-gradient(circle,rgba(53,167,255,.07),transparent 68%);pointer-events:none}
-.hero-in{position:relative;z-index:1;max-width:660px}
+.hero-in{position:relative;z-index:1;display:grid;grid-template-columns:1fr 260px;gap:34px;align-items:center}
+.hero-left{min-width:0}
+.hero-big{display:flex;align-items:center;gap:16px;margin-bottom:16px}
+.hb-n{font-family:'Syne',sans-serif;font-size:4.2rem;font-weight:800;line-height:.9;letter-spacing:-2.5px;background:linear-gradient(120deg,var(--green),#7BFFC4);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hb-t{display:flex;flex-direction:column;gap:3px;padding-bottom:6px}
+.hb-t strong{font-size:1.02rem;font-weight:700;letter-spacing:-.2px}
+.hb-t span{font-size:.79rem;color:var(--txt3)}
+.hero-bar{height:7px;background:rgba(255,255,255,.06);border-radius:6px;overflow:hidden;margin-bottom:22px;max-width:430px}
+.hero-bf{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--green),#7BFFC4);transition:width 1.1s cubic-bezier(.4,0,.2,1);box-shadow:0 0 14px var(--green-glow)}
+.hero-right{display:flex;flex-direction:column;gap:11px}
+.hr-card{background:rgba(255,255,255,.035);border:1px solid var(--bdr);border-radius:var(--r);padding:14px 16px;cursor:pointer;transition:.18s}
+.hr-card:hover{background:rgba(46,229,140,.07);border-color:rgba(46,229,140,.3);transform:translateX(-2px)}
+.hr-lb{font-size:.63rem;font-weight:700;letter-spacing:.9px;text-transform:uppercase;color:var(--txt3);margin-bottom:6px}
+.hr-v{font-size:.94rem;font-weight:700;line-height:1.25;margin-bottom:3px}
+.hr-s{font-size:.72rem;color:var(--txt3)}
+#hAtt{font-family:'Syne',sans-serif;font-size:1.9rem;font-weight:800;color:var(--orange);line-height:1}
 .eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:.66rem;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--green);background:var(--green-glow);border:1px solid rgba(46,229,140,.22);padding:5px 12px;border-radius:20px;margin-bottom:16px}
 .dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:blink 2s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
@@ -266,14 +281,20 @@ td{padding:10px 13px;vertical-align:middle}
 @media(max-width:1080px){
 .panels{grid-template-columns:1fr}
 .kpis{grid-template-columns:repeat(3,1fr)}
-.hero h2{font-size:2.05rem}
+.hero-in{grid-template-columns:1fr;gap:22px}
+.hero-right{flex-direction:row}
+.hr-card{flex:1}
 }
 @media(max-width:760px){
 .search{display:none}
 .wrap{padding:16px 14px 60px}
-.hero{padding:26px 22px;border-radius:var(--r)}
-.hero h2{font-size:1.72rem;letter-spacing:-.8px}
-.hero p{font-size:.87rem;margin-bottom:19px}
+.hero{padding:22px 18px;border-radius:var(--r)}
+.hb-n{font-size:3.1rem;letter-spacing:-1.8px}
+.hb-t strong{font-size:.9rem}
+.hb-t span{font-size:.72rem}
+.hero-big{gap:12px;margin-bottom:13px}
+.hero-bar{margin-bottom:18px}
+.hero-right{flex-direction:column}
 .hero-btns{flex-direction:column}
 .btn{width:100%;justify-content:center}
 .kpis{grid-template-columns:repeat(2,1fr);gap:10px}
@@ -316,12 +337,31 @@ td{padding:10px 13px;vertical-align:middle}
 
 <section class="hero">
 <div class="hero-in">
-<div class="eyebrow"><span class="dot"></span>Acompanhamento de progresso</div>
-<h2>Acompanhe o progresso e <em>transforme vidas.</em></h2>
-<p>Uma visão rápida e objetiva da evolução dos participantes ao longo dos 12 módulos de formação espiritual.</p>
+<div class="hero-left">
+<div class="eyebrow"><span class="dot"></span>Portal ativo · atualizado <span id="hUpd">hoje</span></div>
+<div class="hero-big">
+<div class="hb-n" id="hPct">0%</div>
+<div class="hb-t">
+<strong>do ciclo concluído</strong>
+<span id="hSub">— módulos registrados de —</span>
+</div>
+</div>
+<div class="hero-bar"><div class="hero-bf" id="hBar"></div></div>
 <div class="hero-btns">
 <button class="btn btn-p" onclick="chOpen()">✓ Registrar chamada</button>
 <a href="#lista" class="btn btn-s">Ver participantes</a>
+</div>
+</div>
+<div class="hero-right">
+<div class="hr-card" onclick="setPend(document.getElementById('hNextMod').dataset.m)">
+<div class="hr-lb">Módulo mais atrasado</div>
+<div class="hr-v" id="hNextMod">—</div>
+<div class="hr-s" id="hNextSub">—</div>
+</div>
+<div class="hr-card" onclick="flt('low',document.querySelectorAll('.chip')[4])">
+<div class="hr-lb">Precisam de atenção</div>
+<div class="hr-v" id="hAtt">0</div>
+<div class="hr-s">abaixo de 50% do ciclo</div>
 </div>
 </div>
 </section>
@@ -447,6 +487,23 @@ document.getElementById('k3').textContent=D.filter(p=>p.pct>=75&&p.pct<100).leng
 document.getElementById('k4').textContent=D.filter(p=>p.pct>=50&&p.pct<75).length;
 document.getElementById('k5').textContent=Math.round(D.reduce((a,p)=>a+p.pct,0)/t)+'%';
 document.getElementById('pill').textContent=t+' participantes';
+// HERO
+const totalCel=t*12,feitos=D.reduce((a,p)=>a+M.filter(m=>p.modulos[m]).length,0);
+const gp=Math.round(feitos/totalCel*100);
+document.getElementById('hPct').textContent=gp+'%';
+document.getElementById('hBar').style.width=gp+'%';
+document.getElementById('hSub').textContent=feitos.toLocaleString('pt-BR')+' módulos registrados de '+totalCel.toLocaleString('pt-BR');
+document.getElementById('hAtt').textContent=D.filter(p=>p.pct<50).length;
+// módulo mais atrasado
+let pior=M[0],piorN=1e9;
+M.forEach(m=>{const c=D.filter(p=>p.modulos[m]).length;if(c<piorN){piorN=c;pior=m}});
+const hn=document.getElementById('hNextMod');
+hn.textContent=pior;hn.dataset.m=pior;
+document.getElementById('hNextSub').textContent=(t-piorN)+' pessoas ainda não fizeram';
+// última atualização
+let ult=null;
+D.forEach(p=>M.forEach(m=>{const d=p.modulos[m];if(d&&/^\d{2}\/\d{2}\/\d{4}$/.test(d)){const[dd,mm,yy]=d.split('/');const dt=new Date(yy,mm-1,dd);if(!ult||dt>ult)ult=dt}}));
+if(ult)document.getElementById('hUpd').textContent=String(ult.getDate()).padStart(2,'0')+'/'+String(ult.getMonth()+1).padStart(2,'0')+'/'+ult.getFullYear();
 document.getElementById('rank').innerHTML=[...D].sort((a,b)=>b.pct-a.pct).slice(0,6).map((p,i)=>
 `<div class="rank-i" onclick="op(${p.n})"><div class="rank-n ${['rk1','rk2','rk3','rkn','rkn','rkn'][i]}">${i+1}</div><span class="rank-nm">${p.nome}</span><div class="rank-b"><div class="rank-bf" style="width:${p.pct}%;background:${col(p.pct)}"></div></div><span class="rank-p" style="color:${col(p.pct)}">${p.pct}%</span></div>`).join('');
 document.getElementById('bars').innerHTML=M.map(m=>{const c=D.filter(p=>p.modulos[m]).length,pc=Math.round(c/t*100);
