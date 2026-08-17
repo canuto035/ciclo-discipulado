@@ -304,6 +304,23 @@ td{padding:10px 13px;vertical-align:middle}
 .hist-t b{font-weight:600}
 .hist-u{font-size:.69rem;color:var(--txt3);margin-top:2px}
 
+/* ===== BUSCA MOBILE ===== */
+.msearch{display:none;align-items:center;gap:9px;background:var(--card);border:1px solid var(--bdr);border-radius:22px;padding:10px 15px;margin-bottom:13px;transition:.2s}
+.msearch:focus-within{border-color:var(--green);box-shadow:0 0 0 3px var(--green-glow)}
+.msearch svg{width:15px;height:15px;stroke:var(--txt3);flex-shrink:0}
+.msearch input{flex:1;min-width:0;background:none;border:none;outline:none;color:var(--txt);font-size:.88rem;font-family:inherit}
+.msearch input::placeholder{color:var(--txt3)}
+.msearch button{background:none;border:none;color:var(--txt3);font-size:1.05rem;cursor:pointer;padding:0 2px;font-family:inherit;display:none}
+.msearch.has button{display:block}
+
+/* ===== VER MAIS ===== */
+.more{margin-top:13px;display:none}
+.more.on{display:block}
+.more-b{width:100%;padding:13px;border-radius:var(--r);border:1px solid var(--bdr);background:var(--card);color:var(--txt2);font-size:.83rem;font-weight:600;cursor:pointer;font-family:inherit;transition:.18s;display:flex;align-items:center;justify-content:center;gap:7px}
+.more-b:hover{border-color:var(--green);color:var(--green);background:rgba(46,229,140,.05)}
+.more-b span{font-size:.72rem;color:var(--txt3);font-weight:500}
+.more-b:hover span{color:var(--green)}
+
 /* ===== TOAST / EMPTY ===== */
 .tst{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(90px);background:var(--card);border:1px solid var(--green);color:var(--green);padding:12px 20px;border-radius:11px;font-size:.83rem;font-weight:600;z-index:900;transition:transform .38s cubic-bezier(.34,1.4,.64,1);pointer-events:none;box-shadow:0 8px 30px rgba(0,0,0,.5);max-width:90vw;text-align:center}
 .tst.on{transform:translateX(-50%) translateY(0)}
@@ -324,6 +341,7 @@ td{padding:10px 13px;vertical-align:middle}
 }
 @media(max-width:760px){
 .search{display:none}
+.msearch{display:flex}
 .wrap{padding:16px 14px 60px}
 .hero{padding:22px 18px;border-radius:var(--r)}
 .hb-n{font-size:3.1rem;letter-spacing:-1.8px}
@@ -474,6 +492,12 @@ Seu cadastro foi criado, mas um administrador precisa liberar o acesso. Você se
 <div class="panel"><div class="p-title">Progresso por módulo</div><div id="bars"></div></div>
 </div>
 
+<div class="msearch" id="ms">
+<svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+<input type="text" id="qm" placeholder="Buscar por nome ou telefone...">
+<button onclick="clrQ()" aria-label="Limpar">✕</button>
+</div>
+
 <div class="tb" id="lista">
 <div class="chips">
 <button class="chip on" onclick="flt('all',this)">Todos</button>
@@ -511,6 +535,7 @@ Seu cadastro foi criado, mas um administrador precisa liberar o acesso. Você se
 </div>
 
 <div class="cards" id="cd"></div>
+<div class="more" id="more"><button class="more-b" onclick="expand()" id="moreB"></button></div>
 </div>
 </div>
 
@@ -549,6 +574,7 @@ const M=["Aliança de Sangue","Relacionando-me com o Pai","Cinco Ministérios","
 const AB=["A.S","R.P","5M","A.E","P.O","M.R","B.E","Pd","Dz","E.S","G.F","B.A"];
 
 let ME=null, D=[], f='all', s='n', v='t', pend='', dir={nome:1,pct:-1}, chSel=new Set();
+const STEP=5; let lim=STEP;
 
 const can = a => ME && (a==='del' ? ME.role==='admin' : ME.role==='admin'||ME.role==='editor');
 const $ = i => document.getElementById(i);
@@ -708,17 +734,24 @@ function dash(){
 
 function setPend(m){pend=m||'';$('pendSel').value=pend;$('pendSel').classList.toggle('act',!!pend);
   document.querySelectorAll('.mrow').forEach((r,i)=>r.classList.toggle('act',M[i]===pend));
-  rd(); if(pend)$('lista').scrollIntoView({behavior:'smooth',block:'start'})}
+  lim=STEP; rd(); if(pend)$('lista').scrollIntoView({behavior:'smooth',block:'start'})}
 
-function flist(){const q=$('q').value.toLowerCase();
+function getQ(){return (($('q').value||$('qm').value)||'').trim().toLowerCase()}
+function flist(){const q=getQ();
   let d=D.filter(p=>(p.nome.toLowerCase().includes(q)||p.celular.includes(q))&&(f==='all'||cls(p.pct)===f)&&(!pend||!p.modulos[pend]));
   if(s==='n')d.sort((a,b)=>a.n-b.n); else if(s==='nome')d.sort((a,b)=>dir.nome*a.nome.localeCompare(b.nome,'pt'));
   else if(s==='pd')d.sort((a,b)=>b.pct-a.pct); else if(s==='pa')d.sort((a,b)=>a.pct-b.pct);
   return d}
 
 function rd(){
-  const d=flist();
-  $('cnt').innerHTML=(d.length===D.length?d.length+' participantes':d.length+' de '+D.length)+(pend?` <span class="tag">falta ${pend}<button onclick="setPend('')">×</button></span>`:'');
+  const all=flist();
+  const d=all.slice(0,lim);
+  $('cnt').innerHTML=(all.length===D.length?all.length+' participantes':all.length+' de '+D.length)+(pend?` <span class="tag">falta ${pend}<button onclick="setPend('')">×</button></span>`:'');
+  const rest=all.length-d.length;
+  const mw=$('more'), mb=$('moreB');
+  if(rest>0){mw.classList.add('on');mb.innerHTML=`Ver mais <span>(${rest} restantes)</span>`}
+  else if(all.length>STEP){mw.classList.add('on');mb.innerHTML=`Ver menos <span>(mostrando ${all.length})</span>`}
+  else mw.classList.remove('on');
   $('tb').innerHTML=d.length?d.map(p=>{const c=col(p.pct);
     return `<tr onclick="op(${p.n})"><td class="t-n">${p.n}</td><td><div class="t-nm">${esc(p.nome)}</div><div class="t-sub">Retiro: ${p.retiro||'—'}</div></td><td>${p.celular?`<a class="wa" href="${wal(p.celular)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">💬 ${esc(p.celular)}</a>`:'<span style="color:var(--txt3)">—</span>'}</td>${M.map(m=>`<td style="text-align:center"><span class="${p.modulos[m]?'tick':'tick tick-n'}">${p.modulos[m]?'✓':'·'}</span></td>`).join('')}<td><div class="pg"><div class="pg-t"><div class="pg-f" style="width:${p.pct}%;background:${c}"></div></div><span class="pg-l" style="color:${c}">${p.pct}%</span></div></td><td>${bdg(p.pct)}</td></tr>`}).join('')
     :`<tr><td colspan="17"><div class="emp"><div class="emp-i">🔍</div><div class="emp-t">Nenhum resultado</div><div class="emp-s">Tente outro nome ou filtro</div></div></td></tr>`;
@@ -727,8 +760,11 @@ function rd(){
     :`<div style="grid-column:1/-1"><div class="emp"><div class="emp-i">🔍</div><div class="emp-t">Nenhum resultado</div></div></div>`;
 }
 
-function flt(x,b){f=x;document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));if(b)b.classList.add('on');rd()}
-function srtBy(c){s=c;dir[c]*=-1;rd()}
+function expand(){const t=flist().length;lim = lim>=t ? STEP : t;rd();
+  if(lim===STEP)$('lista').scrollIntoView({behavior:'smooth',block:'start'})}
+function clrQ(){$('q').value='';$('qm').value='';$('ms').classList.remove('has');lim=STEP;rd()}
+function flt(x,b){f=x;lim=STEP;document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));if(b)b.classList.add('on');rd()}
+function srtBy(c){s=c;dir[c]*=-1;lim=STEP;rd()}
 function vw(x){v=x;$('vt').classList.toggle('on',x==='t');$('vc').classList.toggle('on',x==='c');
   $('tw').style.display=x==='t'?'block':'none';const cd=$('cd');cd.style.display=x==='c'?'grid':'none';if(x==='c')cd.classList.add('on')}
 
@@ -949,8 +985,15 @@ function exportCsv(){
 // ═══════════ EVENTOS ═══════════
 function uTog(e){e.stopPropagation();$('udrop').classList.toggle('on')}
 document.addEventListener('click',()=>$('udrop').classList.remove('on'));
-$('q').addEventListener('input',rd);
-$('srt').addEventListener('change',e=>{s=e.target.value;rd()});
+function onSearch(src){
+  const val=src.value;
+  (src.id==='q'?$('qm'):$('q')).value=val;
+  $('ms').classList.toggle('has',!!val);
+  lim=STEP; rd();
+}
+$('q').addEventListener('input',e=>onSearch(e.target));
+$('qm').addEventListener('input',e=>onSearch(e.target));
+$('srt').addEventListener('change',e=>{s=e.target.value;lim=STEP;rd()});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')['ov','ovch','ovu','ovn'].forEach(cl)});
 ['inPass','inEmail'].forEach(i=>$(i).addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()}));
 ['upNome','upEmail','upPass'].forEach(i=>$(i).addEventListener('keydown',e=>{if(e.key==='Enter')doSignup()}));
