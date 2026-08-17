@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Controle de Integração — Portal</title>
+<title>Controle de Integração</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
@@ -12,7 +12,7 @@
 :root{
 --bg:#071018;--bg2:#0A151D;--card:#101B24;--bdr:#1D2C35;
 --green:#2EE58C;--green-d:#1BA968;--green-glow:rgba(46,229,140,.15);
---blue:#35A7FF;--yellow:#F2C14E;--orange:#FF9F43;
+--blue:#35A7FF;--yellow:#F2C14E;--orange:#FF9F43;--red:#FF5C5C;
 --txt:#E8F0F4;--txt2:#8FA3AF;--txt3:#5C7180;
 --r-sm:10px;--r:14px;--r-lg:20px;
 }
@@ -21,31 +21,83 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 ::-webkit-scrollbar{width:9px;height:9px}
 ::-webkit-scrollbar-track{background:var(--bg2)}
 ::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:6px}
-::-webkit-scrollbar-thumb:hover{background:#2A3E4B}
 
-/* HEADER */
-.hdr{position:sticky;top:0;z-index:300;background:rgba(7,16,24,.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--bdr)}
-.hdr-in{max-width:1450px;margin:0 auto;height:62px;padding:0 24px;display:flex;align-items:center;gap:18px}
-.logo{display:flex;align-items:center;gap:10px;flex-shrink:0}
-.logo-mark{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--green),var(--green-d));display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:800;color:#04160D;box-shadow:0 0 20px var(--green-glow)}
+/* ===== AUTH ===== */
+.auth{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;position:relative;overflow:hidden}
+.auth::before{content:'';position:absolute;top:-20%;right:-10%;width:640px;height:640px;background:radial-gradient(circle,rgba(46,229,140,.09),transparent 65%);pointer-events:none}
+.auth::after{content:'';position:absolute;bottom:-25%;left:-8%;width:540px;height:540px;background:radial-gradient(circle,rgba(53,167,255,.06),transparent 68%);pointer-events:none}
+.auth-box{position:relative;z-index:1;width:100%;max-width:398px;background:var(--card);border:1px solid var(--bdr);border-radius:var(--r-lg);padding:34px 32px;box-shadow:0 24px 70px rgba(0,0,0,.5)}
+.auth-logo{font-family:'Syne',sans-serif;font-size:1.32rem;font-weight:800;letter-spacing:-.5px;margin-bottom:4px}
+.auth-sub{font-size:.76rem;color:var(--txt3);margin-bottom:26px}
+.auth-tabs{display:flex;gap:4px;background:var(--bg2);border:1px solid var(--bdr);border-radius:11px;padding:4px;margin-bottom:22px}
+.auth-tab{flex:1;padding:8px;border-radius:8px;border:none;background:none;color:var(--txt3);font-size:.8rem;font-weight:600;cursor:pointer;font-family:inherit;transition:.16s}
+.auth-tab.on{background:var(--green);color:#04160D;font-weight:700}
+.fg{margin-bottom:14px}
+.fl{display:block;font-size:.66rem;font-weight:700;letter-spacing:.9px;text-transform:uppercase;color:var(--txt3);margin-bottom:6px}
+.fi{width:100%;padding:11px 13px;border-radius:10px;border:1px solid var(--bdr);background:var(--bg2);color:var(--txt);font-size:.87rem;font-family:inherit;outline:none;transition:.16s}
+.fi:focus{border-color:var(--green);box-shadow:0 0 0 3px var(--green-glow)}
+.fi::placeholder{color:var(--txt3)}
+.msg{padding:11px 13px;border-radius:10px;font-size:.79rem;line-height:1.45;margin-bottom:15px;display:none}
+.msg.on{display:block}
+.msg-e{background:rgba(255,92,92,.1);border:1px solid rgba(255,92,92,.28);color:#FF8B8B}
+.msg-s{background:rgba(46,229,140,.1);border:1px solid rgba(46,229,140,.28);color:var(--green)}
+.msg-i{background:rgba(53,167,255,.1);border:1px solid rgba(53,167,255,.28);color:#7CC5FF}
+.auth-ft{text-align:center;margin-top:18px;font-size:.75rem;color:var(--txt3)}
+.lnk{background:none;border:none;color:var(--green);cursor:pointer;font-family:inherit;font-size:inherit;font-weight:600;padding:0;text-decoration:underline}
+
+/* ===== SHARED ===== */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:11px 20px;border-radius:11px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;font-family:inherit;transition:.2s;text-decoration:none}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-p{background:linear-gradient(135deg,var(--green),var(--green-d));color:#04160D;box-shadow:0 4px 18px var(--green-glow)}
+.btn-p:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 26px rgba(46,229,140,.28)}
+.btn-s{background:rgba(255,255,255,.045);color:var(--txt);border:1px solid var(--bdr)}
+.btn-s:hover{background:rgba(255,255,255,.09)}
+.btn-d{background:rgba(255,92,92,.1);color:#FF8B8B;border:1px solid rgba(255,92,92,.28)}
+.btn-d:hover{background:rgba(255,92,92,.18)}
+.btn-full{width:100%}
+.hide{display:none!important}
+.spin{width:15px;height:15px;border:2px solid rgba(4,22,13,.3);border-top-color:#04160D;border-radius:50%;animation:sp .65s linear infinite;display:inline-block}
+@keyframes sp{to{transform:rotate(360deg)}}
+.load{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;color:var(--txt3)}
+.load .spin{width:26px;height:26px;border-color:var(--bdr);border-top-color:var(--green)}
+
+/* ===== HEADER ===== */
+.hdr{position:sticky;top:0;z-index:300;background:rgba(7,16,24,.9);backdrop-filter:blur(16px);border-bottom:1px solid var(--bdr)}
+.hdr-in{max-width:1450px;margin:0 auto;height:62px;padding:0 24px;display:flex;align-items:center;gap:16px}
 .logo-txt h1{font-family:'Syne',sans-serif;font-size:1.02rem;font-weight:800;letter-spacing:-.3px;line-height:1.1}
 .logo-txt p{font-size:.68rem;color:var(--txt3);margin-top:1px}
 .hdr-sp{flex:1}
 .search{display:flex;align-items:center;gap:8px;background:var(--bg2);border:1px solid var(--bdr);border-radius:22px;padding:8px 15px;transition:.2s}
 .search:focus-within{border-color:var(--green);box-shadow:0 0 0 3px var(--green-glow)}
 .search svg{width:14px;height:14px;stroke:var(--txt3);flex-shrink:0}
-.search input{background:none;border:none;outline:none;color:var(--txt);font-size:.84rem;font-family:inherit;width:170px}
+.search input{background:none;border:none;outline:none;color:var(--txt);font-size:.84rem;font-family:inherit;width:160px}
 .search input::placeholder{color:var(--txt3)}
-.pill{background:var(--green-glow);border:1px solid rgba(46,229,140,.3);color:var(--green);border-radius:20px;padding:5px 13px;font-size:.73rem;font-weight:700;white-space:nowrap}
+.umenu{position:relative}
+.uavt{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--green-d));color:#04160D;font-weight:800;font-size:.82rem;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;font-family:inherit;transition:.16s}
+.uavt:hover{transform:scale(1.06)}
+.udrop{position:absolute;top:44px;right:0;width:216px;background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:7px;box-shadow:0 14px 44px rgba(0,0,0,.55);display:none;z-index:400}
+.udrop.on{display:block;animation:dp .16s both}
+@keyframes dp{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.uhead{padding:10px 11px 11px;border-bottom:1px solid var(--bdr);margin-bottom:5px}
+.uhead b{display:block;font-size:.83rem;font-weight:600;margin-bottom:3px;word-break:break-word}
+.uitem{width:100%;text-align:left;padding:9px 11px;border-radius:8px;border:none;background:none;color:var(--txt2);font-size:.81rem;cursor:pointer;font-family:inherit;transition:.14s;display:flex;align-items:center;gap:8px}
+.uitem:hover{background:rgba(255,255,255,.05);color:var(--txt)}
+.uitem.dang:hover{background:rgba(255,92,92,.1);color:#FF8B8B}
+.rb{display:inline-block;padding:2px 8px;border-radius:20px;font-size:.62rem;font-weight:800;letter-spacing:.4px;text-transform:uppercase}
+.rb-a{background:rgba(46,229,140,.14);color:var(--green)}
+.rb-e{background:rgba(53,167,255,.14);color:var(--blue)}
+.rb-v{background:rgba(255,255,255,.06);color:var(--txt3)}
 
 .wrap{max-width:1450px;margin:0 auto;padding:26px 24px 70px}
 
-/* HERO */
-.hero{position:relative;background:linear-gradient(135deg,#0C1A24 0%,#0A1620 55%,#0B1D1A 100%);border:1px solid var(--bdr);border-radius:var(--r-lg);padding:38px 40px;margin-bottom:20px;overflow:hidden}
+/* ===== HERO ===== */
+.hero{position:relative;background:linear-gradient(135deg,#0C1A24 0%,#0A1620 55%,#0B1D1A 100%);border:1px solid var(--bdr);border-radius:var(--r-lg);padding:30px 34px;margin-bottom:20px;overflow:hidden}
 .hero::before{content:'';position:absolute;top:-140px;right:-100px;width:420px;height:420px;background:radial-gradient(circle,rgba(46,229,140,.11),transparent 65%);pointer-events:none}
-.hero::after{content:'';position:absolute;bottom:-160px;left:35%;width:340px;height:340px;background:radial-gradient(circle,rgba(53,167,255,.07),transparent 68%);pointer-events:none}
 .hero-in{position:relative;z-index:1;display:grid;grid-template-columns:1fr 260px;gap:34px;align-items:center}
 .hero-left{min-width:0}
+.eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:.66rem;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--green);background:var(--green-glow);border:1px solid rgba(46,229,140,.22);padding:5px 12px;border-radius:20px;margin-bottom:16px}
+.dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
 .hero-big{display:flex;align-items:center;gap:16px;margin-bottom:16px}
 .hb-n{font-family:'Syne',sans-serif;font-size:4.2rem;font-weight:800;line-height:.9;letter-spacing:-2.5px;background:linear-gradient(120deg,var(--green),#7BFFC4);-webkit-background-clip:text;background-clip:text;color:transparent}
 .hb-t{display:flex;flex-direction:column;gap:3px;padding-bottom:6px}
@@ -53,6 +105,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .hb-t span{font-size:.79rem;color:var(--txt3)}
 .hero-bar{height:7px;background:rgba(255,255,255,.06);border-radius:6px;overflow:hidden;margin-bottom:22px;max-width:430px}
 .hero-bf{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--green),#7BFFC4);transition:width 1.1s cubic-bezier(.4,0,.2,1);box-shadow:0 0 14px var(--green-glow)}
+.hero-btns{display:flex;gap:10px;flex-wrap:wrap}
 .hero-right{display:flex;flex-direction:column;gap:11px}
 .hr-card{background:rgba(255,255,255,.035);border:1px solid var(--bdr);border-radius:var(--r);padding:14px 16px;cursor:pointer;transition:.18s}
 .hr-card:hover{background:rgba(46,229,140,.07);border-color:rgba(46,229,140,.3);transform:translateX(-2px)}
@@ -60,22 +113,10 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .hr-v{font-size:.94rem;font-weight:700;line-height:1.25;margin-bottom:3px}
 .hr-s{font-size:.72rem;color:var(--txt3)}
 #hAtt{font-family:'Syne',sans-serif;font-size:1.9rem;font-weight:800;color:var(--orange);line-height:1}
-.eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:.66rem;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--green);background:var(--green-glow);border:1px solid rgba(46,229,140,.22);padding:5px 12px;border-radius:20px;margin-bottom:16px}
-.dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:blink 2s infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
-.hero h2{font-family:'Syne',sans-serif;font-size:2.5rem;font-weight:800;line-height:1.08;letter-spacing:-1.2px;margin-bottom:12px}
-.hero h2 em{font-style:normal;background:linear-gradient(100deg,var(--green),#7BFFC4);-webkit-background-clip:text;background-clip:text;color:transparent}
-.hero p{font-size:.95rem;color:var(--txt2);line-height:1.55;margin-bottom:24px;max-width:490px}
-.hero-btns{display:flex;gap:10px;flex-wrap:wrap}
-.btn{display:inline-flex;align-items:center;gap:7px;padding:11px 20px;border-radius:11px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;font-family:inherit;transition:.2s;text-decoration:none}
-.btn-p{background:linear-gradient(135deg,var(--green),var(--green-d));color:#04160D;box-shadow:0 4px 18px var(--green-glow)}
-.btn-p:hover{transform:translateY(-2px);box-shadow:0 8px 26px rgba(46,229,140,.28)}
-.btn-s{background:rgba(255,255,255,.045);color:var(--txt);border:1px solid var(--bdr)}
-.btn-s:hover{background:rgba(255,255,255,.09);border-color:#2A3E4B}
 
-/* KPIs */
+/* ===== KPIs ===== */
 .kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:13px;margin-bottom:20px}
-.kpi{position:relative;background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:19px 20px;overflow:hidden;transition:.22s}
+.kpi{position:relative;background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:19px 20px;overflow:hidden;transition:.22s;cursor:pointer}
 .kpi:hover{transform:translateY(-3px);border-color:#2A3E4B}
 .kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
 .k-g::before{background:var(--green)}.k-b::before{background:var(--blue)}
@@ -84,15 +125,13 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .kpi-v{font-family:'Syne',sans-serif;font-size:2.15rem;font-weight:800;line-height:1;margin-bottom:5px;letter-spacing:-1px}
 .k-g .kpi-v{color:var(--green)}.k-b .kpi-v{color:var(--blue)}
 .k-y .kpi-v{color:var(--yellow)}.k-o .kpi-v{color:var(--orange)}
-.k-t .kpi-v{color:var(--txt)}
 .kpi-l{font-size:.67rem;font-weight:600;letter-spacing:.9px;text-transform:uppercase;color:var(--txt3)}
 
-/* PANELS */
+/* ===== PANELS ===== */
 .panels{display:grid;grid-template-columns:.85fr 1.15fr;gap:16px;margin-bottom:22px}
 .panel{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:22px}
 .p-title{display:flex;align-items:center;gap:9px;font-size:.7rem;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:var(--txt3);margin-bottom:17px}
 .p-title::after{content:'';flex:1;height:1px;background:var(--bdr)}
-
 .rank-i{display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:var(--r-sm);cursor:pointer;transition:.15s;margin-bottom:3px}
 .rank-i:hover{background:rgba(46,229,140,.06)}
 .rank-n{width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:.76rem;font-weight:800;flex-shrink:0}
@@ -104,14 +143,15 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .rank-b{width:52px;height:4px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden;flex-shrink:0}
 .rank-bf{height:100%;border-radius:4px;transition:width .9s cubic-bezier(.4,0,.2,1)}
 .rank-p{font-size:.76rem;font-weight:800;width:34px;text-align:right;flex-shrink:0}
-
 .mrow{display:flex;align-items:center;gap:11px;margin-bottom:9px}
-.mrow-n{font-size:.76rem;font-weight:500;color:var(--txt2);width:180px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mrow-n{font-size:.76rem;font-weight:500;color:var(--txt2);width:180px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;transition:color .15s}
+.mrow-n:hover{color:var(--green)}
+.mrow.act .mrow-n{color:var(--green);font-weight:700}
 .mrow-t{flex:1;height:6px;background:rgba(255,255,255,.05);border-radius:5px;overflow:hidden}
 .mrow-f{height:100%;border-radius:5px;transition:width 1.1s cubic-bezier(.4,0,.2,1)}
 .mrow-c{font-size:.7rem;font-weight:700;color:var(--txt3);width:44px;text-align:right;flex-shrink:0;font-variant-numeric:tabular-nums}
 
-/* TOOLBAR */
+/* ===== TOOLBAR ===== */
 .tb{display:flex;align-items:center;gap:9px;margin-bottom:15px;flex-wrap:wrap}
 .chips{display:flex;gap:6px;flex-wrap:wrap}
 .chip{padding:7px 14px;border-radius:20px;border:1px solid var(--bdr);background:var(--card);color:var(--txt2);font-size:.76rem;font-weight:600;cursor:pointer;transition:.18s;font-family:inherit}
@@ -119,17 +159,21 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .chip.on{background:var(--green);color:#04160D;border-color:var(--green);font-weight:700}
 .sel{padding:7px 12px;border-radius:20px;border:1px solid var(--bdr);background:var(--card);color:var(--txt2);font-size:.76rem;font-family:inherit;cursor:pointer;outline:none}
 .sel:focus{border-color:var(--green)}
+.sel-pend{max-width:210px}
+.sel-pend.act{border-color:var(--green);color:var(--green)}
 .cnt{font-size:.75rem;color:var(--txt3);font-weight:500}
+.tag{display:inline-flex;align-items:center;gap:6px;background:var(--green-glow);border:1px solid rgba(46,229,140,.3);color:var(--green);border-radius:16px;padding:4px 8px 4px 11px;font-size:.71rem;font-weight:600}
+.tag button{background:none;border:none;color:var(--green);cursor:pointer;font-size:.85rem;line-height:1;padding:0 2px;opacity:.7;font-family:inherit}
 .tb-sp{flex:1}
 .views{display:flex;gap:5px}
 .vb{width:33px;height:33px;border-radius:9px;border:1px solid var(--bdr);background:var(--card);color:var(--txt3);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.18s;font-size:.95rem}
 .vb.on{background:var(--green);color:#04160D;border-color:var(--green)}
 
-/* TABLE */
+/* ===== TABLE ===== */
 .tw{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);overflow:auto}
 table{width:100%;border-collapse:collapse;font-size:.79rem}
 thead th{background:var(--bg2);color:var(--txt3);padding:11px 13px;text-align:left;font-weight:700;font-size:.65rem;text-transform:uppercase;letter-spacing:.85px;white-space:nowrap;border-bottom:1px solid var(--bdr);position:sticky;top:0;z-index:5}
-thead th.srt{cursor:pointer;user-select:none;transition:.15s}
+thead th.srt{cursor:pointer;user-select:none}
 thead th.srt:hover{color:var(--green)}
 tbody tr{border-bottom:1px solid rgba(29,44,53,.55);cursor:pointer;transition:.13s}
 tbody tr:hover{background:rgba(46,229,140,.045)}
@@ -138,16 +182,14 @@ td{padding:10px 13px;vertical-align:middle}
 .t-n{color:var(--txt3);font-weight:700;font-size:.7rem;font-variant-numeric:tabular-nums}
 .t-nm{font-weight:600;font-size:.85rem}
 .t-sub{font-size:.68rem;color:var(--txt3);margin-top:1px}
-.wa{color:var(--green);text-decoration:none;font-size:.73rem;display:inline-flex;align-items:center;gap:4px;transition:.15s}
+.wa{color:var(--green);text-decoration:none;font-size:.73rem;display:inline-flex;align-items:center;gap:4px}
 .wa:hover{color:#7BFFC4}
 .tick{color:var(--green);font-size:.95rem;font-weight:700}
 .tick-n{color:var(--bdr)}
-
 .pg{display:flex;align-items:center;gap:8px;min-width:98px}
 .pg-t{flex:1;height:5px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden}
 .pg-f{height:100%;border-radius:4px;transition:width .7s cubic-bezier(.4,0,.2,1)}
 .pg-l{font-size:.74rem;font-weight:800;width:33px;font-variant-numeric:tabular-nums}
-
 .bdg{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.66rem;font-weight:700;white-space:nowrap}
 .bd-g{background:rgba(46,229,140,.13);color:var(--green)}
 .bd-b{background:rgba(53,167,255,.13);color:var(--blue)}
@@ -155,7 +197,7 @@ td{padding:10px 13px;vertical-align:middle}
 .bd-o{background:rgba(255,159,67,.13);color:var(--orange)}
 .bd-n{background:rgba(255,255,255,.05);color:var(--txt3)}
 
-/* CARDS */
+/* ===== CARDS ===== */
 .cards{display:none;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));gap:13px}
 .cards.on{display:grid}
 .pc{background:var(--card);border:1px solid var(--bdr);border-left:3px solid var(--bdr);border-radius:var(--r);padding:17px 18px;cursor:pointer;transition:.2s;animation:up .34s cubic-bezier(.4,0,.2,1) both}
@@ -165,7 +207,9 @@ td{padding:10px 13px;vertical-align:middle}
 .pc-y{border-left-color:var(--yellow)}.pc-o{border-left-color:var(--orange)}
 .pc-h{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:5px}
 .pc-nm{font-weight:700;font-size:.9rem;line-height:1.25}
-.pc-mt{font-size:.68rem;color:var(--txt3);margin-bottom:13px}
+.pc-mt{font-size:.68rem;color:var(--txt3)}
+.miss{font-size:.68rem;color:var(--txt3);margin:2px 0 13px}
+.miss b{color:var(--orange);font-weight:700}
 .pc-dots{display:flex;flex-wrap:wrap;gap:3px;margin-bottom:13px}
 .dt{width:19px;height:19px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:.5rem;font-weight:800;transition:.15s}
 .dt:hover{transform:scale(1.22)}
@@ -176,15 +220,16 @@ td{padding:10px 13px;vertical-align:middle}
 .pc-f{height:100%;border-radius:5px;transition:width .8s cubic-bezier(.4,0,.2,1)}
 .pc-p{font-size:.8rem;font-weight:800;width:37px;text-align:right;font-variant-numeric:tabular-nums}
 
-/* MODAL */
-.ov{display:none;position:fixed;inset:0;background:rgba(3,8,12,.82);backdrop-filter:blur(7px);z-index:600;align-items:center;justify-content:center;padding:20px}
+/* ===== MODAL ===== */
+.ov{display:none;position:fixed;inset:0;background:rgba(3,8,12,.84);backdrop-filter:blur(7px);z-index:600;align-items:center;justify-content:center;padding:20px}
 .ov.on{display:flex;animation:fade .2s both}
 @keyframes fade{from{opacity:0}to{opacity:1}}
 .md{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r-lg);max-width:560px;width:100%;max-height:92vh;overflow-y:auto;animation:pop .3s cubic-bezier(.34,1.4,.64,1) both}
+.md-wide{max-width:720px}
 @keyframes pop{from{opacity:0;transform:scale(.94) translateY(16px)}to{opacity:1;transform:none}}
-.md-h{position:relative;background:linear-gradient(135deg,#0D2620 0%,#0C1E2C 100%);padding:26px 28px 24px;border-bottom:1px solid var(--bdr);border-radius:var(--r-lg) var(--r-lg) 0 0;overflow:hidden}
+.md-h{position:relative;background:linear-gradient(135deg,#0D2620,#0C1E2C);padding:24px 26px 22px;border-bottom:1px solid var(--bdr);border-radius:var(--r-lg) var(--r-lg) 0 0;overflow:hidden;flex-shrink:0}
 .md-h::before{content:'';position:absolute;top:-90px;right:-60px;width:270px;height:270px;background:radial-gradient(circle,rgba(46,229,140,.15),transparent 66%)}
-.md-x{position:absolute;top:15px;right:15px;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.07);border:1px solid var(--bdr);color:var(--txt2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.95rem;transition:.15s;z-index:2}
+.md-x{position:absolute;top:15px;right:15px;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.07);border:1px solid var(--bdr);color:var(--txt2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.95rem;z-index:2;font-family:inherit}
 .md-x:hover{background:rgba(255,255,255,.14);color:var(--txt)}
 .md-in{position:relative;z-index:1}
 .md-nm{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;letter-spacing:-.5px;margin-bottom:4px;padding-right:36px}
@@ -193,11 +238,10 @@ td{padding:10px 13px;vertical-align:middle}
 .md-p{font-family:'Syne',sans-serif;font-size:2.9rem;font-weight:800;line-height:1;color:var(--green);letter-spacing:-1.6px}
 .md-ps{font-size:.73rem;color:var(--txt3);padding-bottom:7px}
 .md-bar{height:5px;background:rgba(255,255,255,.07);border-radius:5px;overflow:hidden;margin-top:15px}
-.md-bf{height:100%;background:linear-gradient(90deg,var(--green),#7BFFC4);border-radius:5px;transition:width .8s cubic-bezier(.4,0,.2,1)}
-.md-b{padding:22px 28px 26px}
+.md-bf{height:100%;background:linear-gradient(90deg,var(--green),#7BFFC4);border-radius:5px;transition:width .8s}
+.md-b{padding:22px 26px 26px}
 .md-wa{display:flex;align-items:center;gap:10px;background:rgba(46,229,140,.07);border:1px solid rgba(46,229,140,.22);border-radius:11px;padding:11px 15px;margin-bottom:20px;text-decoration:none;transition:.18s}
 .md-wa:hover{background:rgba(46,229,140,.13)}
-.md-wa span:first-child{font-size:1.15rem}
 .md-wa b{color:var(--green);font-size:.84rem;font-weight:600}
 .md-wa i{font-style:normal;font-size:.74rem;color:var(--txt3);margin-left:auto}
 .ml{display:flex;flex-direction:column;gap:6px}
@@ -213,12 +257,8 @@ td{padding:10px 13px;vertical-align:middle}
 .mi-b:hover{border-color:var(--green);color:var(--green)}
 .mi-i{border:1px solid var(--green);border-radius:8px;padding:4px 9px;font-size:.75rem;font-family:inherit;outline:none;background:var(--bg2);color:var(--txt);width:105px;flex-shrink:0}
 
-/* CHAMADA */
-.ov-ch{display:none;position:fixed;inset:0;background:rgba(3,8,12,.86);backdrop-filter:blur(8px);z-index:700;align-items:center;justify-content:center;padding:18px}
-.ov-ch.on{display:flex;animation:fade .2s both}
+/* ===== CHAMADA ===== */
 .ch{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r-lg);max-width:520px;width:100%;max-height:92vh;display:flex;flex-direction:column;animation:pop .3s cubic-bezier(.34,1.4,.64,1) both}
-.ch-h{position:relative;background:linear-gradient(135deg,#0D2620,#0C1E2C);padding:22px 24px 20px;border-bottom:1px solid var(--bdr);border-radius:var(--r-lg) var(--r-lg) 0 0;overflow:hidden;flex-shrink:0}
-.ch-h::before{content:'';position:absolute;top:-80px;right:-50px;width:240px;height:240px;background:radial-gradient(circle,rgba(46,229,140,.16),transparent 66%)}
 .ch-t{position:relative;z-index:1;font-family:'Syne',sans-serif;font-size:1.22rem;font-weight:800;letter-spacing:-.5px;margin-bottom:3px;padding-right:36px}
 .ch-s{position:relative;z-index:1;font-size:.74rem;color:var(--txt3)}
 .ch-f{padding:16px 24px;border-bottom:1px solid var(--bdr);display:flex;gap:10px;flex-shrink:0}
@@ -241,43 +281,40 @@ td{padding:10px 13px;vertical-align:middle}
 .ch-nm{flex:1;font-size:.83rem;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ch-pc{font-size:.7rem;font-weight:700;color:var(--txt3);flex-shrink:0;font-variant-numeric:tabular-nums}
 .ch-ft{padding:15px 24px 18px;border-top:1px solid var(--bdr);display:flex;gap:9px;flex-shrink:0}
-.ch-ft .btn{flex:1;justify-content:center}
+.ch-ft .btn{flex:1}
 .ch-empty{text-align:center;padding:34px 16px;color:var(--txt3);font-size:.82rem}
 
-/* PENDING FILTER */
-.sel-pend{max-width:210px}
-.sel-pend.act{border-color:var(--green);color:var(--green)}
-.mrow-n{cursor:pointer;transition:color .15s}
-.mrow-n:hover{color:var(--green)}
-.mrow.act .mrow-n{color:var(--green);font-weight:700}
-.tag{display:inline-flex;align-items:center;gap:6px;background:var(--green-glow);border:1px solid rgba(46,229,140,.3);color:var(--green);border-radius:16px;padding:4px 8px 4px 11px;font-size:.71rem;font-weight:600}
-.tag button{background:none;border:none;color:var(--green);cursor:pointer;font-size:.85rem;line-height:1;padding:0 2px;opacity:.7;transition:.15s;font-family:inherit}
-.tag button:hover{opacity:1}
-.miss{font-size:.68rem;color:var(--txt3);margin-top:2px}
-.miss b{color:var(--orange);font-weight:700}
+/* ===== ADMIN / USERS ===== */
+.ut{width:100%;border-collapse:collapse;font-size:.81rem}
+.ut th{text-align:left;padding:9px 11px;font-size:.63rem;text-transform:uppercase;letter-spacing:.8px;color:var(--txt3);border-bottom:1px solid var(--bdr);font-weight:700}
+.ut td{padding:11px;border-bottom:1px solid rgba(29,44,53,.5);vertical-align:middle}
+.ut tr:last-child td{border:none}
+.usel{padding:5px 9px;border-radius:8px;border:1px solid var(--bdr);background:var(--bg2);color:var(--txt);font-size:.75rem;font-family:inherit;cursor:pointer;outline:none}
+.usel:focus{border-color:var(--green)}
+.uact{display:flex;gap:6px;flex-wrap:wrap}
+.ubtn{padding:5px 11px;border-radius:8px;border:1px solid var(--bdr);background:none;font-size:.7rem;font-weight:600;cursor:pointer;font-family:inherit;transition:.15s;color:var(--txt3)}
+.ubtn.ok{border-color:rgba(46,229,140,.4);color:var(--green)}
+.ubtn.ok:hover{background:rgba(46,229,140,.12)}
+.ubtn.no{border-color:rgba(255,92,92,.32);color:#FF8B8B}
+.ubtn.no:hover{background:rgba(255,92,92,.12)}
+.pend-badge{background:var(--orange);color:#1A0F02;border-radius:20px;padding:1px 7px;font-size:.62rem;font-weight:800;margin-left:5px}
+.hist-i{display:flex;gap:11px;padding:10px 12px;border-radius:var(--r-sm);background:rgba(255,255,255,.02);border:1px solid var(--bdr);margin-bottom:6px;font-size:.79rem}
+.hist-d{color:var(--txt3);font-size:.7rem;white-space:nowrap;flex-shrink:0}
+.hist-t{flex:1;min-width:0}
+.hist-t b{font-weight:600}
+.hist-u{font-size:.69rem;color:var(--txt3);margin-top:2px}
 
-@media(max-width:760px){
-.ch{max-height:94vh}
-.ch-f{flex-direction:column;gap:12px}
-.ch-h{padding:19px 18px 17px}
-.ch-f,.ch-bar,.ch-ft{padding-left:18px;padding-right:18px}
-.ch-l{padding-left:18px;padding-right:12px}
-.ch-i{padding:11px}
-.ch-cb{width:22px;height:22px}
-.sel-pend{max-width:100%}
-}
-
-/* TOAST */
-.tst{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(90px);background:var(--card);border:1px solid var(--green);color:var(--green);padding:12px 20px;border-radius:11px;font-size:.83rem;font-weight:600;z-index:900;transition:transform .38s cubic-bezier(.34,1.4,.64,1);pointer-events:none;box-shadow:0 8px 30px rgba(0,0,0,.5)}
+/* ===== TOAST / EMPTY ===== */
+.tst{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(90px);background:var(--card);border:1px solid var(--green);color:var(--green);padding:12px 20px;border-radius:11px;font-size:.83rem;font-weight:600;z-index:900;transition:transform .38s cubic-bezier(.34,1.4,.64,1);pointer-events:none;box-shadow:0 8px 30px rgba(0,0,0,.5);max-width:90vw;text-align:center}
 .tst.on{transform:translateX(-50%) translateY(0)}
-
-/* EMPTY */
+.tst.err{border-color:var(--red);color:#FF8B8B}
 .emp{text-align:center;padding:56px 20px;color:var(--txt3)}
 .emp-i{font-size:2.4rem;margin-bottom:11px;opacity:.5}
 .emp-t{font-size:.94rem;font-weight:600;color:var(--txt2)}
 .emp-s{font-size:.78rem;margin-top:5px}
+.ro-note{display:flex;align-items:center;gap:9px;background:rgba(53,167,255,.07);border:1px solid rgba(53,167,255,.22);border-radius:11px;padding:10px 14px;margin-bottom:18px;font-size:.78rem;color:#7CC5FF}
 
-/* RESPONSIVE */
+/* ===== RESPONSIVE ===== */
 @media(max-width:1080px){
 .panels{grid-template-columns:1fr}
 .kpis{grid-template-columns:repeat(3,1fr)}
@@ -291,12 +328,11 @@ td{padding:10px 13px;vertical-align:middle}
 .hero{padding:22px 18px;border-radius:var(--r)}
 .hb-n{font-size:3.1rem;letter-spacing:-1.8px}
 .hb-t strong{font-size:.9rem}
-.hb-t span{font-size:.72rem}
 .hero-big{gap:12px;margin-bottom:13px}
 .hero-bar{margin-bottom:18px}
 .hero-right{flex-direction:column}
 .hero-btns{flex-direction:column}
-.btn{width:100%;justify-content:center}
+.hero-btns .btn{width:100%}
 .kpis{grid-template-columns:repeat(2,1fr);gap:10px}
 .kpi{padding:15px 16px}
 .kpi-v{font-size:1.75rem}
@@ -305,55 +341,113 @@ td{padding:10px 13px;vertical-align:middle}
 .views{display:none}
 .chips{display:grid;grid-template-columns:1fr 1fr;gap:6px;width:100%}
 .chip{text-align:center}
-.sel{width:100%}
+.sel,.sel-pend{width:100%;max-width:100%}
 .tb-sp{display:none}
-.mrow-n{width:120px;font-size:.72rem}
-.md{max-height:94vh}
-.md-h{padding:22px 20px 20px}
-.md-b{padding:18px 20px 22px}
+.mrow-n{width:118px;font-size:.72rem}
+.md,.ch{max-height:94vh}
+.md-h,.ch-h{padding:20px 18px 18px}
+.md-b{padding:18px 18px 22px}
+.ch-f{flex-direction:column;gap:12px}
+.ch-f,.ch-bar,.ch-ft{padding-left:18px;padding-right:18px}
+.ch-l{padding-left:18px;padding-right:12px}
+.ch-i{padding:11px}
+.ch-cb{width:22px;height:22px}
 .md-nm{font-size:1.2rem}
 .md-p{font-size:2.4rem}
-.mi-b,.mi-i{min-height:30px}
+.auth-box{padding:28px 22px}
+.ut{font-size:.75rem}
+.ut th:nth-child(2),.ut td:nth-child(2){display:none}
 }
 </style>
 </head>
 <body>
 
+<!-- ============ LOADING ============ -->
+<div class="load" id="boot"><div class="spin"></div><span>Carregando…</span></div>
+
+<!-- ============ AUTH ============ -->
+<div class="auth hide" id="auth">
+<div class="auth-box">
+<div class="auth-logo">Controle de Integração</div>
+<div class="auth-sub">Carazinho · 2026</div>
+
+<div class="auth-tabs" id="aTabs">
+<button class="auth-tab on" id="tabIn" onclick="aTab('in')">Entrar</button>
+<button class="auth-tab" id="tabUp" onclick="aTab('up')">Criar conta</button>
+</div>
+
+<div class="msg" id="aMsg"></div>
+
+<div id="formIn">
+<div class="fg"><label class="fl">E-mail</label><input class="fi" id="inEmail" type="email" autocomplete="email" placeholder="voce@email.com"></div>
+<div class="fg"><label class="fl">Senha</label><input class="fi" id="inPass" type="password" autocomplete="current-password" placeholder="••••••••"></div>
+<button class="btn btn-p btn-full" id="btnIn" onclick="doLogin()">Entrar</button>
+<div class="auth-ft"><button class="lnk" onclick="doReset()">Esqueci minha senha</button></div>
+</div>
+
+<div id="formUp" class="hide">
+<div class="fg"><label class="fl">Nome completo</label><input class="fi" id="upNome" type="text" autocomplete="name" placeholder="Seu nome"></div>
+<div class="fg"><label class="fl">E-mail</label><input class="fi" id="upEmail" type="email" autocomplete="email" placeholder="voce@email.com"></div>
+<div class="fg"><label class="fl">Senha</label><input class="fi" id="upPass" type="password" autocomplete="new-password" placeholder="Mínimo 6 caracteres"></div>
+<button class="btn btn-p btn-full" id="btnUp" onclick="doSignup()">Criar conta</button>
+<div class="auth-ft">Sua conta precisa ser aprovada por um administrador antes do primeiro acesso.</div>
+</div>
+
+<div id="formWait" class="hide">
+<div class="msg msg-i on" style="margin-bottom:20px">
+<b>Conta aguardando aprovação</b><br>
+Seu cadastro foi criado, mas um administrador precisa liberar o acesso. Você será avisado quando estiver pronto.
+</div>
+<button class="btn btn-s btn-full" onclick="recheck()">Verificar novamente</button>
+<div class="auth-ft"><button class="lnk" onclick="doLogout()">Sair</button></div>
+</div>
+</div>
+</div>
+
+<!-- ============ APP ============ -->
+<div id="app" class="hide">
+
 <header class="hdr">
 <div class="hdr-in">
-<div class="logo">
 <div class="logo-txt"><h1>Controle de Integração</h1><p>Carazinho · 2026</p></div>
-</div>
 <div class="hdr-sp"></div>
 <div class="search">
 <svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
 <input type="text" id="q" placeholder="Buscar participante...">
 </div>
-<div class="pill" id="pill">— participantes</div>
+<div class="umenu">
+<button class="uavt" id="uavt" onclick="uTog(event)">?</button>
+<div class="udrop" id="udrop">
+<div class="uhead"><b id="uNome">—</b><span class="rb" id="uRole">—</span></div>
+<button class="uitem" id="miUsers" onclick="openUsers()">Usuários<span class="pend-badge hide" id="pendN">0</span></button>
+<button class="uitem" onclick="openHist()">Histórico</button>
+<button class="uitem" onclick="exportCsv()">Baixar CSV</button>
+<button class="uitem dang" onclick="doLogout()">Sair</button>
+</div>
+</div>
 </div>
 </header>
 
 <div class="wrap">
 
+<div class="ro-note hide" id="roNote">Seu acesso é somente leitura — você pode consultar tudo, mas não alterar.</div>
+
 <section class="hero">
 <div class="hero-in">
 <div class="hero-left">
-<div class="eyebrow"><span class="dot"></span>Portal ativo · atualizado <span id="hUpd">hoje</span></div>
+<div class="eyebrow"><span class="dot"></span>Atualizado em <span id="hUpd">—</span></div>
 <div class="hero-big">
 <div class="hb-n" id="hPct">0%</div>
-<div class="hb-t">
-<strong>do ciclo concluído</strong>
-<span id="hSub">— módulos registrados de —</span>
-</div>
+<div class="hb-t"><strong>do ciclo concluído</strong><span id="hSub">—</span></div>
 </div>
 <div class="hero-bar"><div class="hero-bf" id="hBar"></div></div>
-<div class="hero-btns">
+<div class="hero-btns" id="heroBtns">
 <button class="btn btn-p" onclick="chOpen()">✓ Registrar chamada</button>
-<a href="#lista" class="btn btn-s">Ver participantes</a>
+<button class="btn btn-s" onclick="openNew()">+ Novo participante</button>
 </div>
 </div>
 <div class="hero-right">
-<div class="hr-card" onclick="setPend(document.getElementById('hNextMod').dataset.m)">
+<div class="hr-card" onclick="setPend(this.dataset.m)" id="hNextCard">
 <div class="hr-lb">Módulo mais atrasado</div>
 <div class="hr-v" id="hNextMod">—</div>
 <div class="hr-s" id="hNextSub">—</div>
@@ -364,25 +458,20 @@ td{padding:10px 13px;vertical-align:middle}
 <div class="hr-s">abaixo de 50% do ciclo</div>
 </div>
 </div>
+</div>
 </section>
 
 <div class="kpis">
-<div class="kpi k-t"><div class="kpi-v" id="k1">0</div><div class="kpi-l">Total</div></div>
-<div class="kpi k-g"><div class="kpi-v" id="k2">0</div><div class="kpi-l">Concluídos</div></div>
-<div class="kpi k-b"><div class="kpi-v" id="k3">0</div><div class="kpi-l">Acima 75%</div></div>
-<div class="kpi k-y"><div class="kpi-v" id="k4">0</div><div class="kpi-l">Em andamento</div></div>
+<div class="kpi k-t" onclick="flt('all',document.querySelectorAll('.chip')[0])"><div class="kpi-v" id="k1">0</div><div class="kpi-l">Total</div></div>
+<div class="kpi k-g" onclick="flt('done',document.querySelectorAll('.chip')[1])"><div class="kpi-v" id="k2">0</div><div class="kpi-l">Concluídos</div></div>
+<div class="kpi k-b" onclick="flt('high',document.querySelectorAll('.chip')[2])"><div class="kpi-v" id="k3">0</div><div class="kpi-l">Acima 75%</div></div>
+<div class="kpi k-y" onclick="flt('mid',document.querySelectorAll('.chip')[3])"><div class="kpi-v" id="k4">0</div><div class="kpi-l">Em andamento</div></div>
 <div class="kpi k-o"><div class="kpi-v" id="k5">0%</div><div class="kpi-l">Média geral</div></div>
 </div>
 
 <div class="panels">
-<div class="panel">
-<div class="p-title">Mais avançados</div>
-<div id="rank"></div>
-</div>
-<div class="panel" id="mods">
-<div class="p-title">Progresso por módulo</div>
-<div id="bars"></div>
-</div>
+<div class="panel"><div class="p-title">Mais avançados</div><div id="rank"></div></div>
+<div class="panel"><div class="p-title">Progresso por módulo</div><div id="bars"></div></div>
 </div>
 
 <div class="tb" id="lista">
@@ -393,9 +482,7 @@ td{padding:10px 13px;vertical-align:middle}
 <button class="chip" onclick="flt('mid',this)">50–74%</button>
 <button class="chip" onclick="flt('low',this)">-50%</button>
 </div>
-<select class="sel sel-pend" id="pend" onchange="setPend(this.value)">
-<option value="">Falta o módulo…</option>
-</select>
+<select class="sel sel-pend" id="pendSel" onchange="setPend(this.value)"><option value="">Falta o módulo…</option></select>
 <select class="sel" id="srt">
 <option value="n">Ordenar: Nº</option>
 <option value="nome">Ordenar: Nome</option>
@@ -411,8 +498,7 @@ td{padding:10px 13px;vertical-align:middle}
 </div>
 
 <div class="tw" id="tw">
-<table>
-<thead><tr>
+<table><thead><tr>
 <th>Nº</th><th class="srt" onclick="srtBy('nome')">Nome</th><th>WhatsApp</th>
 <th title="Aliança de Sangue">A.S</th><th title="Relacionando-me com o Pai">R.P</th>
 <th title="Cinco Ministérios">5M</th><th title="Autoridade Espiritual">A.E</th>
@@ -421,188 +507,456 @@ td{padding:10px 13px;vertical-align:middle}
 <th title="Dízimo">Dz</th><th title="Espírito Santo">E.S</th>
 <th title="Grupo Familiar">G.F</th><th title="Batismo nas Águas">B.A</th>
 <th class="srt" onclick="srtBy('pct')">Progresso</th><th>Status</th>
-</tr></thead>
-<tbody id="tb"></tbody>
-</table>
+</tr></thead><tbody id="tb"></tbody></table>
 </div>
 
 <div class="cards" id="cd"></div>
-
+</div>
 </div>
 
-<div class="ov" id="ov" onclick="ovc(event)"><div class="md" id="md"></div></div>
-
-<div class="ov-ch" id="ovch" onclick="chOvc(event)">
+<!-- MODAIS -->
+<div class="ov" id="ov" onclick="ovc(event,'ov')"><div class="md" id="md"></div></div>
+<div class="ov" id="ovch" onclick="ovc(event,'ovch')">
 <div class="ch">
-<div class="ch-h">
-<button class="md-x" onclick="chClose()">✕</button>
-<div class="ch-t">Registrar chamada</div>
-<div class="ch-s">Marque quem participou e salve de uma vez</div>
-</div>
+<div class="md-h"><button class="md-x" onclick="cl('ovch')">✕</button>
+<div class="md-in"><div class="ch-t">Registrar chamada</div><div class="ch-s">Marque quem participou e salve de uma vez</div></div></div>
 <div class="ch-f">
-<div class="ch-fg">
-<label class="ch-lb">Módulo</label>
-<select class="ch-in" id="chMod" onchange="chRender()"></select>
+<div class="ch-fg"><label class="ch-lb">Módulo</label><select class="ch-in" id="chMod" onchange="chRender()"></select></div>
+<div class="ch-fg" style="max-width:150px"><label class="ch-lb">Data</label><input class="ch-in" id="chDate" type="text" placeholder="DD/MM/AAAA"></div>
 </div>
-<div class="ch-fg" style="max-width:150px">
-<label class="ch-lb">Data</label>
-<input class="ch-in" id="chDate" type="text" placeholder="DD/MM/AAAA">
-</div>
-</div>
-<div class="ch-bar">
-<span class="ch-cnt" id="chCnt">—</span>
-<div class="ch-sp"></div>
-<button class="ch-mini" onclick="chAll(true)">Marcar todos</button>
-<button class="ch-mini" onclick="chAll(false)">Limpar</button>
-</div>
+<div class="ch-bar"><span class="ch-cnt" id="chCnt">—</span><div class="ch-sp"></div>
+<button class="ch-mini" onclick="chAll(1)">Marcar todos</button><button class="ch-mini" onclick="chAll(0)">Limpar</button></div>
 <div class="ch-l" id="chList"></div>
-<div class="ch-ft">
-<button class="btn btn-s" onclick="chClose()">Cancelar</button>
-<button class="btn btn-p" id="chSave" onclick="chSave()">Salvar chamada</button>
+<div class="ch-ft"><button class="btn btn-s" onclick="cl('ovch')">Cancelar</button><button class="btn btn-p" id="chSave" onclick="chSave()">Salvar chamada</button></div>
 </div>
 </div>
-</div>
+<div class="ov" id="ovu" onclick="ovc(event,'ovu')"><div class="md md-wide" id="mdu"></div></div>
+<div class="ov" id="ovn" onclick="ovc(event,'ovn')"><div class="md" id="mdn"></div></div>
 <div class="tst" id="tst"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
+// ═══════════════════════════════════════════════════════════
+//  CONFIGURAÇÃO — troque pelos dados do SEU projeto Supabase
+// ═══════════════════════════════════════════════════════════
+const SUPABASE_URL  = 'https://kectvdncelzrfquhrqrh.supabase.co';
+const SUPABASE_ANON  = 'sb_publishable_mxd-MWbPRtAJMqFk4F1IhQ_JvvOchY3';
+// ═══════════════════════════════════════════════════════════
+
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
 const M=["Aliança de Sangue","Relacionando-me com o Pai","Cinco Ministérios","Autoridade Espiritual","Panorama da Obra Divina","Mente Renova","Batalha Espiritual","Perdão","Dízimo","Espírito Santo","Grupo Familiar","Batismo nas Águas"];
 const AB=["A.S","R.P","5M","A.E","P.O","M.R","B.E","Pd","Dz","E.S","G.F","B.A"];
-const RAW=[{"n": 1, "nome": "Joice Tariga", "celular": "+55 54 9120-3918", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "08/08/2026", "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 67}, {"n": 2, "nome": "John Michel", "celular": "+55 54 9347-6064", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 58}, {"n": 3, "nome": "Marisa decora", "celular": "+55 54 9132-6021", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "22/06/2026", "Relacionando-me com o Pai": "21/06/2026", "Cinco Ministérios": null, "Autoridade Espiritual": "03/08/2026", "Panorama da Obra Divina": "21/06/2026", "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 92}, {"n": 4, "nome": "Paulo decora", "celular": "+55 54 8412-5687", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "22/06/2026", "Relacionando-me com o Pai": null, "Cinco Ministérios": "28/07/2026", "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 75}, {"n": 5, "nome": "Juliéri Hartmann", "celular": "+55 54 99997-1543", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 58}, {"n": 6, "nome": "Luana Saraiva", "celular": "+55 54 99612-0444", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "08/08/2026", "Relacionando-me com o Pai": null, "Cinco Ministérios": "28/07/2026", "Autoridade Espiritual": "03/08/2026", "Panorama da Obra Divina": "10/08/2026", "Mente Renova": "01/08/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 92}, {"n": 7, "nome": "Luma Saldanha", "celular": "+55 54 99885-6403", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 58}, {"n": 8, "nome": "Tiago Brandão", "celular": "+55 54 99901-5309", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 58}, {"n": 9, "nome": "Pedro Gustavo", "celular": "+55 54 99620-2101", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 58}, {"n": 10, "nome": "Elisa Schuster", "celular": "+55 54 99119-9818", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 58}, {"n": 11, "nome": "Jéssica Barboza", "celular": "+55 54 99146-4577", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 58}, {"n": 12, "nome": "Fabio da Silva", "celular": "+55 54 99109-3150", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 58}, {"n": 13, "nome": "Marcelo Hubner", "celular": "+55 54 99946-1414", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 58}, {"n": 14, "nome": "Caroline Maciel", "celular": "+55 51 84625-262", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 58}, {"n": 15, "nome": "Karolayne", "celular": "+55 54 99931-1681", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 58}, {"n": 16, "nome": "Micheli", "celular": "+55 54 93370-770", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 58}, {"n": 17, "nome": "Alan Almeida", "celular": "+55 54 9685-7438", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "22/06/2026", "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 67}, {"n": 18, "nome": "Alexandro Almeida", "celular": "+55 54 99904-1448", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "22/06/2026", "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 67}, {"n": 19, "nome": "Miqueias Oliveira Floriano", "celular": "+55 54 99675-9074", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "21/06/2026", "Relacionando-me com o Pai": null, "Cinco Ministérios": "28/07/2026", "Autoridade Espiritual": "03/08/2026", "Panorama da Obra Divina": "21/06/2026", "Mente Renova": "01/08/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 92}, {"n": 20, "nome": "Maicon Assis", "celular": "+55 54 99695-1568", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "22/06/2026", "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 67}, {"n": 21, "nome": "Reginaldo", "celular": "+55 54 99899-9823", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "22/06/2026", "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 67}, {"n": 22, "nome": "Ilton", "celular": "+55 54 99206-167", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "22/06/2026", "Relacionando-me com o Pai": "20/07/2026", "Cinco Ministérios": "28/07/2026", "Autoridade Espiritual": "03/08/2026", "Panorama da Obra Divina": "10/08/2026", "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "18/07/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 100}, {"n": 23, "nome": "Nicoli Ricaldes", "celular": "+55 54 9928-7135", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "18/07/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 58}, {"n": 24, "nome": "Samuel Haubert", "celular": "+55 54 9715-0680", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 58}, {"n": 25, "nome": "Andrigo Pereira", "celular": "+55 54 99997-87625", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": "20/07/2026", "Cinco Ministérios": null, "Autoridade Espiritual": "03/08/2026", "Panorama da Obra Divina": "21/06/2026", "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 83}, {"n": 26, "nome": "Roberto Pagotto", "celular": "+55 54 99819-759", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 58}, {"n": 27, "nome": "Mayse Fragoso", "celular": "+55 54 99611-3901", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "22/06/2026", "Relacionando-me com o Pai": null, "Cinco Ministérios": "21/06/2026", "Autoridade Espiritual": "03/08/2026", "Panorama da Obra Divina": "10/08/2026", "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 92}, {"n": 28, "nome": "Cristiane Almeida", "celular": "+55 54 99965-96560", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "22/06/2026", "Relacionando-me com o Pai": "20/07/2026", "Cinco Ministérios": "28/07/2026", "Autoridade Espiritual": "03/08/2026", "Panorama da Obra Divina": "10/08/2026", "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 100}, {"n": 29, "nome": "Joice da Rosa", "celular": "+55 99 91996-284", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "01/08/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 58}, {"n": 30, "nome": "Franklin Hermano", "celular": "+55 54 99633-8252", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "22/06/2026", "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 67}, {"n": 31, "nome": "Fabiane Orbach", "celular": "+55 54 99926-9813", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 58}, {"n": 32, "nome": "Ana Maria Tozzi", "celular": "+55 41 98497-5741", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": "03/08/2026", "Panorama da Obra Divina": "10/08/2026", "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 75}, {"n": 33, "nome": "Cristiano Tozzi", "celular": "+55 54 99642-1278", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 58}, {"n": 34, "nome": "Polyanna", "celular": "+55 54 99931-5867", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 58}, {"n": 35, "nome": "Luana Frank", "celular": "+55 54 99912-8035", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": "28/07/2026", "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 67}, {"n": 36, "nome": "Nicoly Ose", "celular": "+55 54 98436-6972", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 58}, {"n": 37, "nome": "Yolimar", "celular": "+55 54 99260-8496", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "22/06/2026", "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 67}, {"n": 38, "nome": "José Valmir Moraes", "celular": "+55 54 99605-9341", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 58}, {"n": 39, "nome": "Soeli Cabral Moraes", "celular": "+55 54 99299-8920", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 58}, {"n": 40, "nome": "Lidiane EP REG", "celular": "+55 54 99664-3309", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "22/06/2026", "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 67}, {"n": 41, "nome": "Pedro Norberto", "celular": "", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "22/06/2026", "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 67}, {"n": 42, "nome": "Ana Tozzi", "celular": "", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "22/06/2026", "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": "10/08/2026", "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 75}, {"n": 43, "nome": "Maiara", "celular": "", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "22/06/2026", "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": "03/08/2026", "Panorama da Obra Divina": "10/08/2026", "Mente Renova": "01/08/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "18/07/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 83}, {"n": 44, "nome": "Shara", "celular": "+55 54 99623-2650", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "22/06/2026", "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 67}, {"n": 45, "nome": "Micael", "celular": "+55 54 99939-4279", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "22/06/2026", "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 67}, {"n": 46, "nome": "Djulia", "celular": "", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "22/06/2026", "Relacionando-me com o Pai": null, "Cinco Ministérios": "23/06/2026", "Autoridade Espiritual": "23/06/2026", "Panorama da Obra Divina": "23/06/2026", "Mente Renova": "23/06/2026", "Batalha Espiritual": "23/06/2026", "Perdão": "23/06/2026", "Dízimo": "23/06/2026", "Espírito Santo": "23/06/2026", "Grupo Familiar": "23/06/2026", "Batismo nas Águas": "23/06/2026"}, "pct": 92}, {"n": 47, "nome": "Fabiana", "celular": "", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "22/06/2026", "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 67}, {"n": 48, "nome": "Pollyana", "celular": "", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "22/06/2026", "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 67}, {"n": 49, "nome": "Camila de Paula", "celular": "", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "23/06/2026", "Relacionando-me com o Pai": "23/06/2026", "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": null, "Batalha Espiritual": null, "Perdão": null, "Dízimo": "23/06/2026", "Espírito Santo": null, "Grupo Familiar": null, "Batismo nas Águas": "23/06/2026"}, "pct": 33}, {"n": 50, "nome": "Catiane Trevisan", "celular": "", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "23/06/2026", "Relacionando-me com o Pai": "20/07/2026", "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": null, "Batalha Espiritual": null, "Perdão": null, "Dízimo": null, "Espírito Santo": null, "Grupo Familiar": "23/06/2026", "Batismo nas Águas": "23/06/2026"}, "pct": 33}, {"n": 51, "nome": "Amanda Canuto", "celular": "+55 54 9145-0376", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": "27/06/2026", "Cinco Ministérios": "27/06/2026", "Autoridade Espiritual": "27/06/2026", "Panorama da Obra Divina": "27/06/2026", "Mente Renova": "27/06/2026", "Batalha Espiritual": "27/06/2026", "Perdão": "27/06/2026", "Dízimo": "27/06/2026", "Espírito Santo": "27/06/2026", "Grupo Familiar": "27/06/2026", "Batismo nas Águas": "27/06/2026"}, "pct": 92}, {"n": 52, "nome": "Emanuele", "celular": "", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": "27/06/2026", "Panorama da Obra Divina": null, "Mente Renova": null, "Batalha Espiritual": null, "Perdão": null, "Dízimo": null, "Espírito Santo": null, "Grupo Familiar": null, "Batismo nas Águas": null}, "pct": 8}, {"n": 53, "nome": "Josiane", "celular": "", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": "27/06/2026", "Panorama da Obra Divina": null, "Mente Renova": null, "Batalha Espiritual": null, "Perdão": null, "Dízimo": null, "Espírito Santo": null, "Grupo Familiar": null, "Batismo nas Águas": null}, "pct": 8}, {"n": 54, "nome": "Eduarda Dettner", "celular": "", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": null, "Cinco Ministérios": "28/07/2026", "Autoridade Espiritual": "27/06/2026", "Panorama da Obra Divina": null, "Mente Renova": "01/08/2026", "Batalha Espiritual": null, "Perdão": null, "Dízimo": null, "Espírito Santo": null, "Grupo Familiar": null, "Batismo nas Águas": null}, "pct": 25}, {"n": 55, "nome": "Leonardo", "celular": "", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "08/08/2026", "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": "03/08/2026", "Panorama da Obra Divina": null, "Mente Renova": "01/08/2026", "Batalha Espiritual": null, "Perdão": null, "Dízimo": null, "Espírito Santo": null, "Grupo Familiar": null, "Batismo nas Águas": null}, "pct": 25}, {"n": 56, "nome": "Aladir Maria Parize", "celular": "", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "21/06/2026", "Relacionando-me com o Pai": "21/06/2026", "Cinco Ministérios": "21/06/2026", "Autoridade Espiritual": "03/08/2026", "Panorama da Obra Divina": "21/06/2026", "Mente Renova": "21/06/2026", "Batalha Espiritual": "21/06/2026", "Perdão": "21/06/2026", "Dízimo": "21/06/2026", "Espírito Santo": "21/06/2026", "Grupo Familiar": "21/06/2026", "Batismo nas Águas": "21/06/2026"}, "pct": 100}, {"n": 57, "nome": "Paulo Cesar De Moraes", "celular": "", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": null, "Relacionando-me com o Pai": "21/06/2026", "Cinco Ministérios": null, "Autoridade Espiritual": "03/08/2026", "Panorama da Obra Divina": "21/06/2026", "Mente Renova": null, "Batalha Espiritual": null, "Perdão": null, "Dízimo": null, "Espírito Santo": null, "Grupo Familiar": null, "Batismo nas Águas": null}, "pct": 25}, {"n": 58, "nome": "Norton Pellizzari", "celular": "", "retiro": "21/06/2026", "modulos": {"Aliança de Sangue": "08/08/2026", "Relacionando-me com o Pai": null, "Cinco Ministérios": null, "Autoridade Espiritual": null, "Panorama da Obra Divina": null, "Mente Renova": null, "Batalha Espiritual": null, "Perdão": null, "Dízimo": null, "Espírito Santo": null, "Grupo Familiar": null, "Batismo nas Águas": null}, "pct": 8}];
-const KEY='ciclo_edits_v3';
-let ed=JSON.parse(localStorage.getItem(KEY)||'{}');
-let D=[],f='all',s='n',v='t',pend='',dir={nome:1,pct:-1};
-let chSel=new Set();
 
-function build(){D=RAW.map(p=>{const e=ed[p.n];if(!e)return{...p,modulos:{...p.modulos}};const m={...p.modulos,...e};return{...p,modulos:m,pct:Math.round(M.filter(x=>m[x]).length/12*100)}})}
-function col(p){return p>=100?'#2EE58C':p>=75?'#35A7FF':p>=50?'#F2C14E':'#FF9F43'}
-function cls(p){return p>=100?'done':p>=75?'high':p>=50?'mid':'low'}
-function bdg(p){const m={done:['bd-g','Concluído'],high:['bd-b','Avançado'],mid:['bd-y','Em andamento'],low:['bd-o','Iniciado'],zero:['bd-n','Início']};const k=p>=100?'done':p>=75?'high':p>=50?'mid':p>0?'low':'zero';return`<span class="bdg ${m[k][0]}">${m[k][1]}</span>`}
-function wal(c){return c?'https://wa.me/'+c.replace(/\D/g,''):''}
+let ME=null, D=[], f='all', s='n', v='t', pend='', dir={nome:1,pct:-1}, chSel=new Set();
+
+const can = a => ME && (a==='del' ? ME.role==='admin' : ME.role==='admin'||ME.role==='editor');
+const $ = i => document.getElementById(i);
+
+// ── datas ─────────────────────────────────────────────────
+const iso2br = d => d && /^\d{4}-\d{2}-\d{2}/.test(d) ? d.slice(0,10).split('-').reverse().join('/') : null;
+const br2iso = d => d && /^\d{2}\/\d{2}\/\d{4}$/.test(d) ? d.split('/').reverse().join('-') : null;
+function hoje(){const d=new Date();return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear()}
+
+// ── UI helpers ────────────────────────────────────────────
+function tst(t,err){const e=$('tst');e.textContent=t;e.className='tst on'+(err?' err':'');setTimeout(()=>e.className='tst'+(err?' err':''),2900)}
+function aMsg(t,k){const e=$('aMsg');if(!t){e.className='msg';return}e.innerHTML=t;e.className='msg on msg-'+(k||'e')}
+function busy(id,on,txt){const b=$(id);if(!b)return;b.disabled=on;b.innerHTML=on?'<span class="spin"></span>':txt}
+function cl(id){$(id).classList.remove('on')}
+function ovc(e,id){if(e.target===$(id))cl(id)}
+
+// ═══════════ AUTENTICAÇÃO ═══════════
+function aTab(k){
+  $('tabIn').classList.toggle('on',k==='in');
+  $('tabUp').classList.toggle('on',k==='up');
+  $('formIn').classList.toggle('hide',k!=='in');
+  $('formUp').classList.toggle('hide',k!=='up');
+  aMsg('');
+}
+function showAuth(mode){
+  $('boot').classList.add('hide');
+  $('app').classList.add('hide');
+  $('auth').classList.remove('hide');
+  const wait = mode==='wait';
+  $('aTabs').classList.toggle('hide',wait);
+  $('formIn').classList.toggle('hide',wait);
+  $('formUp').classList.add('hide');
+  $('formWait').classList.toggle('hide',!wait);
+  if(!wait){aTab('in');aMsg('')}
+}
+async function doLogin(){
+  const em=$('inEmail').value.trim(), pw=$('inPass').value;
+  if(!em||!pw){aMsg('Preencha e-mail e senha.');return}
+  busy('btnIn',1); aMsg('');
+  const {error} = await sb.auth.signInWithPassword({email:em,password:pw});
+  busy('btnIn',0,'Entrar');
+  if(error){
+    aMsg(/Invalid login/i.test(error.message) ? 'E-mail ou senha incorretos.' :
+         /confirm/i.test(error.message) ? 'Confirme seu e-mail antes de entrar.' : error.message);
+    return;
+  }
+  await boot();
+}
+async function doSignup(){
+  const nm=$('upNome').value.trim(), em=$('upEmail').value.trim(), pw=$('upPass').value;
+  if(!nm||!em||!pw){aMsg('Preencha todos os campos.');return}
+  if(pw.length<6){aMsg('A senha precisa ter no mínimo 6 caracteres.');return}
+  busy('btnUp',1); aMsg('');
+  const {error} = await sb.auth.signUp({email:em,password:pw,options:{data:{nome:nm}}});
+  busy('btnUp',0,'Criar conta');
+  if(error){
+    aMsg(/already registered/i.test(error.message)?'Este e-mail já tem cadastro. Tente entrar.':error.message);
+    return;
+  }
+  aTab('in');
+  aMsg('<b>Conta criada.</b><br>Um administrador precisa aprovar seu acesso. Se o projeto pedir confirmação de e-mail, confirme antes de entrar.','s');
+}
+async function doReset(){
+  const em=$('inEmail').value.trim();
+  if(!em){aMsg('Digite seu e-mail no campo acima e clique novamente.');return}
+  const {error}=await sb.auth.resetPasswordForEmail(em,{redirectTo:location.href});
+  aMsg(error?error.message:'Enviamos um link de recuperação para <b>'+em+'</b>.',error?'e':'s');
+}
+async function doLogout(){await sb.auth.signOut();ME=null;location.reload()}
+async function recheck(){await boot()}
+
+// ═══════════ BOOT ═══════════
+async function boot(){
+  $('auth').classList.add('hide');
+  $('app').classList.add('hide');
+  $('boot').classList.remove('hide');
+
+  const {data:{session}} = await sb.auth.getSession();
+  if(!session){showAuth('login');return}
+
+  const {data:prof,error} = await sb.from('profiles').select('*').eq('id',session.user.id).maybeSingle();
+  if(error && error.code!=='PGRST116'){showAuth('login');aMsg('Erro ao carregar perfil: '+error.message);return}
+  if(!prof){showAuth('wait');return}
+  if(!prof.aprovado){showAuth('wait');return}
+
+  ME=prof;
+  $('boot').classList.add('hide');
+  $('app').classList.remove('hide');
+
+  const nome = prof.nome || prof.email;
+  $('uNome').textContent = nome;
+  $('uavt').textContent = nome.trim().charAt(0).toUpperCase();
+  const rb=$('uRole');
+  rb.textContent = prof.role==='admin'?'Admin':prof.role==='editor'?'Editor':'Leitura';
+  rb.className='rb rb-'+prof.role.charAt(0);
+
+  $('miUsers').classList.toggle('hide', prof.role!=='admin');
+  $('heroBtns').classList.toggle('hide', !can());
+  $('roNote').classList.toggle('hide', can());
+
+  if(!$('chMod').options.length) M.forEach(m=>{const o=new Option(m,m);$('chMod').add(o)});
+  if($('pendSel').options.length<2) M.forEach(m=>$('pendSel').add(new Option('Falta: '+m,m)));
+
+  await load();
+  if(prof.role==='admin') checkPend();
+}
+
+async function load(){
+  const {data,error} = await sb.from('participantes').select('*').order('numero');
+  if(error){tst('Erro ao carregar dados: '+error.message,1);return}
+  D = data.map(r=>{
+    const mods={}; M.forEach(m=>mods[m]=iso2br(r.modulos?.[m])||null);
+    return {id:r.id,n:r.numero,nome:r.nome,celular:r.celular||'',retiro:iso2br(r.retiro)||'',
+            modulos:mods,pct:Math.round(M.filter(m=>mods[m]).length/12*100)};
+  });
+  dash(); rd();
+}
+
+// ═══════════ DASHBOARD ═══════════
+const col = p => p>=100?'#2EE58C':p>=75?'#35A7FF':p>=50?'#F2C14E':'#FF9F43';
+const cls = p => p>=100?'done':p>=75?'high':p>=50?'mid':'low';
+function bdg(p){const m={done:['bd-g','Concluído'],high:['bd-b','Avançado'],mid:['bd-y','Em andamento'],low:['bd-o','Iniciado'],zero:['bd-n','Início']};
+  const k=p>=100?'done':p>=75?'high':p>=50?'mid':p>0?'low':'zero';return `<span class="bdg ${m[k][0]}">${m[k][1]}</span>`}
+const wal = c => c?'https://wa.me/'+c.replace(/\D/g,''):'';
+const esc = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 function dash(){
-build();const t=D.length;
-document.getElementById('k1').textContent=t;
-document.getElementById('k2').textContent=D.filter(p=>p.pct>=100).length;
-document.getElementById('k3').textContent=D.filter(p=>p.pct>=75&&p.pct<100).length;
-document.getElementById('k4').textContent=D.filter(p=>p.pct>=50&&p.pct<75).length;
-document.getElementById('k5').textContent=Math.round(D.reduce((a,p)=>a+p.pct,0)/t)+'%';
-document.getElementById('pill').textContent=t+' participantes';
-// HERO
-const totalCel=t*12,feitos=D.reduce((a,p)=>a+M.filter(m=>p.modulos[m]).length,0);
-const gp=Math.round(feitos/totalCel*100);
-document.getElementById('hPct').textContent=gp+'%';
-document.getElementById('hBar').style.width=gp+'%';
-document.getElementById('hSub').textContent=feitos.toLocaleString('pt-BR')+' módulos registrados de '+totalCel.toLocaleString('pt-BR');
-document.getElementById('hAtt').textContent=D.filter(p=>p.pct<50).length;
-// módulo mais atrasado
-let pior=M[0],piorN=1e9;
-M.forEach(m=>{const c=D.filter(p=>p.modulos[m]).length;if(c<piorN){piorN=c;pior=m}});
-const hn=document.getElementById('hNextMod');
-hn.textContent=pior;hn.dataset.m=pior;
-document.getElementById('hNextSub').textContent=(t-piorN)+' pessoas ainda não fizeram';
-// última atualização
-let ult=null;
-D.forEach(p=>M.forEach(m=>{const d=p.modulos[m];if(d&&/^\d{2}\/\d{2}\/\d{4}$/.test(d)){const[dd,mm,yy]=d.split('/');const dt=new Date(yy,mm-1,dd);if(!ult||dt>ult)ult=dt}}));
-if(ult)document.getElementById('hUpd').textContent=String(ult.getDate()).padStart(2,'0')+'/'+String(ult.getMonth()+1).padStart(2,'0')+'/'+ult.getFullYear();
-document.getElementById('rank').innerHTML=[...D].sort((a,b)=>b.pct-a.pct).slice(0,6).map((p,i)=>
-`<div class="rank-i" onclick="op(${p.n})"><div class="rank-n ${['rk1','rk2','rk3','rkn','rkn','rkn'][i]}">${i+1}</div><span class="rank-nm">${p.nome}</span><div class="rank-b"><div class="rank-bf" style="width:${p.pct}%;background:${col(p.pct)}"></div></div><span class="rank-p" style="color:${col(p.pct)}">${p.pct}%</span></div>`).join('');
-document.getElementById('bars').innerHTML=M.map(m=>{const c=D.filter(p=>p.modulos[m]).length,pc=Math.round(c/t*100);
-return`<div class="mrow ${pend===m?'act':''}"><span class="mrow-n" title="Clique para ver quem falta: ${m}" onclick="setPend('${pend===m?'':m}')">${m}</span><div class="mrow-t"><div class="mrow-f" style="width:${pc}%;background:${col(pc)}"></div></div><span class="mrow-c">${c}/${t}</span></div>`}).join('');
-const ps=document.getElementById('pend');
-if(ps.options.length<2){M.forEach(m=>{const o=document.createElement('option');o.value=m;o.textContent='Falta: '+m;ps.appendChild(o)})}
-ps.value=pend;ps.classList.toggle('act',!!pend);
-const cs=document.getElementById('chMod');
-if(cs&&cs.options.length===0){M.forEach(m=>{const o=document.createElement('option');o.value=m;o.textContent=m;cs.appendChild(o)})}
+  const t=D.length; if(!t)return;
+  $('k1').textContent=t;
+  $('k2').textContent=D.filter(p=>p.pct>=100).length;
+  $('k3').textContent=D.filter(p=>p.pct>=75&&p.pct<100).length;
+  $('k4').textContent=D.filter(p=>p.pct>=50&&p.pct<75).length;
+  $('k5').textContent=Math.round(D.reduce((a,p)=>a+p.pct,0)/t)+'%';
+
+  const cel=t*12, fe=D.reduce((a,p)=>a+M.filter(m=>p.modulos[m]).length,0), gp=Math.round(fe/cel*100);
+  $('hPct').textContent=gp+'%';
+  $('hBar').style.width=gp+'%';
+  $('hSub').textContent=fe.toLocaleString('pt-BR')+' módulos registrados de '+cel.toLocaleString('pt-BR');
+  $('hAtt').textContent=D.filter(p=>p.pct<50).length;
+
+  let pior=M[0],pn=1e9;
+  M.forEach(m=>{const c=D.filter(p=>p.modulos[m]).length;if(c<pn){pn=c;pior=m}});
+  $('hNextMod').textContent=pior; $('hNextCard').dataset.m=pior;
+  $('hNextSub').textContent=(t-pn)+' pessoas ainda não fizeram';
+
+  let ult=null;
+  D.forEach(p=>M.forEach(m=>{const d=p.modulos[m];if(d){const[dd,mm,yy]=d.split('/');const x=new Date(yy,mm-1,dd);if(!ult||x>ult)ult=x}}));
+  $('hUpd').textContent = ult?String(ult.getDate()).padStart(2,'0')+'/'+String(ult.getMonth()+1).padStart(2,'0')+'/'+ult.getFullYear():'—';
+
+  $('rank').innerHTML=[...D].sort((a,b)=>b.pct-a.pct).slice(0,6).map((p,i)=>
+    `<div class="rank-i" onclick="op(${p.n})"><div class="rank-n ${['rk1','rk2','rk3','rkn','rkn','rkn'][i]}">${i+1}</div><span class="rank-nm">${esc(p.nome)}</span><div class="rank-b"><div class="rank-bf" style="width:${p.pct}%;background:${col(p.pct)}"></div></div><span class="rank-p" style="color:${col(p.pct)}">${p.pct}%</span></div>`).join('');
+
+  $('bars').innerHTML=M.map(m=>{const c=D.filter(p=>p.modulos[m]).length,pc=Math.round(c/t*100);
+    return `<div class="mrow ${pend===m?'act':''}"><span class="mrow-n" title="Ver quem falta" onclick="setPend('${pend===m?'':m.replace(/'/g,"\\'")}')">${m}</span><div class="mrow-t"><div class="mrow-f" style="width:${pc}%;background:${col(pc)}"></div></div><span class="mrow-c">${c}/${t}</span></div>`}).join('');
+  $('pendSel').value=pend; $('pendSel').classList.toggle('act',!!pend);
 }
 
-function setPend(m){pend=m;document.getElementById('pend').value=m;document.getElementById('pend').classList.toggle('act',!!m);
-document.querySelectorAll('.mrow').forEach((r,i)=>r.classList.toggle('act',M[i]===m));
-rd();if(m)document.getElementById('lista').scrollIntoView({behavior:'smooth',block:'start'})}
+function setPend(m){pend=m||'';$('pendSel').value=pend;$('pendSel').classList.toggle('act',!!pend);
+  document.querySelectorAll('.mrow').forEach((r,i)=>r.classList.toggle('act',M[i]===pend));
+  rd(); if(pend)$('lista').scrollIntoView({behavior:'smooth',block:'start'})}
 
-function flist(){const q=document.getElementById('q').value.toLowerCase();
-let d=D.filter(p=>(p.nome.toLowerCase().includes(q)||p.celular.includes(q))&&(f==='all'||cls(p.pct)===f)&&(!pend||!p.modulos[pend]));
-if(s==='n')d.sort((a,b)=>a.n-b.n);else if(s==='nome')d.sort((a,b)=>dir.nome*a.nome.localeCompare(b.nome,'pt'));
-else if(s==='pd')d.sort((a,b)=>b.pct-a.pct);else if(s==='pa')d.sort((a,b)=>a.pct-b.pct);return d}
+function flist(){const q=$('q').value.toLowerCase();
+  let d=D.filter(p=>(p.nome.toLowerCase().includes(q)||p.celular.includes(q))&&(f==='all'||cls(p.pct)===f)&&(!pend||!p.modulos[pend]));
+  if(s==='n')d.sort((a,b)=>a.n-b.n); else if(s==='nome')d.sort((a,b)=>dir.nome*a.nome.localeCompare(b.nome,'pt'));
+  else if(s==='pd')d.sort((a,b)=>b.pct-a.pct); else if(s==='pa')d.sort((a,b)=>a.pct-b.pct);
+  return d}
 
-function rd(){const d=flist();
-document.getElementById('cnt').innerHTML=(d.length===D.length?d.length+' participantes':d.length+' de '+D.length)+(pend?` <span class="tag">falta ${pend}<button onclick="setPend('')" title="Remover filtro">×</button></span>`:'');
-document.getElementById('tb').innerHTML=d.length?d.map(p=>{const c=col(p.pct);
-return`<tr onclick="op(${p.n})"><td class="t-n">${p.n}</td><td><div class="t-nm">${p.nome}</div><div class="t-sub">Retiro: ${p.retiro||'—'}</div></td><td>${p.celular?`<a class="wa" href="${wal(p.celular)}" target="_blank" onclick="event.stopPropagation()">💬 ${p.celular}</a>`:'<span style="color:var(--txt3)">—</span>'}</td>${M.map(m=>`<td style="text-align:center"><span class="${p.modulos[m]?'tick':'tick tick-n'}">${p.modulos[m]?'✓':'·'}</span></td>`).join('')}<td><div class="pg"><div class="pg-t"><div class="pg-f" style="width:${p.pct}%;background:${c}"></div></div><span class="pg-l" style="color:${c}">${p.pct}%</span></div></td><td>${bdg(p.pct)}</td></tr>`}).join('')
-:`<tr><td colspan="17"><div class="emp"><div class="emp-i">🔍</div><div class="emp-t">Nenhum resultado</div><div class="emp-s">Tente outro nome ou filtro</div></div></td></tr>`;
-document.getElementById('cd').innerHTML=d.length?d.map((p,i)=>{const c=col(p.pct);
-return`<div class="pc pc-${cls(p.pct).charAt(0)==='d'?'g':cls(p.pct).charAt(0)==='h'?'b':cls(p.pct).charAt(0)==='m'?'y':'o'}" onclick="op(${p.n})" style="animation-delay:${Math.min(i*.028,.5)}s"><div class="pc-h"><div class="pc-nm">${p.nome}</div>${bdg(p.pct)}</div><div class="pc-mt">nº${p.n} · ${p.celular||'Sem telefone'}</div><div class="miss">${12-M.filter(m=>p.modulos[m]).length>0?`faltam <b>${12-M.filter(m=>p.modulos[m]).length}</b> módulos`:'ciclo completo'}</div><div class="pc-dots">${M.map((m,j)=>`<span class="dt ${p.modulos[m]?'dt-y':'dt-n'}" title="${m}${p.modulos[m]?' — '+p.modulos[m]:''}">${AB[j]}</span>`).join('')}</div><div class="pc-pg"><div class="pc-t"><div class="pc-f" style="width:${p.pct}%;background:${c}"></div></div><span class="pc-p" style="color:${c}">${p.pct}%</span></div></div>`}).join('')
-:`<div style="grid-column:1/-1"><div class="emp"><div class="emp-i">🔍</div><div class="emp-t">Nenhum resultado</div></div></div>`;
+function rd(){
+  const d=flist();
+  $('cnt').innerHTML=(d.length===D.length?d.length+' participantes':d.length+' de '+D.length)+(pend?` <span class="tag">falta ${pend}<button onclick="setPend('')">×</button></span>`:'');
+  $('tb').innerHTML=d.length?d.map(p=>{const c=col(p.pct);
+    return `<tr onclick="op(${p.n})"><td class="t-n">${p.n}</td><td><div class="t-nm">${esc(p.nome)}</div><div class="t-sub">Retiro: ${p.retiro||'—'}</div></td><td>${p.celular?`<a class="wa" href="${wal(p.celular)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">💬 ${esc(p.celular)}</a>`:'<span style="color:var(--txt3)">—</span>'}</td>${M.map(m=>`<td style="text-align:center"><span class="${p.modulos[m]?'tick':'tick tick-n'}">${p.modulos[m]?'✓':'·'}</span></td>`).join('')}<td><div class="pg"><div class="pg-t"><div class="pg-f" style="width:${p.pct}%;background:${c}"></div></div><span class="pg-l" style="color:${c}">${p.pct}%</span></div></td><td>${bdg(p.pct)}</td></tr>`}).join('')
+    :`<tr><td colspan="17"><div class="emp"><div class="emp-i">🔍</div><div class="emp-t">Nenhum resultado</div><div class="emp-s">Tente outro nome ou filtro</div></div></td></tr>`;
+  $('cd').innerHTML=d.length?d.map((p,i)=>{const c=col(p.pct),fa=12-M.filter(m=>p.modulos[m]).length;
+    return `<div class="pc pc-${cls(p.pct)==='done'?'g':cls(p.pct)==='high'?'b':cls(p.pct)==='mid'?'y':'o'}" onclick="op(${p.n})" style="animation-delay:${Math.min(i*.028,.5)}s"><div class="pc-h"><div class="pc-nm">${esc(p.nome)}</div>${bdg(p.pct)}</div><div class="pc-mt">nº${p.n} · ${esc(p.celular)||'Sem telefone'}</div><div class="miss">${fa?`faltam <b>${fa}</b> módulos`:'ciclo completo'}</div><div class="pc-dots">${M.map((m,j)=>`<span class="dt ${p.modulos[m]?'dt-y':'dt-n'}" title="${m}${p.modulos[m]?' — '+p.modulos[m]:''}">${AB[j]}</span>`).join('')}</div><div class="pc-pg"><div class="pc-t"><div class="pc-f" style="width:${p.pct}%;background:${c}"></div></div><span class="pc-p" style="color:${c}">${p.pct}%</span></div></div>`}).join('')
+    :`<div style="grid-column:1/-1"><div class="emp"><div class="emp-i">🔍</div><div class="emp-t">Nenhum resultado</div></div></div>`;
 }
 
-function op(n){const p=D.find(x=>x.n===n);if(!p)return;const dn=M.filter(m=>p.modulos[m]).length;
-document.getElementById('md').innerHTML=`<div class="md-h"><button class="md-x" onclick="cm()">✕</button><div class="md-in"><div class="md-nm">${p.nome}</div><div class="md-mt">nº${p.n} · Retiro: ${p.retiro||'—'}</div><div class="md-r"><div><div class="md-p" style="color:${col(p.pct)}">${p.pct}%</div><div class="md-ps">${dn} de 12 módulos concluídos</div></div>${bdg(p.pct)}</div><div class="md-bar"><div class="md-bf" style="width:${p.pct}%"></div></div></div></div><div class="md-b">${p.celular?`<a class="md-wa" href="${wal(p.celular)}" target="_blank"><span>💬</span><b>Abrir WhatsApp</b><i>${p.celular}</i></a>`:''}<div class="p-title" style="margin-bottom:13px">Módulos</div><div class="ml">${M.map((m,i)=>{const d=p.modulos[m];return`<div class="mi ${d?'mi-y':'mi-n'}" id="r${n}_${i}"><span class="mi-ic">${d?'✅':'⬜'}</span><div class="mi-t"><div class="mi-nm">${m}</div><div class="mi-dt" id="d${n}_${i}">${d||'Pendente'}</div></div><button class="mi-b" id="b${n}_${i}" onclick="event.stopPropagation();te(${n},${i})">${d?'Editar':'+ Data'}</button></div>`}).join('')}</div></div>`;
-document.getElementById('ov').classList.add('on')}
-
-function te(n,i){const m=M[i],r=document.getElementById('r'+n+'_'+i),b=document.getElementById('b'+n+'_'+i),ex=r.querySelector('.mi-i');
-if(ex){ex.remove();b.textContent=D.find(x=>x.n===n).modulos[m]?'Editar':'+ Data';b.onclick=e=>{e.stopPropagation();te(n,i)};return}
-const inp=document.createElement('input');inp.type='text';inp.placeholder='DD/MM/AAAA';inp.className='mi-i';
-const cur=D.find(x=>x.n===n).modulos[m];if(cur)inp.value=cur;
-inp.onclick=e=>e.stopPropagation();
-inp.onkeydown=e=>{if(e.key==='Enter'){sv(n,m,inp.value.trim(),i);inp.remove()}if(e.key==='Escape'){inp.remove();b.textContent=cur?'Editar':'+ Data';b.onclick=ev=>{ev.stopPropagation();te(n,i)}}};
-b.after(inp);b.textContent='Salvar';
-b.onclick=e=>{e.stopPropagation();sv(n,m,inp.value.trim(),i);inp.remove()};
-inp.focus();inp.select()}
-
-function sv(n,m,val,i){
-if(!ed[n])ed[n]={};ed[n][m]=val||null;
-localStorage.setItem(KEY,JSON.stringify(ed));build();
-const p=D.find(x=>x.n===n),d=!!p.modulos[m],r=document.getElementById('r'+n+'_'+i),b=document.getElementById('b'+n+'_'+i);
-r.className='mi '+(d?'mi-y':'mi-n');
-r.querySelector('.mi-ic').textContent=d?'✅':'⬜';
-document.getElementById('d'+n+'_'+i).textContent=val||'Pendente';
-b.textContent=d?'Editar':'+ Data';b.onclick=e=>{e.stopPropagation();te(n,i)};
-const dn=M.filter(x=>p.modulos[x]).length;
-document.querySelector('.md-p').textContent=p.pct+'%';
-document.querySelector('.md-p').style.color=col(p.pct);
-document.querySelector('.md-ps').textContent=dn+' de 12 módulos concluídos';
-document.querySelector('.md-bf').style.width=p.pct+'%';
-dash();rd();tst('✓ '+m+' atualizado')}
-
-
-function hoje(){const d=new Date();return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear()}
-function chOpen(){chSel.clear();document.getElementById('chDate').value=hoje();
-if(pend)document.getElementById('chMod').value=pend;
-chRender();document.getElementById('ovch').classList.add('on')}
-function chClose(){document.getElementById('ovch').classList.remove('on')}
-function chOvc(e){if(e.target===document.getElementById('ovch'))chClose()}
-function chRender(){const m=document.getElementById('chMod').value;
-const falta=D.filter(p=>!p.modulos[m]).sort((a,b)=>a.nome.localeCompare(b.nome,'pt'));
-const L=document.getElementById('chList');
-if(!falta.length){L.innerHTML='<div class="ch-empty">Todos os participantes já concluíram este módulo.</div>';chCnt();return}
-L.innerHTML=falta.map(p=>`<div class="ch-i ${chSel.has(p.n)?'pick':''}" id="ch${p.n}" onclick="chTog(${p.n})"><div class="ch-cb">✓</div><span class="ch-nm">${p.nome}</span><span class="ch-pc">${p.pct}%</span></div>`).join('');
-chCnt()}
-function chTog(n){chSel.has(n)?chSel.delete(n):chSel.add(n);
-const e=document.getElementById('ch'+n);if(e)e.classList.toggle('pick',chSel.has(n));chCnt()}
-function chAll(on){const m=document.getElementById('chMod').value;
-D.filter(p=>!p.modulos[m]).forEach(p=>on?chSel.add(p.n):chSel.delete(p.n));chRender()}
-function chCnt(){const m=document.getElementById('chMod').value;
-const tot=D.filter(p=>!p.modulos[m]).length;
-document.getElementById('chCnt').innerHTML=`<b>${chSel.size}</b> de ${tot} marcados`;
-document.getElementById('chSave').style.opacity=chSel.size?'1':'.45'}
-function chSave(){const m=document.getElementById('chMod').value,dt=document.getElementById('chDate').value.trim();
-if(!chSel.size){tst('Marque ao menos um participante');return}
-if(!/^\d{2}\/\d{2}\/\d{4}$/.test(dt)){tst('Data inválida — use DD/MM/AAAA');return}
-chSel.forEach(n=>{if(!ed[n])ed[n]={};ed[n][m]=dt});
-localStorage.setItem(KEY,JSON.stringify(ed));
-const q=chSel.size;chSel.clear();chClose();dash();rd();
-tst(`✓ ${q} ${q===1?'participante registrado':'participantes registrados'} em ${m}`)}
-
-function tst(t){const e=document.getElementById('tst');e.textContent=t;e.classList.add('on');setTimeout(()=>e.classList.remove('on'),2400)}
-function cm(){document.getElementById('ov').classList.remove('on')}
-function ovc(e){if(e.target===document.getElementById('ov'))cm()}
-function flt(x,b){f=x;document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));b.classList.add('on');rd()}
+function flt(x,b){f=x;document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));if(b)b.classList.add('on');rd()}
 function srtBy(c){s=c;dir[c]*=-1;rd()}
-function vw(x){v=x;document.getElementById('vt').classList.toggle('on',x==='t');document.getElementById('vc').classList.toggle('on',x==='c');
-document.getElementById('tw').style.display=x==='t'?'block':'none';const cd=document.getElementById('cd');cd.style.display=x==='c'?'grid':'none';if(x==='c')cd.classList.add('on')}
-document.getElementById('q').addEventListener('input',rd);
-document.getElementById('srt').addEventListener('change',e=>{s=e.target.value;rd()});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){cm();chClose()}});
-dash();rd();
+function vw(x){v=x;$('vt').classList.toggle('on',x==='t');$('vc').classList.toggle('on',x==='c');
+  $('tw').style.display=x==='t'?'block':'none';const cd=$('cd');cd.style.display=x==='c'?'grid':'none';if(x==='c')cd.classList.add('on')}
+
+// ═══════════ LOG ═══════════
+async function log(pn,nome,acao,det){
+  try{await sb.from('historico').insert({participante:pn,nome,acao,detalhe:det,usuario:ME.nome||ME.email})}catch(e){}
+}
+
+// ═══════════ MODAL PARTICIPANTE ═══════════
+function op(n){
+  const p=D.find(x=>x.n===n); if(!p)return;
+  const dn=M.filter(m=>p.modulos[m]).length;
+  $('md').innerHTML=`<div class="md-h"><button class="md-x" onclick="cl('ov')">✕</button><div class="md-in">
+    <div class="md-nm">${esc(p.nome)}</div><div class="md-mt">nº${p.n} · Retiro: ${p.retiro||'—'}</div>
+    <div class="md-r"><div><div class="md-p" style="color:${col(p.pct)}">${p.pct}%</div><div class="md-ps">${dn} de 12 módulos concluídos</div></div>${bdg(p.pct)}</div>
+    <div class="md-bar"><div class="md-bf" style="width:${p.pct}%"></div></div></div></div>
+    <div class="md-b">${p.celular?`<a class="md-wa" href="${wal(p.celular)}" target="_blank" rel="noopener"><span>💬</span><b>Abrir WhatsApp</b><i>${esc(p.celular)}</i></a>`:''}
+    <div class="p-title" style="margin-bottom:13px">Módulos</div>
+    <div class="ml">${M.map((m,i)=>{const d=p.modulos[m];
+      return `<div class="mi ${d?'mi-y':'mi-n'}" id="r${i}"><span class="mi-ic">${d?'✅':'⬜'}</span><div class="mi-t"><div class="mi-nm">${m}</div><div class="mi-dt" id="dt${i}">${d||'Pendente'}</div></div>${can()?`<button class="mi-b" id="bt${i}" onclick="te(${n},${i})">${d?'Editar':'+ Data'}</button>`:''}</div>`}).join('')}</div>
+    ${can()?`<div style="display:flex;gap:9px;margin-top:20px"><button class="btn btn-s" style="flex:1" onclick="openEdit(${n})">Editar dados</button>${ME.role==='admin'?`<button class="btn btn-d" onclick="delP(${n})">Excluir</button>`:''}</div>`:''}
+    </div>`;
+  $('ov').classList.add('on');
+}
+
+function te(n,i){
+  const m=M[i], r=$('r'+i), b=$('bt'+i), ex=r.querySelector('.mi-i');
+  if(ex){ex.remove();b.textContent=D.find(x=>x.n===n).modulos[m]?'Editar':'+ Data';b.onclick=()=>te(n,i);return}
+  const inp=document.createElement('input');
+  inp.type='text';inp.placeholder='DD/MM/AAAA';inp.className='mi-i';
+  const cur=D.find(x=>x.n===n).modulos[m]; if(cur)inp.value=cur;
+  inp.onkeydown=e=>{if(e.key==='Enter')sv(n,m,inp.value.trim(),i);if(e.key==='Escape'){inp.remove();b.textContent=cur?'Editar':'+ Data';b.onclick=()=>te(n,i)}};
+  b.after(inp); b.textContent='Salvar'; b.onclick=()=>sv(n,m,inp.value.trim(),i);
+  inp.focus(); inp.select();
+}
+
+async function sv(n,m,val,i){
+  if(val && !br2iso(val)){tst('Data inválida — use DD/MM/AAAA',1);return}
+  const p=D.find(x=>x.n===n);
+  const mods={}; M.forEach(k=>{const d=k===m?val:p.modulos[k];if(d)mods[k]=br2iso(d)});
+  const {error}=await sb.from('participantes').update({modulos:mods}).eq('id',p.id);
+  if(error){tst('Erro ao salvar: '+error.message,1);return}
+  log(n,p.nome,val?'Módulo registrado':'Módulo removido',m+(val?' — '+val:''));
+  p.modulos[m]=val||null;
+  p.pct=Math.round(M.filter(k=>p.modulos[k]).length/12*100);
+  const r=$('r'+i),b=$('bt'+i),inp=r.querySelector('.mi-i');
+  if(inp)inp.remove();
+  r.className='mi '+(val?'mi-y':'mi-n');
+  r.querySelector('.mi-ic').textContent=val?'✅':'⬜';
+  $('dt'+i).textContent=val||'Pendente';
+  b.textContent=val?'Editar':'+ Data'; b.onclick=()=>te(n,i);
+  const dn=M.filter(k=>p.modulos[k]).length;
+  document.querySelector('.md-p').textContent=p.pct+'%';
+  document.querySelector('.md-p').style.color=col(p.pct);
+  document.querySelector('.md-ps').textContent=dn+' de 12 módulos concluídos';
+  document.querySelector('.md-bf').style.width=p.pct+'%';
+  dash(); rd(); tst('✓ '+m+' atualizado');
+}
+
+// ═══════════ CADASTRO / EDIÇÃO ═══════════
+function formP(p){
+  return `<div class="md-h"><button class="md-x" onclick="cl('ovn')">✕</button><div class="md-in">
+    <div class="ch-t">${p?'Editar participante':'Novo participante'}</div>
+    <div class="ch-s">${p?'Altere os dados e salve':'Preencha os dados do novo participante'}</div></div></div>
+    <div class="md-b">
+    <div class="fg"><label class="fl">Nome completo *</label><input class="fi" id="fNome" value="${p?esc(p.nome):''}" placeholder="Nome do participante"></div>
+    <div class="fg"><label class="fl">Celular / WhatsApp</label><input class="fi" id="fCel" value="${p?esc(p.celular):''}" placeholder="+55 54 99999-9999"></div>
+    <div class="fg"><label class="fl">Data do retiro</label><input class="fi" id="fRet" value="${p?p.retiro:''}" placeholder="DD/MM/AAAA"></div>
+    <div style="display:flex;gap:9px;margin-top:20px">
+    <button class="btn btn-s" style="flex:1" onclick="cl('ovn')">Cancelar</button>
+    <button class="btn btn-p" style="flex:1" id="fSave" onclick="${p?`saveEdit(${p.n})`:'saveNew()'}">Salvar</button></div></div>`;
+}
+function openNew(){if(!can())return;$('mdn').innerHTML=formP(null);$('ovn').classList.add('on');setTimeout(()=>$('fNome').focus(),80)}
+function openEdit(n){if(!can())return;const p=D.find(x=>x.n===n);cl('ov');$('mdn').innerHTML=formP(p);$('ovn').classList.add('on')}
+
+async function saveNew(){
+  const nome=$('fNome').value.trim(), cel=$('fCel').value.trim(), ret=$('fRet').value.trim();
+  if(!nome){tst('Informe o nome',1);return}
+  if(ret && !br2iso(ret)){tst('Data do retiro inválida — use DD/MM/AAAA',1);return}
+  busy('fSave',1);
+  const num=D.length?Math.max(...D.map(p=>p.n))+1:1;
+  const {error}=await sb.from('participantes').insert({numero:num,nome,celular:cel,retiro:br2iso(ret),modulos:{}});
+  busy('fSave',0,'Salvar');
+  if(error){tst('Erro: '+error.message,1);return}
+  log(num,nome,'Participante cadastrado','');
+  cl('ovn'); await load(); tst('✓ '+nome+' cadastrado como nº'+num);
+}
+async function saveEdit(n){
+  const p=D.find(x=>x.n===n);
+  const nome=$('fNome').value.trim(), cel=$('fCel').value.trim(), ret=$('fRet').value.trim();
+  if(!nome){tst('Informe o nome',1);return}
+  if(ret && !br2iso(ret)){tst('Data do retiro inválida — use DD/MM/AAAA',1);return}
+  busy('fSave',1);
+  const {error}=await sb.from('participantes').update({nome,celular:cel,retiro:br2iso(ret)}).eq('id',p.id);
+  busy('fSave',0,'Salvar');
+  if(error){tst('Erro: '+error.message,1);return}
+  log(n,nome,'Dados alterados','');
+  cl('ovn'); await load(); tst('✓ Dados atualizados');
+}
+async function delP(n){
+  const p=D.find(x=>x.n===n);
+  if(!confirm('Excluir '+p.nome+' definitivamente?\n\nEsta ação não pode ser desfeita.'))return;
+  const {error}=await sb.from('participantes').delete().eq('id',p.id);
+  if(error){tst('Erro: '+error.message,1);return}
+  log(n,p.nome,'Participante excluído','');
+  cl('ov'); await load(); tst('Participante excluído');
+}
+
+// ═══════════ CHAMADA ═══════════
+function chOpen(){
+  if(!can())return;
+  chSel.clear(); $('chDate').value=hoje();
+  if(pend)$('chMod').value=pend;
+  chRender(); $('ovch').classList.add('on');
+}
+function chRender(){
+  const m=$('chMod').value;
+  const falta=D.filter(p=>!p.modulos[m]).sort((a,b)=>a.nome.localeCompare(b.nome,'pt'));
+  $('chList').innerHTML = falta.length
+    ? falta.map(p=>`<div class="ch-i ${chSel.has(p.n)?'pick':''}" id="ci${p.n}" onclick="chTog(${p.n})"><div class="ch-cb">✓</div><span class="ch-nm">${esc(p.nome)}</span><span class="ch-pc">${p.pct}%</span></div>`).join('')
+    : '<div class="ch-empty">Todos os participantes já concluíram este módulo.</div>';
+  chCnt();
+}
+function chTog(n){chSel.has(n)?chSel.delete(n):chSel.add(n);const e=$('ci'+n);if(e)e.classList.toggle('pick',chSel.has(n));chCnt()}
+function chAll(on){const m=$('chMod').value;D.filter(p=>!p.modulos[m]).forEach(p=>on?chSel.add(p.n):chSel.delete(p.n));chRender()}
+function chCnt(){const m=$('chMod').value,t=D.filter(p=>!p.modulos[m]).length;
+  $('chCnt').innerHTML=`<b>${chSel.size}</b> de ${t} marcados`;
+  $('chSave').style.opacity=chSel.size?'1':'.45'}
+
+async function chSave(){
+  const m=$('chMod').value, dt=$('chDate').value.trim();
+  if(!chSel.size){tst('Marque ao menos um participante',1);return}
+  if(!br2iso(dt)){tst('Data inválida — use DD/MM/AAAA',1);return}
+  busy('chSave',1);
+  const iso=br2iso(dt); let ok=0, fail=0;
+  for(const n of chSel){
+    const p=D.find(x=>x.n===n); if(!p)continue;
+    const mods={}; M.forEach(k=>{const d=k===m?dt:p.modulos[k];if(d)mods[k]=br2iso(d)});
+    const {error}=await sb.from('participantes').update({modulos:mods}).eq('id',p.id);
+    error?fail++:ok++;
+  }
+  await log(null,null,'Chamada registrada',m+' — '+dt+' — '+ok+' participante(s)');
+  busy('chSave',0,'Salvar chamada');
+  chSel.clear(); cl('ovch'); await load();
+  tst(fail ? `${ok} salvos, ${fail} com erro` : `✓ ${ok} ${ok===1?'participante registrado':'participantes registrados'} em ${m}`, !!fail);
+}
+
+// ═══════════ USUÁRIOS (admin) ═══════════
+async function checkPend(){
+  const {data}=await sb.from('profiles').select('id').eq('aprovado',false);
+  const n=data?data.length:0;
+  const b=$('pendN'); b.textContent=n; b.classList.toggle('hide',!n);
+}
+async function openUsers(){
+  if(ME.role!=='admin')return;
+  $('udrop').classList.remove('on');
+  $('mdu').innerHTML=`<div class="md-h"><button class="md-x" onclick="cl('ovu')">✕</button><div class="md-in"><div class="ch-t">Usuários</div><div class="ch-s">Aprove acessos e defina permissões</div></div></div><div class="md-b"><div class="emp"><div class="spin" style="border-color:var(--bdr);border-top-color:var(--green)"></div></div></div>`;
+  $('ovu').classList.add('on');
+  const {data,error}=await sb.from('profiles').select('*').order('created_at');
+  if(error){$('mdu').querySelector('.md-b').innerHTML='<div class="emp"><div class="emp-t">Erro ao carregar</div><div class="emp-s">'+esc(error.message)+'</div></div>';return}
+  const rows=data.map(u=>{
+    const me=u.id===ME.id;
+    return `<tr><td><div class="t-nm">${esc(u.nome||'—')}${me?' <span style="color:var(--txt3);font-weight:400">(você)</span>':''}</div><div class="t-sub">${esc(u.email)}</div></td>
+    <td><select class="usel" ${me?'disabled':''} onchange="setRole('${u.id}',this.value)">
+      <option value="viewer" ${u.role==='viewer'?'selected':''}>Só leitura</option>
+      <option value="editor" ${u.role==='editor'?'selected':''}>Editor</option>
+      <option value="admin" ${u.role==='admin'?'selected':''}>Admin</option></select></td>
+    <td>${u.aprovado?'<span class="bdg bd-g">Ativo</span>':'<span class="bdg bd-o">Aguardando</span>'}</td>
+    <td><div class="uact">${me?'<span style="color:var(--txt3);font-size:.72rem">—</span>':
+      (u.aprovado?`<button class="ubtn no" onclick="setAppr('${u.id}',false)">Bloquear</button>`
+                 :`<button class="ubtn ok" onclick="setAppr('${u.id}',true)">Aprovar</button>`)}</div></td></tr>`}).join('');
+  $('mdu').querySelector('.md-b').innerHTML=`<table class="ut"><thead><tr><th>Usuário</th><th>Permissão</th><th>Status</th><th>Ação</th></tr></thead><tbody>${rows}</tbody></table>
+  <div style="margin-top:16px;font-size:.73rem;color:var(--txt3);line-height:1.6">
+  <b style="color:var(--txt2)">Admin</b> — tudo, inclusive excluir e gerenciar usuários<br>
+  <b style="color:var(--txt2)">Editor</b> — cadastrar, registrar chamada e editar módulos<br>
+  <b style="color:var(--txt2)">Só leitura</b> — apenas consultar</div>`;
+}
+async function setRole(id,role){
+  const {error}=await sb.from('profiles').update({role}).eq('id',id);
+  tst(error?'Erro: '+error.message:'✓ Permissão alterada',!!error);
+  if(!error)openUsers();
+}
+async function setAppr(id,ok){
+  const {error}=await sb.from('profiles').update({aprovado:ok}).eq('id',id);
+  if(error){tst('Erro: '+error.message,1);return}
+  tst(ok?'✓ Acesso liberado':'Acesso bloqueado');
+  openUsers(); checkPend();
+}
+
+// ═══════════ HISTÓRICO ═══════════
+async function openHist(){
+  $('udrop').classList.remove('on');
+  $('mdu').innerHTML=`<div class="md-h"><button class="md-x" onclick="cl('ovu')">✕</button><div class="md-in"><div class="ch-t">Histórico</div><div class="ch-s">Últimas alterações no sistema</div></div></div><div class="md-b"><div class="emp"><div class="spin" style="border-color:var(--bdr);border-top-color:var(--green)"></div></div></div>`;
+  $('ovu').classList.add('on');
+  const {data,error}=await sb.from('historico').select('*').order('created_at',{ascending:false}).limit(60);
+  const b=$('mdu').querySelector('.md-b');
+  if(error){b.innerHTML='<div class="emp"><div class="emp-t">Erro ao carregar</div></div>';return}
+  if(!data.length){b.innerHTML='<div class="emp"><div class="emp-i">📋</div><div class="emp-t">Nada registrado ainda</div></div>';return}
+  b.innerHTML=data.map(h=>{const d=new Date(h.created_at);
+    return `<div class="hist-i"><div class="hist-d">${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}</div><div class="hist-t"><b>${esc(h.acao)}</b>${h.nome?' — '+esc(h.nome):''}${h.detalhe?`<div style="color:var(--txt2);font-size:.75rem;margin-top:2px">${esc(h.detalhe)}</div>`:''}<div class="hist-u">por ${esc(h.usuario||'—')}</div></div></div>`}).join('');
+}
+
+// ═══════════ CSV ═══════════
+function exportCsv(){
+  $('udrop').classList.remove('on');
+  const head=['Nº','Nome','Celular','Retiro',...M,'% Ciclo'];
+  const q=s=>'"'+String(s??'').replace(/"/g,'""')+'"';
+  const lines=[head.map(q).join(';'),...[...D].sort((a,b)=>a.n-b.n).map(p=>
+    [p.n,p.nome,p.celular,p.retiro,...M.map(m=>p.modulos[m]||''),p.pct+'%'].map(q).join(';'))];
+  const blob=new Blob(['\uFEFF'+lines.join('\n')],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='controle-integracao-'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click(); URL.revokeObjectURL(a.href);
+  tst('✓ CSV baixado');
+}
+
+// ═══════════ EVENTOS ═══════════
+function uTog(e){e.stopPropagation();$('udrop').classList.toggle('on')}
+document.addEventListener('click',()=>$('udrop').classList.remove('on'));
+$('q').addEventListener('input',rd);
+$('srt').addEventListener('change',e=>{s=e.target.value;rd()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')['ov','ovch','ovu','ovn'].forEach(cl)});
+['inPass','inEmail'].forEach(i=>$(i).addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()}));
+['upNome','upEmail','upPass'].forEach(i=>$(i).addEventListener('keydown',e=>{if(e.key==='Enter')doSignup()}));
+sb.auth.onAuthStateChange((ev)=>{if(ev==='SIGNED_OUT'){ME=null;showAuth('login')}});
+
+boot();
 </script>
 </body>
 </html>
