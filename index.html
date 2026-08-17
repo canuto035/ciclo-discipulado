@@ -493,7 +493,7 @@ Seu cadastro foi criado, mas um administrador precisa liberar o acesso. Você se
 <div class="hr-v" id="hNextMod">—</div>
 <div class="hr-s" id="hNextSub">—</div>
 </div>
-<div class="hr-card" onclick="flt('low',document.querySelectorAll('.chip')[4])">
+<div class="hr-card" onclick="goFlt('low')">
 <div class="hr-lb">Precisam de atenção</div>
 <div class="hr-v" id="hAtt">0</div>
 <div class="hr-s">abaixo de 50% do ciclo</div>
@@ -503,10 +503,10 @@ Seu cadastro foi criado, mas um administrador precisa liberar o acesso. Você se
 </section>
 
 <div class="kpis">
-<div class="kpi k-t" onclick="flt('all',document.querySelectorAll('.chip')[0])"><div class="kpi-v" id="k1">0</div><div class="kpi-l">Total</div></div>
-<div class="kpi k-g" onclick="flt('done',document.querySelectorAll('.chip')[1])"><div class="kpi-v" id="k2">0</div><div class="kpi-l">Concluídos</div></div>
-<div class="kpi k-b" onclick="flt('high',document.querySelectorAll('.chip')[2])"><div class="kpi-v" id="k3">0</div><div class="kpi-l">Acima 75%</div></div>
-<div class="kpi k-y" onclick="flt('mid',document.querySelectorAll('.chip')[3])"><div class="kpi-v" id="k4">0</div><div class="kpi-l">Em andamento</div></div>
+<div class="kpi k-t" onclick="goFlt('all')"><div class="kpi-v" id="k1">0</div><div class="kpi-l">Total</div></div>
+<div class="kpi k-g" onclick="goFlt('done')"><div class="kpi-v" id="k2">0</div><div class="kpi-l">Concluídos</div></div>
+<div class="kpi k-b" onclick="goFlt('high')"><div class="kpi-v" id="k3">0</div><div class="kpi-l">Acima 75%</div></div>
+<div class="kpi k-y" onclick="goFlt('mid')"><div class="kpi-v" id="k4">0</div><div class="kpi-l">Em andamento</div></div>
 <div class="kpi k-o"><div class="kpi-v" id="k5">0%</div><div class="kpi-l">Média geral</div></div>
 </div>
 
@@ -814,6 +814,16 @@ function rd(){
 function expand(){const t=flist().length;lim = lim>=t ? STEP : t;rd();
   if(lim===STEP)$('lista').scrollIntoView({behavior:'smooth',block:'start'})}
 function clrQ(){$('q').value='';$('qm').value='';$('ms').classList.remove('has');lim=STEP;rd()}
+function goFlt(x){
+  const idx={all:0,done:1,high:2,mid:3,low:4}[x];
+  setPend('');
+  f=x;
+  document.querySelectorAll('.chip').forEach((c,i)=>c.classList.toggle('on',i===idx));
+  $('q').value='';$('qm').value='';$('ms').classList.remove('has');
+  lim=Math.max(flist().length,STEP);
+  rd();
+  $('lista').scrollIntoView({behavior:'smooth',block:'start'});
+}
 function flt(x,b){f=x;lim=STEP;document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));if(b)b.classList.add('on');rd()}
 function srtBy(c){s=c;dir[c]*=-1;lim=STEP;rd()}
 function vw(x){v=x;$('vt').classList.toggle('on',x==='t');$('vc').classList.toggle('on',x==='c');
