@@ -310,34 +310,53 @@ td{padding:10px 13px;vertical-align:middle}
 /* ===== RELATORIO / IMPRESSAO ===== */
 #report{display:none}
 @media print{
-  @page{size:A4;margin:14mm}
-  body{background:#fff!important;color:#111!important}
+  @page{size:A4;margin:18mm 16mm}
+  html,body{background:#fff!important;color:#111!important;margin:0!important;padding:0!important}
   body>*{display:none!important}
-  #report{display:block!important;font-family:'Inter',Arial,sans-serif;color:#111}
-  .rp-hd{border-bottom:2.5px solid #1BA968;padding-bottom:11px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:flex-end}
-  .rp-hd h1{font-size:17pt;font-weight:800;letter-spacing:-.4px;margin:0;color:#0D1117}
+  #report{display:block!important;font-family:'Inter',Arial,Helvetica,sans-serif;color:#111;width:100%;box-sizing:border-box}
+  #report *{box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+
+  /* cabecalho */
+  .rp-hd{width:100%;border-bottom:2.5px solid #1BA968;padding-bottom:11px;margin-bottom:18px}
+  .rp-hd td{vertical-align:bottom;padding:0}
+  .rp-hd h1{font-size:16pt;font-weight:800;letter-spacing:-.3px;margin:0;color:#0D1117;white-space:nowrap}
   .rp-hd p{font-size:8.5pt;color:#666;margin:3px 0 0}
-  .rp-hd .rp-dt{font-size:8pt;color:#888;text-align:right}
-  .rp-who{background:#F4F7F9;border:1px solid #DDE3E8;border-radius:7px;padding:14px 16px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;gap:16px}
-  .rp-who h2{font-size:14pt;font-weight:800;margin:0 0 5px;color:#0D1117}
-  .rp-meta{font-size:9pt;color:#555;line-height:1.65}
+  .rp-dt{font-size:8pt;color:#888;text-align:right;white-space:nowrap;line-height:1.5}
+
+  /* bloco do participante */
+  .rp-who{width:100%;background:#F4F7F9;border:1px solid #DDE3E8;border-radius:7px;margin-bottom:6px;border-collapse:separate}
+  .rp-who td{padding:14px 16px;vertical-align:middle}
+  .rp-who h2{font-size:13.5pt;font-weight:800;margin:0 0 5px;color:#0D1117;line-height:1.25}
+  .rp-meta{font-size:9pt;color:#555;line-height:1.6}
   .rp-meta b{color:#111;font-weight:600}
-  .rp-pct{text-align:center;flex-shrink:0;padding-left:16px;border-left:1px solid #DDE3E8}
-  .rp-pct .n{font-size:30pt;font-weight:800;line-height:1;color:#1BA968;letter-spacing:-1.5px}
-  .rp-pct .l{font-size:7.5pt;color:#666;margin-top:3px;text-transform:uppercase;letter-spacing:.6px}
-  .rp-ttl{font-size:8.5pt;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#555;margin:20px 0 9px;padding-bottom:5px;border-bottom:1px solid #DDE3E8}
-  .rp-tb{width:100%;border-collapse:collapse;font-size:9.5pt}
-  .rp-tb th{text-align:left;padding:7px 9px;background:#0D1117;color:#fff;font-size:7.5pt;text-transform:uppercase;letter-spacing:.7px;font-weight:700}
-  .rp-tb th:last-child,.rp-tb td:last-child{text-align:right}
-  .rp-tb td{padding:7px 9px;border-bottom:1px solid #E8ECEF}
+  .rp-pctc{width:112px;text-align:center;border-left:1px solid #DDE3E8;white-space:nowrap}
+  .rp-pctc .n{font-size:27pt;font-weight:800;line-height:1.05;color:#1BA968;letter-spacing:-1pt;white-space:nowrap;display:block}
+  .rp-pctc .l{font-size:7.5pt;color:#666;margin-top:4px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;display:block}
+
+  /* secoes */
+  .rp-ttl{font-size:8.5pt;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#555;margin:18px 0 8px;padding-bottom:5px;border-bottom:1px solid #DDE3E8}
+
+  /* tabela de modulos */
+  .rp-tb{width:100%;border-collapse:collapse;font-size:9.5pt;table-layout:fixed}
+  .rp-tb th{text-align:left;padding:7px 9px;background:#0D1117;color:#fff;font-size:7.5pt;text-transform:uppercase;letter-spacing:.6px;font-weight:700}
+  .rp-tb td{padding:6.5px 9px;border-bottom:1px solid #E8ECEF;overflow:hidden;text-overflow:ellipsis}
   .rp-tb tr:last-child td{border-bottom:none}
-  .rp-ok{color:#1BA968;font-weight:700}
-  .rp-no{color:#B0563C;font-weight:600}
-  .rp-tb .rp-i{color:#999;font-weight:700;width:22px}
-  .rp-miss{background:#FFF6EC;border:1px solid #F0D6B8;border-radius:7px;padding:12px 15px;font-size:9.5pt;line-height:1.75}
-  .rp-miss b{display:block;margin-bottom:5px;color:#8A4F1E;font-size:8.5pt;text-transform:uppercase;letter-spacing:.7px}
-  .rp-done{background:#EDF9F2;border:1px solid #B8E5CC;border-radius:7px;padding:13px 15px;font-size:10pt;color:#12694A;font-weight:600;text-align:center}
-  .rp-ft{margin-top:26px;padding-top:9px;border-top:1px solid #DDE3E8;font-size:7.5pt;color:#999;display:flex;justify-content:space-between}
+  .rp-tb tr{page-break-inside:avoid}
+  .rp-c1{width:26px;color:#999;font-weight:700;text-align:center}
+  .rp-c3{width:74px;white-space:nowrap}
+  .rp-c4{width:76px;text-align:right;white-space:nowrap}
+  .rp-ok{color:#12794F;font-weight:700}
+  .rp-no{color:#A8502F;font-weight:600}
+
+  /* pendencias */
+  .rp-miss{background:#FFF6EC;border:1px solid #F0D6B8;border-radius:7px;padding:13px 16px;font-size:9.5pt;line-height:1.8;page-break-inside:avoid}
+  .rp-miss b{display:block;margin-bottom:6px;color:#8A4F1E;font-size:8.5pt;text-transform:uppercase;letter-spacing:.7px}
+  .rp-done{background:#EDF9F2;border:1px solid #B8E5CC;border-radius:7px;padding:14px 16px;font-size:10pt;color:#12694A;font-weight:600;text-align:center;page-break-inside:avoid}
+
+  /* rodape */
+  .rp-ft{width:100%;margin-top:24px;padding-top:9px;border-top:1px solid #DDE3E8;font-size:7.5pt;color:#999}
+  .rp-ft td{padding:0}
+  .rp-ft td:last-child{text-align:right}
 }
 
 /* ===== PAINEIS RETRATEIS ===== */
@@ -942,30 +961,30 @@ function genPdf(n){
   const ultStr=ult?f2(ult.getDate())+'/'+f2(ult.getMonth()+1)+'/'+ult.getFullYear():'—';
 
   const linhas=M.map((m,i)=>{const d=p.modulos[m];
-    return `<tr><td class="rp-i">${f2(i+1)}</td><td>${esc(m)}</td>
-      <td class="${d?'rp-ok':'rp-no'}">${d?'Concluído':'Pendente'}</td>
-      <td>${d||'—'}</td></tr>`}).join('');
+    return `<tr><td class="rp-c1">${f2(i+1)}</td><td>${esc(m)}</td>
+      <td class="rp-c3 ${d?'rp-ok':'rp-no'}">${d?'Concluído':'Pendente'}</td>
+      <td class="rp-c4">${d||'—'}</td></tr>`}).join('');
 
   $('report').innerHTML=`
-  <div class="rp-hd">
-    <div><h1>Controle de Integração</h1><p>Ciclo de Discipulado · Carazinho</p></div>
-    <div class="rp-dt">Emitido em<br>${agora}</div>
-  </div>
+  <table class="rp-hd"><tr>
+    <td><h1>Controle de Integração</h1><p>Ciclo de Discipulado · Carazinho</p></td>
+    <td class="rp-dt">Emitido em<br>${agora}</td>
+  </tr></table>
 
-  <div class="rp-who">
-    <div>
+  <table class="rp-who"><tr>
+    <td>
       <h2>${esc(p.nome)}</h2>
       <div class="rp-meta">
         Participante <b>nº ${p.n}</b>${p.celular?' · '+esc(p.celular):''}<br>
-        Retiro: <b>${p.retiro||'—'}</b> · Última aula: <b>${ultStr}</b>
+        Retiro: <b>${p.retiro||'—'}</b> &nbsp;·&nbsp; Última aula: <b>${ultStr}</b>
       </div>
-    </div>
-    <div class="rp-pct"><div class="n">${p.pct}%</div><div class="l">${feitos.length} de 12</div></div>
-  </div>
+    </td>
+    <td class="rp-pctc"><span class="n">${p.pct}%</span><span class="l">${feitos.length} de 12</span></td>
+  </tr></table>
 
   <div class="rp-ttl">Presença nos módulos</div>
   <table class="rp-tb">
-    <thead><tr><th></th><th>Módulo</th><th>Situação</th><th>Data</th></tr></thead>
+    <thead><tr><th class="rp-c1"></th><th>Módulo</th><th class="rp-c3">Situação</th><th class="rp-c4">Data</th></tr></thead>
     <tbody>${linhas}</tbody>
   </table>
 
@@ -974,7 +993,10 @@ function genPdf(n){
     ? `<div class="rp-miss"><b>Faltam ${faltam.length} ${faltam.length===1?'módulo':'módulos'}</b>${faltam.map((m,i)=>`${i+1}. ${esc(m)}`).join('<br>')}</div>`
     : `<div class="rp-done">Ciclo de integração concluído — todos os 12 módulos realizados.</div>`}
 
-  <div class="rp-ft"><span>Controle de Integração · Carazinho 2026</span><span>Emitido por ${esc(ME.nome||ME.email)}</span></div>`;
+  <table class="rp-ft"><tr>
+    <td>Controle de Integração · Carazinho 2026</td>
+    <td>Emitido por ${esc(ME.nome||ME.email)}</td>
+  </tr></table>`;
 
   window.print();
 }
