@@ -304,6 +304,39 @@ td{padding:10px 13px;vertical-align:middle}
 .hist-t b{font-weight:600}
 .hist-u{font-size:.69rem;color:var(--txt3);margin-top:2px}
 
+/* ===== RELATORIO / IMPRESSAO ===== */
+#report{display:none}
+@media print{
+  @page{size:A4;margin:14mm}
+  body{background:#fff!important;color:#111!important}
+  body>*{display:none!important}
+  #report{display:block!important;font-family:'Inter',Arial,sans-serif;color:#111}
+  .rp-hd{border-bottom:2.5px solid #1BA968;padding-bottom:11px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:flex-end}
+  .rp-hd h1{font-size:17pt;font-weight:800;letter-spacing:-.4px;margin:0;color:#0D1117}
+  .rp-hd p{font-size:8.5pt;color:#666;margin:3px 0 0}
+  .rp-hd .rp-dt{font-size:8pt;color:#888;text-align:right}
+  .rp-who{background:#F4F7F9;border:1px solid #DDE3E8;border-radius:7px;padding:14px 16px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;gap:16px}
+  .rp-who h2{font-size:14pt;font-weight:800;margin:0 0 5px;color:#0D1117}
+  .rp-meta{font-size:9pt;color:#555;line-height:1.65}
+  .rp-meta b{color:#111;font-weight:600}
+  .rp-pct{text-align:center;flex-shrink:0;padding-left:16px;border-left:1px solid #DDE3E8}
+  .rp-pct .n{font-size:30pt;font-weight:800;line-height:1;color:#1BA968;letter-spacing:-1.5px}
+  .rp-pct .l{font-size:7.5pt;color:#666;margin-top:3px;text-transform:uppercase;letter-spacing:.6px}
+  .rp-ttl{font-size:8.5pt;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#555;margin:20px 0 9px;padding-bottom:5px;border-bottom:1px solid #DDE3E8}
+  .rp-tb{width:100%;border-collapse:collapse;font-size:9.5pt}
+  .rp-tb th{text-align:left;padding:7px 9px;background:#0D1117;color:#fff;font-size:7.5pt;text-transform:uppercase;letter-spacing:.7px;font-weight:700}
+  .rp-tb th:last-child,.rp-tb td:last-child{text-align:right}
+  .rp-tb td{padding:7px 9px;border-bottom:1px solid #E8ECEF}
+  .rp-tb tr:last-child td{border-bottom:none}
+  .rp-ok{color:#1BA968;font-weight:700}
+  .rp-no{color:#B0563C;font-weight:600}
+  .rp-tb .rp-i{color:#999;font-weight:700;width:22px}
+  .rp-miss{background:#FFF6EC;border:1px solid #F0D6B8;border-radius:7px;padding:12px 15px;font-size:9.5pt;line-height:1.75}
+  .rp-miss b{display:block;margin-bottom:5px;color:#8A4F1E;font-size:8.5pt;text-transform:uppercase;letter-spacing:.7px}
+  .rp-done{background:#EDF9F2;border:1px solid #B8E5CC;border-radius:7px;padding:13px 15px;font-size:10pt;color:#12694A;font-weight:600;text-align:center}
+  .rp-ft{margin-top:26px;padding-top:9px;border-top:1px solid #DDE3E8;font-size:7.5pt;color:#999;display:flex;justify-content:space-between}
+}
+
 /* ===== PAINEIS RETRATEIS ===== */
 .pcol{display:flex;flex-direction:column;gap:16px;min-width:0}
 .p-tog{width:100%;display:flex;align-items:center;gap:9px;background:none;border:none;padding:0;cursor:pointer;font-family:inherit;color:var(--txt3);font-size:.7rem;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;transition:color .15s}
@@ -590,6 +623,7 @@ Seu cadastro foi criado, mas um administrador precisa liberar o acesso. Você se
 <div class="ov" id="ovu" onclick="ovc(event,'ovu')"><div class="md md-wide" id="mdu"></div></div>
 <div class="ov" id="ovn" onclick="ovc(event,'ovn')"><div class="md" id="mdn"></div></div>
 <div class="tst" id="tst"></div>
+<div id="report"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
@@ -846,7 +880,11 @@ function op(n){
     <div class="p-title" style="margin-bottom:13px">Módulos</div>
     <div class="ml">${M.map((m,i)=>{const d=p.modulos[m];
       return `<div class="mi ${d?'mi-y':'mi-n'}" id="r${i}"><span class="mi-ic">${d?'✅':'⬜'}</span><div class="mi-t"><div class="mi-nm">${m}</div><div class="mi-dt" id="dt${i}">${d||'Pendente'}</div></div>${can()?`<button class="mi-b" id="bt${i}" onclick="te(${n},${i})">${d?'Editar':'+ Data'}</button>`:''}</div>`}).join('')}</div>
-    ${can()?`<div style="display:flex;gap:9px;margin-top:20px"><button class="btn btn-s" style="flex:1" onclick="openEdit(${n})">Editar dados</button>${ME.role==='admin'?`<button class="btn btn-d" onclick="delP(${n})">Excluir</button>`:''}</div>`:''}
+    <div style="display:flex;gap:9px;margin-top:20px">
+    <button class="btn btn-p" style="flex:1" onclick="genPdf(${n})">Gerar PDF</button>
+    ${can()?`<button class="btn btn-s" style="flex:1" onclick="openEdit(${n})">Editar dados</button>`:''}
+    ${can()&&ME.role==='admin'?`<button class="btn btn-d" onclick="delP(${n})">Excluir</button>`:''}
+    </div>
     </div>`;
   $('ov').classList.add('on');
 }
@@ -883,6 +921,58 @@ async function sv(n,m,val,i){
   document.querySelector('.md-ps').textContent=dn+' de 12 módulos concluídos';
   document.querySelector('.md-bf').style.width=p.pct+'%';
   dash(); rd(); tst('✓ '+m+' atualizado');
+}
+
+
+// ═══════════ RELATORIO PDF ═══════════
+function genPdf(n){
+  const p=D.find(x=>x.n===n); if(!p)return;
+  const feitos=M.filter(m=>p.modulos[m]);
+  const faltam=M.filter(m=>!p.modulos[m]);
+  const ag=new Date();
+  const f2=v=>String(v).padStart(2,'0');
+  const agora=f2(ag.getDate())+'/'+f2(ag.getMonth()+1)+'/'+ag.getFullYear()+' às '+f2(ag.getHours())+':'+f2(ag.getMinutes());
+
+  const dts=feitos.map(m=>{const[a,b,c]=p.modulos[m].split('/');return new Date(c,b-1,a)});
+  const ult=dts.length?new Date(Math.max(...dts)):null;
+  const ultStr=ult?f2(ult.getDate())+'/'+f2(ult.getMonth()+1)+'/'+ult.getFullYear():'—';
+
+  const linhas=M.map((m,i)=>{const d=p.modulos[m];
+    return `<tr><td class="rp-i">${f2(i+1)}</td><td>${esc(m)}</td>
+      <td class="${d?'rp-ok':'rp-no'}">${d?'Concluído':'Pendente'}</td>
+      <td>${d||'—'}</td></tr>`}).join('');
+
+  $('report').innerHTML=`
+  <div class="rp-hd">
+    <div><h1>Controle de Integração</h1><p>Ciclo de Discipulado · Carazinho</p></div>
+    <div class="rp-dt">Emitido em<br>${agora}</div>
+  </div>
+
+  <div class="rp-who">
+    <div>
+      <h2>${esc(p.nome)}</h2>
+      <div class="rp-meta">
+        Participante <b>nº ${p.n}</b>${p.celular?' · '+esc(p.celular):''}<br>
+        Retiro: <b>${p.retiro||'—'}</b> · Última aula: <b>${ultStr}</b>
+      </div>
+    </div>
+    <div class="rp-pct"><div class="n">${p.pct}%</div><div class="l">${feitos.length} de 12</div></div>
+  </div>
+
+  <div class="rp-ttl">Presença nos módulos</div>
+  <table class="rp-tb">
+    <thead><tr><th></th><th>Módulo</th><th>Situação</th><th>Data</th></tr></thead>
+    <tbody>${linhas}</tbody>
+  </table>
+
+  <div class="rp-ttl">Para concluir o ciclo</div>
+  ${faltam.length
+    ? `<div class="rp-miss"><b>Faltam ${faltam.length} ${faltam.length===1?'módulo':'módulos'}</b>${faltam.map((m,i)=>`${i+1}. ${esc(m)}`).join('<br>')}</div>`
+    : `<div class="rp-done">Ciclo de integração concluído — todos os 12 módulos realizados.</div>`}
+
+  <div class="rp-ft"><span>Controle de Integração · Carazinho 2026</span><span>Emitido por ${esc(ME.nome||ME.email)}</span></div>`;
+
+  window.print();
 }
 
 // ═══════════ CADASTRO / EDIÇÃO ═══════════
