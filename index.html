@@ -361,19 +361,6 @@ td{padding:10px 13px;vertical-align:middle}
   .rp-ft .rp-seal{height:17px;width:auto;opacity:.5;vertical-align:middle;margin-right:7px}
 }
 
-/* ===== PAINEIS RETRATEIS ===== */
-.pcol{display:flex;flex-direction:column;gap:16px;min-width:0}
-.p-tog{width:100%;display:flex;align-items:center;gap:9px;background:none;border:none;padding:0;cursor:pointer;font-family:inherit;color:var(--txt3);font-size:.7rem;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;transition:color .15s}
-.p-tog:hover{color:var(--green)}
-.p-tog .ttl{display:flex;align-items:center;gap:7px}
-.p-tog .num{background:rgba(255,255,255,.06);color:var(--txt2);border-radius:20px;padding:2px 9px;font-size:.68rem;font-weight:800;letter-spacing:0}
-.p-tog.medal .num{background:rgba(46,229,140,.14);color:var(--green)}
-.p-tog .ln{flex:1;height:1px;background:var(--bdr)}
-.p-tog .chev{font-style:normal;font-size:.85rem;transition:transform .25s;display:inline-block}
-.p-tog.open .chev{transform:rotate(180deg)}
-.p-body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s cubic-bezier(.4,0,.2,1),margin-top .3s}
-.p-body>div{overflow:hidden;min-height:0}
-.p-body.open{grid-template-rows:1fr;margin-top:16px}
 
 /* ===== CONCLUIDOS ===== */
 .dn-i{display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:var(--r-sm);cursor:pointer;transition:.15s;margin-bottom:3px;background:rgba(46,229,140,.045);border:1px solid rgba(46,229,140,.14)}
@@ -382,6 +369,23 @@ td{padding:10px 13px;vertical-align:middle}
 .dn-nm{flex:1;font-size:.84rem;font-weight:600;color:var(--green);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .dn-dt{font-size:.68rem;color:var(--txt3);flex-shrink:0}
 .p-none{padding:16px 4px;font-size:.79rem;color:var(--txt3);text-align:center}
+
+/* ===== PAINEL DE MODULOS ===== */
+.panels.one{grid-template-columns:1fr}
+.panel-wide{padding:20px 24px 22px}
+.p-head{display:flex;align-items:center;gap:11px;margin-bottom:18px;flex-wrap:wrap}
+.p-title-in{font-size:.7rem;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:var(--txt3);white-space:nowrap}
+.p-line{flex:1;height:1px;background:var(--bdr);min-width:20px}
+.p-btn{display:inline-flex;align-items:center;gap:7px;padding:7px 13px;border-radius:20px;border:1px solid var(--bdr);background:rgba(255,255,255,.028);color:var(--txt2);font-size:.76rem;font-weight:600;cursor:pointer;font-family:inherit;transition:.18s;white-space:nowrap}
+.p-btn:hover{border-color:var(--green);color:var(--green);background:rgba(46,229,140,.07);transform:translateY(-1px)}
+.p-btn.gold:hover{border-color:var(--gold);color:var(--gold);background:rgba(197,162,56,.09)}
+.p-btn .ic{font-size:.9rem;line-height:1}
+.p-btn .n{background:rgba(255,255,255,.07);border-radius:20px;padding:1px 8px;font-size:.7rem;font-weight:800;font-variant-numeric:tabular-nums}
+.p-btn:hover .n{background:rgba(46,229,140,.16)}
+.p-btn.gold:hover .n{background:rgba(197,162,56,.2)}
+.bars-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 30px}
+@media(max-width:900px){.bars-grid{grid-template-columns:1fr}}
+.mod-list-modal{display:flex;flex-direction:column;gap:4px}
 
 /* ===== TURMAS ===== */
 .tbar{display:flex;align-items:center;gap:9px;margin-bottom:18px;flex-wrap:wrap}
@@ -481,7 +485,6 @@ td{padding:10px 13px;vertical-align:middle}
 /* ===== RESPONSIVE ===== */
 @media(max-width:1080px){
 .panels{grid-template-columns:1fr}
-.pcol{gap:13px}
 .kpis{grid-template-columns:repeat(3,1fr)}
 .hero-in{grid-template-columns:1fr;gap:22px}
 .hero-right{flex-direction:row}
@@ -643,18 +646,16 @@ Seu cadastro foi criado, mas um administrador precisa liberar o acesso. Você se
 <div class="kpi k-o"><div class="kpi-v" id="k5">0%</div><div class="kpi-l">Média geral</div></div>
 </div>
 
-<div class="panels">
-<div class="pcol">
-<div class="panel">
-<button class="p-tog medal" id="togD" onclick="tog('D')"><span class="ttl">🏅 Concluídos</span><span class="num" id="nD">0</span><span class="ln"></span><i class="chev">▾</i></button>
-<div class="p-body" id="bodyD"><div id="listD"></div></div>
+<div class="panels one">
+<div class="panel panel-wide">
+<div class="p-head">
+<span class="p-title-in">Progresso por módulo</span>
+<span class="p-line"></span>
+<button class="p-btn gold" onclick="openDone()"><span class="ic">🏅</span>Concluídos<span class="n" id="nD">0</span></button>
+<button class="p-btn" onclick="openRank()"><span class="ic">🏆</span>Mais avançados<span class="n" id="nR">0</span></button>
 </div>
-<div class="panel">
-<button class="p-tog" id="togR" onclick="tog('R')"><span class="ttl">Mais avançados</span><span class="num" id="nR">0</span><span class="ln"></span><i class="chev">▾</i></button>
-<div class="p-body" id="bodyR"><div id="rank"></div></div>
+<div id="bars" class="bars-grid"></div>
 </div>
-</div>
-<div class="panel"><div class="p-title">Progresso por módulo</div><div id="bars"></div></div>
 </div>
 
 <div class="msearch" id="ms">
@@ -927,32 +928,14 @@ function dash(){
   $('hUpd').textContent = ult?String(ult.getDate()).padStart(2,'0')+'/'+String(ult.getMonth()+1).padStart(2,'0')+'/'+ult.getFullYear():'—';
 
   // concluídos (100%) — saem do ranking
-  const done=V.filter(p=>p.pct>=100).sort((a,b)=>a.nome.localeCompare(b.nome,'pt'));
-  $('nD').textContent=done.length;
-  $('listD').innerHTML=done.length
-    ? done.map(p=>{const dts=M.map(m=>p.modulos[m]).filter(Boolean).map(d=>{const[a,b,c]=d.split('/');return new Date(c,b-1,a)});
-        const ult=dts.length?new Date(Math.max(...dts)):null;
-        return `<div class="dn-i" onclick="op(${p.n})"><span class="dn-m">🏅</span><span class="dn-nm">${esc(p.nome)}</span><span class="dn-dt">${ult?String(ult.getDate()).padStart(2,'0')+'/'+String(ult.getMonth()+1).padStart(2,'0')+'/'+ult.getFullYear():''}</span></div>`}).join('')
-    : '<div class="p-none">Ninguém concluiu o ciclo ainda.</div>';
-
-  // ranking — top 10 de quem ainda não concluiu
-  const emAndamento=V.filter(p=>p.pct<100).sort((a,b)=>b.pct-a.pct).slice(0,10);
-  $('nR').textContent=emAndamento.length;
-  $('rank').innerHTML=emAndamento.length
-    ? emAndamento.map((p,i)=>
-      `<div class="rank-i" onclick="op(${p.n})"><div class="rank-n ${i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkn'}">${i+1}</div><span class="rank-nm">${esc(p.nome)}</span><div class="rank-b"><div class="rank-bf" style="width:${p.pct}%;background:${col(p.pct)}"></div></div><span class="rank-p" style="color:${col(p.pct)}">${p.pct}%</span></div>`).join('')
-    : '<div class="p-none">Todos concluíram o ciclo.</div>';
+  $('nD').textContent=V.filter(p=>p.pct>=100).length;
+  $('nR').textContent=V.filter(p=>p.pct<100).length;
 
   $('bars').innerHTML=M.map(m=>{const c=V.filter(p=>p.modulos[m]).length,pc=Math.round(c/t*100);
     return `<div class="mrow ${pend===m?'act':''}"><span class="mrow-n" title="Ver quem falta" onclick="setPend('${pend===m?'':m.replace(/'/g,"\\'")}')">${m}</span><div class="mrow-t"><div class="mrow-f" style="width:${pc}%;background:${col(pc)}"></div></div><span class="mrow-c">${c}/${t}</span></div>`}).join('');
   $('pendSel').value=pend; $('pendSel').classList.toggle('act',!!pend);
 }
 
-function tog(k){
-  const b=$('body'+k), t=$('tog'+k);
-  const open=b.classList.toggle('open');
-  t.classList.toggle('open',open);
-}
 function setPend(m){pend=m||'';$('pendSel').value=pend;$('pendSel').classList.toggle('act',!!pend);
   document.querySelectorAll('.mrow').forEach((r,i)=>r.classList.toggle('act',M[i]===pend));
   lim=STEP; rd(); if(pend)$('lista').scrollIntoView({behavior:'smooth',block:'start'})}
@@ -1247,6 +1230,48 @@ async function setAppr(id,ok){
 }
 
 
+
+
+// ═══════════ CONCLUIDOS / RANKING ═══════════
+function ultimaData(p){
+  const dts=M.map(m=>p.modulos[m]).filter(Boolean)
+    .map(d=>{const[a,b,c]=d.split('/');return new Date(c,b-1,a)});
+  if(!dts.length) return '';
+  const u=new Date(Math.max(...dts));
+  return String(u.getDate()).padStart(2,'0')+'/'+String(u.getMonth()+1).padStart(2,'0')+'/'+u.getFullYear();
+}
+
+function mdShell(titulo,sub,corpo){
+  return `<div class="md-h"><button class="md-x" onclick="cl('ovu')">✕</button><div class="md-in">
+    <div class="ch-t">${titulo}</div><div class="ch-s">${sub}</div></div></div>
+    <div class="md-b">${corpo}</div>`;
+}
+
+function openDone(){
+  const V=DT();
+  const done=V.filter(p=>p.pct>=100).sort((a,b)=>a.nome.localeCompare(b.nome,'pt'));
+  const escopo = TU ? 'Turma '+esc(TU) : 'Todas as turmas';
+  const corpo = done.length
+    ? `<div class="mod-list-modal">${done.map(p=>
+        `<div class="dn-i" onclick="cl('ovu');op(${p.n})"><span class="dn-m">🏅</span><span class="dn-nm">${esc(p.nome)}</span><span class="dn-dt">${ultimaData(p)}</span></div>`).join('')}</div>`
+    : '<div class="emp"><div class="emp-i">🏅</div><div class="emp-t">Ninguém concluiu o ciclo ainda</div><div class="emp-s">Quem fechar os 12 módulos aparece aqui</div></div>';
+  $('mdu').innerHTML=mdShell('🏅 Concluídos',
+    `${done.length} ${done.length===1?'pessoa fechou':'pessoas fecharam'} os 12 módulos · ${escopo}`, corpo);
+  $('ovu').classList.add('on');
+}
+
+function openRank(){
+  const V=DT();
+  const lista=V.filter(p=>p.pct<100).sort((a,b)=>b.pct-a.pct).slice(0,10);
+  const escopo = TU ? 'Turma '+esc(TU) : 'Todas as turmas';
+  const corpo = lista.length
+    ? `<div class="mod-list-modal">${lista.map((p,i)=>{const fa=12-M.filter(m=>p.modulos[m]).length;
+        return `<div class="rank-i" onclick="cl('ovu');op(${p.n})"><div class="rank-n ${i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkn'}">${i+1}</div><div style="flex:1;min-width:0"><div class="rank-nm">${esc(p.nome)}</div><div class="td-sub">faltam ${fa} ${fa===1?'módulo':'módulos'}</div></div><div class="rank-b"><div class="rank-bf" style="width:${p.pct}%;background:${col(p.pct)}"></div></div><span class="rank-p" style="color:${col(p.pct)}">${p.pct}%</span></div>`}).join('')}</div>`
+    : '<div class="emp"><div class="emp-i">🏆</div><div class="emp-t">Todos concluíram o ciclo</div></div>';
+  $('mdu').innerHTML=mdShell('🏆 Mais avançados',
+    `Quem está mais perto de fechar o ciclo · ${escopo}`, corpo);
+  $('ovu').classList.add('on');
+}
 
 // ═══════════ IMPORTAR LISTA ═══════════
 let impLin=[];
