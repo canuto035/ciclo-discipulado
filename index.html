@@ -30,8 +30,6 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .auth::before{content:'';position:absolute;top:-20%;right:-10%;width:640px;height:640px;background:radial-gradient(circle,rgba(46,229,140,.09),transparent 65%);pointer-events:none}
 .auth::after{content:'';position:absolute;bottom:-25%;left:-8%;width:540px;height:540px;background:radial-gradient(circle,rgba(53,167,255,.06),transparent 68%);pointer-events:none}
 .auth-box{position:relative;z-index:1;width:100%;max-width:398px;background:var(--card);border:1px solid var(--bdr);border-radius:var(--r-lg);padding:34px 32px;box-shadow:0 24px 70px rgba(0,0,0,.5)}
-.auth-logo{font-family:'Syne',sans-serif;font-size:1.32rem;font-weight:800;letter-spacing:-.5px;margin-bottom:4px}
-.auth-sub{font-size:.76rem;color:var(--txt3);margin-bottom:26px}
 .auth-tabs{display:flex;gap:4px;background:var(--bg2);border:1px solid var(--bdr);border-radius:11px;padding:4px;margin-bottom:22px}
 .auth-tab{flex:1;padding:8px;border-radius:8px;border:none;background:none;color:var(--txt3);font-size:.8rem;font-weight:600;cursor:pointer;font-family:inherit;transition:.16s}
 .auth-tab.on{background:var(--green);color:#04160D;font-weight:700}
@@ -389,13 +387,13 @@ td{padding:10px 13px;vertical-align:middle}
 .logo-div{width:1px;height:26px;background:var(--bdr);flex-shrink:0}
 .logo-txt h1{font-family:'Syne',sans-serif;font-size:.98rem;font-weight:800;letter-spacing:-.3px;line-height:1.15;white-space:nowrap}
 .logo-txt p{font-size:.66rem;color:var(--txt3);margin-top:1px;white-space:nowrap}
-.auth-mark{display:flex;justify-content:center;margin-bottom:20px}
-.auth-mark img{width:196px;max-width:78%;height:auto;filter:drop-shadow(0 3px 14px rgba(197,162,56,.22))}
+.auth-mark{display:flex;justify-content:center;margin:4px 0 26px}
+.auth-mark img{width:232px;max-width:86%;height:auto;filter:drop-shadow(0 4px 18px rgba(197,162,56,.24))}
 @media(max-width:760px){
 .logo-img{height:25px}
 .logo-txt h1{font-size:.86rem}
 .logo-txt p{display:none}
-.auth-mark img{width:172px}
+.auth-mark img{width:200px}
 }
 
 /* ===== BUSCA MOBILE ===== */
@@ -482,8 +480,6 @@ td{padding:10px 13px;vertical-align:middle}
 <div class="auth hide" id="auth">
 <div class="auth-box">
 <div class="auth-mark"><img id="logoAuth" alt="Integração"></div>
-<div class="auth-logo">Controle de Integração</div>
-<div class="auth-sub">Carazinho · 2026</div>
 
 <div class="auth-tabs" id="aTabs">
 <button class="auth-tab on" id="tabIn" onclick="aTab('in')">Entrar</button>
