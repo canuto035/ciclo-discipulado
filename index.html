@@ -882,7 +882,12 @@ function turmas(){
 
 function barraTurmas(){
   const ts=turmas(), bar=$('tbar');
-  if(ts.length<2){bar.innerHTML='';return}   // uma turma só: não polui a tela
+  if(!ts.length||!D.length){bar.innerHTML='';return}
+  const semTurma = ts.length===1 && ts[0][0]==='—';
+  if(semTurma){   // banco ainda sem a coluna turma
+    bar.innerHTML='<span class="tbar-l">Turma</span><span style="font-size:.76rem;color:var(--txt3)">ainda não configurada — rode o turmas.sql no Supabase</span>';
+    return;
+  }
   bar.innerHTML='<span class="tbar-l">Turma</span>'
     + `<button class="tpill ${TU===''?'on':''}" onclick="setTurma('')">Todas<span class="c">${D.length}</span></button>`
     + ts.map(([t,n])=>`<button class="tpill ${TU===t?'on':''}" onclick="setTurma('${t.replace(/'/g,"\\'")}')">${esc(t)}<span class="c">${n}</span></button>`).join('');
