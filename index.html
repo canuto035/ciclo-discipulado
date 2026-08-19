@@ -381,6 +381,27 @@ td{padding:10px 13px;vertical-align:middle}
 .dn-dt{font-size:.68rem;color:var(--txt3);flex-shrink:0}
 .p-none{padding:16px 4px;font-size:.79rem;color:var(--txt3);text-align:center}
 
+/* ===== MESCLAR ===== */
+.mg-sug{background:rgba(242,193,78,.06);border:1px solid rgba(242,193,78,.22);border-radius:var(--r-sm);padding:11px 13px;margin-bottom:16px}
+.mg-sug-t{font-size:.68rem;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:var(--yellow);margin-bottom:9px}
+.mg-s{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;background:rgba(255,255,255,.03);border:1px solid var(--bdr);margin-bottom:5px;cursor:pointer;transition:.15s;font-size:.79rem}
+.mg-s:hover{border-color:var(--yellow);background:rgba(242,193,78,.07)}
+.mg-s:last-child{margin-bottom:0}
+.mg-s b{font-weight:600}
+.mg-s .ar{color:var(--txt3);flex-shrink:0}
+.mg-s .pc{color:var(--txt3);font-size:.72rem;font-variant-numeric:tabular-nums}
+.mg-pick{display:grid;grid-template-columns:1fr auto 1fr;gap:11px;align-items:end;margin-bottom:16px}
+.mg-arrow{padding-bottom:11px;color:var(--txt3);font-size:1.1rem}
+.mg-prev{background:rgba(46,229,140,.05);border:1px solid rgba(46,229,140,.2);border-radius:var(--r-sm);padding:14px 16px;margin-bottom:16px}
+.mg-prev-t{font-size:.68rem;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:var(--green);margin-bottom:10px}
+.mg-r{display:flex;justify-content:space-between;gap:12px;font-size:.8rem;padding:4px 0;border-bottom:1px solid rgba(29,44,53,.5)}
+.mg-r:last-child{border:none}
+.mg-r span:first-child{color:var(--txt3)}
+.mg-r b{font-weight:600;text-align:right}
+.mg-gain{color:var(--green);font-weight:700}
+.mg-warn{font-size:.74rem;color:var(--txt3);line-height:1.6;margin-bottom:16px}
+.mg-warn b{color:var(--orange)}
+
 /* ===== LOGO ===== */
 .logo-wrap{display:flex;align-items:center;gap:13px;min-width:0}
 .logo-img{height:30px;width:auto;flex-shrink:0;display:block}
@@ -534,6 +555,7 @@ Seu cadastro foi criado, mas um administrador precisa liberar o acesso. Você se
 <div class="udrop" id="udrop">
 <div class="uhead"><b id="uNome">—</b><span class="rb" id="uRole">—</span></div>
 <button class="uitem" id="miUsers" onclick="openUsers()">Usuários<span class="pend-badge hide" id="pendN">0</span></button>
+<button class="uitem" id="miMerge" onclick="openMerge()">Mesclar cadastros</button>
 <button class="uitem" onclick="openHist()">Histórico</button>
 <button class="uitem" onclick="exportCsv()">Baixar CSV</button>
 <button class="uitem dang" onclick="doLogout()">Sair</button>
@@ -787,6 +809,7 @@ async function boot(){
   rb.className='rb rb-'+prof.role.charAt(0);
 
   $('miUsers').classList.toggle('hide', prof.role!=='admin');
+  $('miMerge').classList.toggle('hide', prof.role!=='admin');
   $('heroBtns').classList.toggle('hide', !can());
   $('roNote').classList.toggle('hide', can());
 
@@ -1155,6 +1178,169 @@ async function setAppr(id,ok){
   if(error){tst('Erro: '+error.message,1);return}
   tst(ok?'✓ Acesso liberado':'Acesso bloqueado');
   openUsers(); checkPend();
+}
+
+
+// ═══════════ MESCLAR CADASTROS ═══════════
+const nrm = s => s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z ]/g,'').trim().split(/\s+/).filter(Boolean);
+
+// distancia de edicao -> similaridade 0..1
+function sim(s,t){
+  if(s===t) return 1;
+  const n=s.length, m=t.length;
+  if(!n||!m) return 0;
+  let prev=Array.from({length:m+1},(_,j)=>j), cur=new Array(m+1);
+  for(let i=1;i<=n;i++){
+    cur[0]=i;
+    for(let j=1;j<=m;j++)
+      cur[j]=Math.min(prev[j]+1, cur[j-1]+1, prev[j-1]+(s[i-1]===t[j-1]?0:1));
+    [prev,cur]=[cur,prev];
+  }
+  return 1 - prev[m]/Math.max(n,m);
+}
+
+function sugestoes(){
+  const out=[];
+  for(let i=0;i<D.length;i++) for(let j=i+1;j<D.length;j++){
+    const a=D[i], b=D[j], pa=nrm(a.nome), pb=nrm(b.nome);
+    if(!pa.length||!pb.length) continue;
+    let score=0, motivo=[];
+
+    // primeiro nome — grafia quase igual pesa MAIS que idêntica
+    // (nome igual é comum; quase igual costuma ser a mesma pessoa digitada diferente)
+    const s1=sim(pa[0],pb[0]);
+    if(s1>=.72&&s1<1){score+=3;motivo.push('grafia parecida')}
+    else if(s1===1){score+=2;motivo.push('mesmo primeiro nome')}
+    else if(s1>=.6){score+=1}
+
+    // nome completo
+    const s2=sim(pa.join(' '),pb.join(' '));
+    if(s2>=.8){score+=2;motivo.push('nome completo quase igual')}
+    else if(s2>=.6){score+=1}
+
+    // sobrenomes em comum
+    const com=pa.filter(x=>pb.includes(x)).length;
+    if(com>=2){score+=2;motivo.push('sobrenomes em comum')}
+    else if(com===1&&pa.length>1&&pb.length>1){score+=1}
+
+    // um dos dois sem telefone (assinatura de cadastro criado as pressas)
+    if(!a.celular||!b.celular) score+=1;
+
+    // telefone identico = praticamente certeza
+    const ta=(a.celular||'').replace(/\D/g,''), tb=(b.celular||'').replace(/\D/g,'');
+    if(ta&&tb&&ta===tb){score+=5;motivo.push('mesmo telefone')}
+
+    if(score>=4) out.push({a,b,score,motivo:motivo[0]||'nomes parecidos'});
+  }
+  return out.sort((x,y)=>y.score-x.score).slice(0,10);
+}
+
+// data mais antiga entre as duas
+function menorData(d1,d2){
+  if(!d1) return d2; if(!d2) return d1;
+  const k=s=>s.split('/').reverse().join('');
+  return k(d1)<=k(d2) ? d1 : d2;
+}
+
+function previa(a,b){
+  const mods={}; let ganho=0;
+  M.forEach(m=>{
+    const v=menorData(a.modulos[m], b.modulos[m]);
+    if(v) mods[m]=v;
+    if(!a.modulos[m] && b.modulos[m]) ganho++;
+  });
+  return {
+    nome:a.nome,
+    celular:a.celular||b.celular||'',
+    retiro:a.retiro||b.retiro||'',
+    mods, ganho,
+    pct:Math.round(Object.keys(mods).length/12*100)
+  };
+}
+
+function openMerge(){
+  if(ME.role!=='admin')return;
+  $('udrop').classList.remove('on');
+  const sug=sugestoes();
+  const opts=[...D].sort((x,y)=>x.nome.localeCompare(y.nome,'pt'))
+    .map(p=>`<option value="${p.n}">nº${p.n} · ${esc(p.nome)} (${p.pct}%)</option>`).join('');
+
+  $('mdu').innerHTML=`<div class="md-h"><button class="md-x" onclick="cl('ovu')">✕</button><div class="md-in">
+    <div class="ch-t">Mesclar cadastros</div><div class="ch-s">Junta duas fichas da mesma pessoa em uma só</div></div></div>
+    <div class="md-b">
+    ${sug.length?`<div class="mg-sug"><div class="mg-sug-t">⚠ Possíveis duplicatas encontradas</div>
+      ${sug.map(s=>`<div class="mg-s" onclick="setMerge(${s.a.n},${s.b.n})" title="${s.motivo}">
+        <b>${esc(s.a.nome)}</b><span class="pc">${s.a.pct}%</span>
+        <span class="ar">↔</span>
+        <b>${esc(s.b.nome)}</b><span class="pc">${s.b.pct}%</span></div>`).join('')}
+      </div>`:''}
+
+    <div class="mg-pick">
+      <div><label class="ch-lb">Manter (principal)</label>
+        <select class="ch-in" id="mgA" onchange="mgPrev()"><option value="">Escolher…</option>${opts}</select></div>
+      <div class="mg-arrow">←</div>
+      <div><label class="ch-lb">Absorver (será apagado)</label>
+        <select class="ch-in" id="mgB" onchange="mgPrev()"><option value="">Escolher…</option>${opts}</select></div>
+    </div>
+
+    <div id="mgPrev"></div>
+
+    <div class="mg-ft" style="display:flex;gap:9px">
+      <button class="btn btn-s" style="flex:1" onclick="cl('ovu')">Cancelar</button>
+      <button class="btn btn-p" style="flex:1" id="mgGo" onclick="doMerge()" disabled>Mesclar</button>
+    </div></div>`;
+  $('ovu').classList.add('on');
+}
+
+function setMerge(na,nb){
+  const a=D.find(p=>p.n===na), b=D.find(p=>p.n===nb);
+  // o mais completo (ou com telefone) vira o principal
+  const aMelhor = (a.celular?1:0)-(b.celular?1:0) || a.pct-b.pct || b.n-a.n;
+  $('mgA').value = aMelhor>=0 ? na : nb;
+  $('mgB').value = aMelhor>=0 ? nb : na;
+  mgPrev();
+}
+
+function mgPrev(){
+  const na=+$('mgA').value, nb=+$('mgB').value;
+  const box=$('mgPrev'), btn=$('mgGo');
+  if(!na||!nb||na===nb){
+    box.innerHTML = na&&nb&&na===nb ? '<div class="mg-warn"><b>Escolha duas fichas diferentes.</b></div>' : '';
+    btn.disabled=true; return;
+  }
+  const a=D.find(p=>p.n===na), b=D.find(p=>p.n===nb), r=previa(a,b);
+  box.innerHTML=`<div class="mg-prev"><div class="mg-prev-t">✓ Resultado da mesclagem</div>
+    <div class="mg-r"><span>Nome</span><b>${esc(r.nome)}</b></div>
+    <div class="mg-r"><span>Nº</span><b>${a.n}</b></div>
+    <div class="mg-r"><span>Celular</span><b>${esc(r.celular)||'—'}</b></div>
+    <div class="mg-r"><span>Retiro</span><b>${r.retiro||'—'}</b></div>
+    <div class="mg-r"><span>Módulos</span><b>${Object.keys(r.mods).length} de 12 · ${r.pct}%${r.ganho?` <span class="mg-gain">(+${r.ganho})</span>`:''}</b></div>
+    </div>
+    <div class="mg-warn">A ficha <b>nº${b.n} ${esc(b.nome)}</b> será apagada. Quando as duas tiverem o mesmo módulo, fica a data mais antiga. Esta ação não pode ser desfeita.</div>`;
+  btn.disabled=false;
+}
+
+async function doMerge(){
+  const na=+$('mgA').value, nb=+$('mgB').value;
+  const a=D.find(p=>p.n===na), b=D.find(p=>p.n===nb);
+  if(!a||!b||na===nb)return;
+  if(!confirm(`Mesclar "${b.nome}" dentro de "${a.nome}"?\n\nA ficha nº${b.n} será apagada definitivamente.`))return;
+
+  busy('mgGo',1);
+  const r=previa(a,b);
+  const mods={}; Object.entries(r.mods).forEach(([k,v])=>mods[k]=br2iso(v));
+
+  const up=await sb.from('participantes')
+    .update({modulos:mods, celular:r.celular, retiro:br2iso(r.retiro)}).eq('id',a.id);
+  if(up.error){busy('mgGo',0,'Mesclar');tst('Erro: '+up.error.message,1);return}
+
+  const del=await sb.from('participantes').delete().eq('id',b.id);
+  busy('mgGo',0,'Mesclar');
+  if(del.error){tst('Módulos unidos, mas não consegui apagar a duplicata: '+del.error.message,1);await load();return}
+
+  await log(a.n,a.nome,'Cadastros mesclados',`nº${b.n} ${b.nome} absorvido · +${r.ganho} módulo(s)`);
+  cl('ovu'); await load();
+  tst(`✓ ${b.nome} mesclado em ${a.nome}${r.ganho?` · +${r.ganho} módulos`:''}`);
 }
 
 // ═══════════ HISTÓRICO ═══════════
