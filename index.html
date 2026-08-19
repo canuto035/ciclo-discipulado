@@ -381,6 +381,34 @@ td{padding:10px 13px;vertical-align:middle}
 .dn-dt{font-size:.68rem;color:var(--txt3);flex-shrink:0}
 .p-none{padding:16px 4px;font-size:.79rem;color:var(--txt3);text-align:center}
 
+/* ===== TURMAS ===== */
+.tbar{display:flex;align-items:center;gap:9px;margin-bottom:18px;flex-wrap:wrap}
+.tbar-l{font-size:.66rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--txt3);margin-right:2px}
+.tpill{padding:7px 15px;border-radius:20px;border:1px solid var(--bdr);background:var(--card);color:var(--txt2);font-size:.79rem;font-weight:600;cursor:pointer;transition:.18s;font-family:inherit;white-space:nowrap}
+.tpill:hover{border-color:var(--green);color:var(--green)}
+.tpill.on{background:var(--green);color:#04160D;border-color:var(--green);font-weight:700}
+.tpill .c{opacity:.6;font-size:.72rem;margin-left:5px;font-variant-numeric:tabular-nums}
+.tpill.on .c{opacity:.75}
+
+/* ===== IMPORTAR ===== */
+.imp-ta{width:100%;min-height:190px;padding:13px 15px;border-radius:var(--r-sm);border:1px solid var(--bdr);background:var(--bg2);color:var(--txt);font-size:.84rem;font-family:'Inter',monospace;line-height:1.65;outline:none;resize:vertical;transition:.16s}
+.imp-ta:focus{border-color:var(--green);box-shadow:0 0 0 3px var(--green-glow)}
+.imp-hint{font-size:.73rem;color:var(--txt3);line-height:1.7;margin-bottom:14px}
+.imp-hint code{background:rgba(255,255,255,.06);padding:1.5px 6px;border-radius:5px;font-size:.72rem;color:var(--txt2)}
+.imp-res{margin:16px 0}
+.imp-g{margin-bottom:13px}
+.imp-gt{font-size:.68rem;font-weight:700;letter-spacing:.7px;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:7px}
+.imp-gt .n{border-radius:20px;padding:1px 8px;font-size:.68rem;font-variant-numeric:tabular-nums}
+.imp-ok .imp-gt{color:var(--green)} .imp-ok .n{background:rgba(46,229,140,.14)}
+.imp-dup .imp-gt{color:var(--yellow)} .imp-dup .n{background:rgba(242,193,78,.14)}
+.imp-err .imp-gt{color:var(--orange)} .imp-err .n{background:rgba(255,159,67,.14)}
+.imp-i{display:flex;align-items:center;gap:9px;padding:7px 11px;border-radius:8px;background:rgba(255,255,255,.025);border:1px solid var(--bdr);margin-bottom:4px;font-size:.79rem}
+.imp-i .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.imp-i .tel{color:var(--txt3);font-size:.73rem;white-space:nowrap}
+.imp-i .why{color:var(--txt3);font-size:.72rem;white-space:nowrap}
+.imp-cb{width:17px;height:17px;border-radius:5px;border:1.6px solid var(--bdr);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.6rem;font-weight:800;color:transparent;cursor:pointer;transition:.15s}
+.imp-i.on .imp-cb{background:var(--green);border-color:var(--green);color:#04160D}
+
 /* ===== MESCLAR ===== */
 .mg-sug{background:rgba(242,193,78,.06);border:1px solid rgba(242,193,78,.22);border-radius:var(--r-sm);padding:11px 13px;margin-bottom:16px}
 .mg-sug-t{font-size:.68rem;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:var(--yellow);margin-bottom:9px}
@@ -555,6 +583,7 @@ Seu cadastro foi criado, mas um administrador precisa liberar o acesso. Você se
 <div class="udrop" id="udrop">
 <div class="uhead"><b id="uNome">—</b><span class="rb" id="uRole">—</span></div>
 <button class="uitem" id="miUsers" onclick="openUsers()">Usuários<span class="pend-badge hide" id="pendN">0</span></button>
+<button class="uitem" id="miImp" onclick="openImp()">Importar lista</button>
 <button class="uitem" id="miMerge" onclick="openMerge()">Mesclar cadastros</button>
 <button class="uitem" onclick="openHist()">Histórico</button>
 <button class="uitem" onclick="exportCsv()">Baixar CSV</button>
@@ -597,6 +626,8 @@ Seu cadastro foi criado, mas um administrador precisa liberar o acesso. Você se
 </div>
 </div>
 </section>
+
+<div class="tbar" id="tbar"></div>
 
 <div class="kpis">
 <div class="kpi k-t" onclick="goFlt('all')"><div class="kpi-v" id="k1">0</div><div class="kpi-l">Total</div></div>
@@ -685,6 +716,7 @@ Seu cadastro foi criado, mas um administrador precisa liberar o acesso. Você se
 </div>
 <div class="ov" id="ovu" onclick="ovc(event,'ovu')"><div class="md md-wide" id="mdu"></div></div>
 <div class="ov" id="ovn" onclick="ovc(event,'ovn')"><div class="md" id="mdn"></div></div>
+<div class="ov" id="ovi" onclick="ovc(event,'ovi')"><div class="md md-wide" id="mdi"></div></div>
 <div class="tst" id="tst"></div>
 <div id="report"></div>
 
@@ -704,7 +736,7 @@ const M=["Aliança de Sangue","Relacionando-me com o Pai","Cinco Ministérios","
 const AB=["A.S","R.P","5M","A.E","P.O","M.R","B.E","Pd","Dz","E.S","G.F","B.A"];
 
 let ME=null, D=[], f='all', s='n', v='t', pend='', dir={nome:1,pct:-1}, chSel=new Set();
-const STEP=5; let lim=STEP;
+const STEP=5; let lim=STEP; let TU='';   // '' = todas as turmas
 
 const can = a => ME && (a==='del' ? ME.role==='admin' : ME.role==='admin'||ME.role==='editor');
 const $ = i => document.getElementById(i);
@@ -810,6 +842,7 @@ async function boot(){
 
   $('miUsers').classList.toggle('hide', prof.role!=='admin');
   $('miMerge').classList.toggle('hide', prof.role!=='admin');
+  $('miImp').classList.toggle('hide', !can());
   $('heroBtns').classList.toggle('hide', !can());
   $('roNote').classList.toggle('hide', can());
 
@@ -826,7 +859,7 @@ async function load(){
   D = data.map(r=>{
     const mods={}; M.forEach(m=>mods[m]=iso2br(r.modulos?.[m])||null);
     return {id:r.id,n:r.numero,nome:r.nome,celular:r.celular||'',retiro:iso2br(r.retiro)||'',
-            modulos:mods,pct:Math.round(M.filter(m=>mods[m]).length/12*100)};
+            turma:r.turma||'—',modulos:mods,pct:Math.round(M.filter(m=>mods[m]).length/12*100)};
   });
   dash(); rd();
 }
@@ -839,31 +872,51 @@ function bdg(p){const m={done:['bd-g','🏅 Concluído'],high:['bd-b','Avançado
 const wal = c => c?'https://wa.me/'+c.replace(/\D/g,''):'';
 const esc = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-function dash(){
-  const t=D.length; if(!t)return;
-  $('k1').textContent=t;
-  $('k2').textContent=D.filter(p=>p.pct>=100).length;
-  $('k3').textContent=D.filter(p=>p.pct>=75&&p.pct<100).length;
-  $('k4').textContent=D.filter(p=>p.pct>=50&&p.pct<75).length;
-  $('k5').textContent=Math.round(D.reduce((a,p)=>a+p.pct,0)/t)+'%';
+// participantes da turma selecionada
+function DT(){ return TU ? D.filter(p=>p.turma===TU) : D }
 
-  const cel=t*12, fe=D.reduce((a,p)=>a+M.filter(m=>p.modulos[m]).length,0), gp=Math.round(fe/cel*100);
+function turmas(){
+  const c={}; D.forEach(p=>c[p.turma]=(c[p.turma]||0)+1);
+  return Object.entries(c).sort((a,b)=>b[0].localeCompare(a[0],'pt'));
+}
+
+function barraTurmas(){
+  const ts=turmas(), bar=$('tbar');
+  if(ts.length<2){bar.innerHTML='';return}   // uma turma só: não polui a tela
+  bar.innerHTML='<span class="tbar-l">Turma</span>'
+    + `<button class="tpill ${TU===''?'on':''}" onclick="setTurma('')">Todas<span class="c">${D.length}</span></button>`
+    + ts.map(([t,n])=>`<button class="tpill ${TU===t?'on':''}" onclick="setTurma('${t.replace(/'/g,"\\'")}')">${esc(t)}<span class="c">${n}</span></button>`).join('');
+}
+
+function setTurma(t){ TU=t; lim=STEP; pend=''; barraTurmas(); dash(); rd();
+  $('lista').scrollIntoView({behavior:'smooth',block:'start'}) }
+
+function dash(){
+  barraTurmas();
+  const V=DT(); const t=V.length; if(!t){$('cnt').textContent='';return}
+  $('k1').textContent=t;
+  $('k2').textContent=V.filter(p=>p.pct>=100).length;
+  $('k3').textContent=V.filter(p=>p.pct>=75&&p.pct<100).length;
+  $('k4').textContent=V.filter(p=>p.pct>=50&&p.pct<75).length;
+  $('k5').textContent=Math.round(V.reduce((a,p)=>a+p.pct,0)/t)+'%';
+
+  const cel=t*12, fe=V.reduce((a,p)=>a+M.filter(m=>p.modulos[m]).length,0), gp=Math.round(fe/cel*100);
   $('hPct').textContent=gp+'%';
   $('hBar').style.width=gp+'%';
   $('hSub').textContent=fe.toLocaleString('pt-BR')+' módulos registrados de '+cel.toLocaleString('pt-BR');
-  $('hAtt').textContent=D.filter(p=>p.pct<50).length;
+  $('hAtt').textContent=V.filter(p=>p.pct<50).length;
 
   let pior=M[0],pn=1e9;
-  M.forEach(m=>{const c=D.filter(p=>p.modulos[m]).length;if(c<pn){pn=c;pior=m}});
+  M.forEach(m=>{const c=V.filter(p=>p.modulos[m]).length;if(c<pn){pn=c;pior=m}});
   $('hNextMod').textContent=pior; $('hNextCard').dataset.m=pior;
   $('hNextSub').textContent=(t-pn)+' pessoas ainda não fizeram';
 
   let ult=null;
-  D.forEach(p=>M.forEach(m=>{const d=p.modulos[m];if(d){const[dd,mm,yy]=d.split('/');const x=new Date(yy,mm-1,dd);if(!ult||x>ult)ult=x}}));
+  V.forEach(p=>M.forEach(m=>{const d=p.modulos[m];if(d){const[dd,mm,yy]=d.split('/');const x=new Date(yy,mm-1,dd);if(!ult||x>ult)ult=x}}));
   $('hUpd').textContent = ult?String(ult.getDate()).padStart(2,'0')+'/'+String(ult.getMonth()+1).padStart(2,'0')+'/'+ult.getFullYear():'—';
 
   // concluídos (100%) — saem do ranking
-  const done=D.filter(p=>p.pct>=100).sort((a,b)=>a.nome.localeCompare(b.nome,'pt'));
+  const done=V.filter(p=>p.pct>=100).sort((a,b)=>a.nome.localeCompare(b.nome,'pt'));
   $('nD').textContent=done.length;
   $('listD').innerHTML=done.length
     ? done.map(p=>{const dts=M.map(m=>p.modulos[m]).filter(Boolean).map(d=>{const[a,b,c]=d.split('/');return new Date(c,b-1,a)});
@@ -872,14 +925,14 @@ function dash(){
     : '<div class="p-none">Ninguém concluiu o ciclo ainda.</div>';
 
   // ranking — top 10 de quem ainda não concluiu
-  const emAndamento=D.filter(p=>p.pct<100).sort((a,b)=>b.pct-a.pct).slice(0,10);
+  const emAndamento=V.filter(p=>p.pct<100).sort((a,b)=>b.pct-a.pct).slice(0,10);
   $('nR').textContent=emAndamento.length;
   $('rank').innerHTML=emAndamento.length
     ? emAndamento.map((p,i)=>
       `<div class="rank-i" onclick="op(${p.n})"><div class="rank-n ${i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkn'}">${i+1}</div><span class="rank-nm">${esc(p.nome)}</span><div class="rank-b"><div class="rank-bf" style="width:${p.pct}%;background:${col(p.pct)}"></div></div><span class="rank-p" style="color:${col(p.pct)}">${p.pct}%</span></div>`).join('')
     : '<div class="p-none">Todos concluíram o ciclo.</div>';
 
-  $('bars').innerHTML=M.map(m=>{const c=D.filter(p=>p.modulos[m]).length,pc=Math.round(c/t*100);
+  $('bars').innerHTML=M.map(m=>{const c=V.filter(p=>p.modulos[m]).length,pc=Math.round(c/t*100);
     return `<div class="mrow ${pend===m?'act':''}"><span class="mrow-n" title="Ver quem falta" onclick="setPend('${pend===m?'':m.replace(/'/g,"\\'")}')">${m}</span><div class="mrow-t"><div class="mrow-f" style="width:${pc}%;background:${col(pc)}"></div></div><span class="mrow-c">${c}/${t}</span></div>`}).join('');
   $('pendSel').value=pend; $('pendSel').classList.toggle('act',!!pend);
 }
@@ -895,7 +948,7 @@ function setPend(m){pend=m||'';$('pendSel').value=pend;$('pendSel').classList.to
 
 function getQ(){return (($('q').value||$('qm').value)||'').trim().toLowerCase()}
 function flist(){const q=getQ();
-  let d=D.filter(p=>(p.nome.toLowerCase().includes(q)||p.celular.includes(q))&&(f==='all'||cls(p.pct)===f)&&(!pend||!p.modulos[pend]));
+  let d=DT().filter(p=>(p.nome.toLowerCase().includes(q)||p.celular.includes(q))&&(f==='all'||cls(p.pct)===f)&&(!pend||!p.modulos[pend]));
   if(s==='n')d.sort((a,b)=>a.n-b.n); else if(s==='nome')d.sort((a,b)=>dir.nome*a.nome.localeCompare(b.nome,'pt'));
   else if(s==='pd')d.sort((a,b)=>b.pct-a.pct); else if(s==='pa')d.sort((a,b)=>a.pct-b.pct);
   return d}
@@ -903,7 +956,7 @@ function flist(){const q=getQ();
 function rd(){
   const all=flist();
   const d=all.slice(0,lim);
-  $('cnt').innerHTML=(all.length===D.length?all.length+' participantes':all.length+' de '+D.length)+(pend?` <span class="tag">falta ${pend}<button onclick="setPend('')">×</button></span>`:'');
+  $('cnt').innerHTML=(all.length===DT().length?all.length+' participantes':all.length+' de '+DT().length)+(pend?` <span class="tag">falta ${pend}<button onclick="setPend('')">×</button></span>`:'');
   const rest=all.length-d.length;
   const mw=$('more'), mb=$('moreB');
   if(rest>0){mw.classList.add('on');mb.innerHTML=`Ver mais <span>(${rest} restantes)</span>`}
@@ -945,7 +998,7 @@ function op(n){
   const p=D.find(x=>x.n===n); if(!p)return;
   const dn=M.filter(m=>p.modulos[m]).length;
   $('md').innerHTML=`<div class="md-h"><button class="md-x" onclick="cl('ov')">✕</button><div class="md-in">
-    <div class="md-nm">${esc(p.nome)}</div><div class="md-mt">nº${p.n} · Retiro: ${p.retiro||'—'}</div>
+    <div class="md-nm">${esc(p.nome)}</div><div class="md-mt">nº${p.n} · ${esc(p.turma)} · Retiro: ${p.retiro||'—'}</div>
     <div class="md-r"><div><div class="md-p" style="color:${col(p.pct)}">${p.pct}%</div><div class="md-ps">${dn} de 12 módulos concluídos</div></div>${bdg(p.pct)}</div>
     <div class="md-bar"><div class="md-bf" style="width:${p.pct}%"></div></div></div></div>
     <div class="md-b">${p.celular?`<a class="md-wa" href="${wal(p.celular)}" target="_blank" rel="noopener"><span>💬</span><b>Abrir WhatsApp</b><i>${esc(p.celular)}</i></a>`:''}
@@ -1024,7 +1077,7 @@ function genPdf(n){
     <td>
       <h2>${esc(p.nome)}</h2>
       <div class="rp-meta">
-        Participante <b>nº ${p.n}</b>${p.celular?' · '+esc(p.celular):''}<br>
+        Participante <b>nº ${p.n}</b> · Turma <b>${esc(p.turma)}</b>${p.celular?' · '+esc(p.celular):''}<br>
         Retiro: <b>${p.retiro||'—'}</b> &nbsp;·&nbsp; Última aula: <b>${ultStr}</b>
       </div>
     </td>
@@ -1059,6 +1112,8 @@ function formP(p){
     <div class="fg"><label class="fl">Nome completo *</label><input class="fi" id="fNome" value="${p?esc(p.nome):''}" placeholder="Nome do participante"></div>
     <div class="fg"><label class="fl">Celular / WhatsApp</label><input class="fi" id="fCel" value="${p?esc(p.celular):''}" placeholder="+55 54 99999-9999"></div>
     <div class="fg"><label class="fl">Data do retiro</label><input class="fi" id="fRet" value="${p?p.retiro:''}" placeholder="DD/MM/AAAA"></div>
+    <div class="fg"><label class="fl">Turma</label><input class="fi" id="fTur" list="lsTur" value="${p?esc(p.turma):(TU||'')}" placeholder="Ex.: Jun/2026">
+    <datalist id="lsTur">${turmas().map(([t])=>`<option value="${esc(t)}">`).join('')}</datalist></div>
     <div style="display:flex;gap:9px;margin-top:20px">
     <button class="btn btn-s" style="flex:1" onclick="cl('ovn')">Cancelar</button>
     <button class="btn btn-p" style="flex:1" id="fSave" onclick="${p?`saveEdit(${p.n})`:'saveNew()'}">Salvar</button></div></div>`;
@@ -1067,12 +1122,12 @@ function openNew(){if(!can())return;$('mdn').innerHTML=formP(null);$('ovn').clas
 function openEdit(n){if(!can())return;const p=D.find(x=>x.n===n);cl('ov');$('mdn').innerHTML=formP(p);$('ovn').classList.add('on')}
 
 async function saveNew(){
-  const nome=$('fNome').value.trim(), cel=$('fCel').value.trim(), ret=$('fRet').value.trim();
+  const nome=$('fNome').value.trim(), cel=$('fCel').value.trim(), ret=$('fRet').value.trim(), tur=$('fTur').value.trim();
   if(!nome){tst('Informe o nome',1);return}
   if(ret && !br2iso(ret)){tst('Data do retiro inválida — use DD/MM/AAAA',1);return}
   busy('fSave',1);
   const num=D.length?Math.max(...D.map(p=>p.n))+1:1;
-  const {error}=await sb.from('participantes').insert({numero:num,nome,celular:cel,retiro:br2iso(ret),modulos:{}});
+  const {error}=await sb.from('participantes').insert({numero:num,nome,celular:cel,retiro:br2iso(ret),turma:tur,modulos:{}});
   busy('fSave',0,'Salvar');
   if(error){tst('Erro: '+error.message,1);return}
   log(num,nome,'Participante cadastrado','');
@@ -1080,11 +1135,11 @@ async function saveNew(){
 }
 async function saveEdit(n){
   const p=D.find(x=>x.n===n);
-  const nome=$('fNome').value.trim(), cel=$('fCel').value.trim(), ret=$('fRet').value.trim();
+  const nome=$('fNome').value.trim(), cel=$('fCel').value.trim(), ret=$('fRet').value.trim(), tur=$('fTur').value.trim();
   if(!nome){tst('Informe o nome',1);return}
   if(ret && !br2iso(ret)){tst('Data do retiro inválida — use DD/MM/AAAA',1);return}
   busy('fSave',1);
-  const {error}=await sb.from('participantes').update({nome,celular:cel,retiro:br2iso(ret)}).eq('id',p.id);
+  const {error}=await sb.from('participantes').update({nome,celular:cel,retiro:br2iso(ret),turma:tur}).eq('id',p.id);
   busy('fSave',0,'Salvar');
   if(error){tst('Erro: '+error.message,1);return}
   log(n,nome,'Dados alterados','');
@@ -1108,15 +1163,15 @@ function chOpen(){
 }
 function chRender(){
   const m=$('chMod').value;
-  const falta=D.filter(p=>!p.modulos[m]).sort((a,b)=>a.nome.localeCompare(b.nome,'pt'));
+  const falta=DT().filter(p=>!p.modulos[m]).sort((a,b)=>a.nome.localeCompare(b.nome,'pt'));
   $('chList').innerHTML = falta.length
     ? falta.map(p=>`<div class="ch-i ${chSel.has(p.n)?'pick':''}" id="ci${p.n}" onclick="chTog(${p.n})"><div class="ch-cb">✓</div><span class="ch-nm">${esc(p.nome)}</span><span class="ch-pc">${p.pct}%</span></div>`).join('')
     : '<div class="ch-empty">Todos os participantes já concluíram este módulo.</div>';
   chCnt();
 }
 function chTog(n){chSel.has(n)?chSel.delete(n):chSel.add(n);const e=$('ci'+n);if(e)e.classList.toggle('pick',chSel.has(n));chCnt()}
-function chAll(on){const m=$('chMod').value;D.filter(p=>!p.modulos[m]).forEach(p=>on?chSel.add(p.n):chSel.delete(p.n));chRender()}
-function chCnt(){const m=$('chMod').value,t=D.filter(p=>!p.modulos[m]).length;
+function chAll(on){const m=$('chMod').value;DT().filter(p=>!p.modulos[m]).forEach(p=>on?chSel.add(p.n):chSel.delete(p.n));chRender()}
+function chCnt(){const m=$('chMod').value,t=DT().filter(p=>!p.modulos[m]).length;
   $('chCnt').innerHTML=`<b>${chSel.size}</b> de ${t} marcados`;
   $('chSave').style.opacity=chSel.size?'1':'.45'}
 
@@ -1180,6 +1235,115 @@ async function setAppr(id,ok){
   openUsers(); checkPend();
 }
 
+
+
+// ═══════════ IMPORTAR LISTA ═══════════
+let impLin=[];
+
+function openImp(){
+  if(!can())return;
+  $('udrop').classList.remove('on');
+  impLin=[];
+  const ts=turmas();
+  $('mdi').innerHTML=`<div class="md-h"><button class="md-x" onclick="cl('ovi')">✕</button><div class="md-in">
+    <div class="ch-t">Importar lista</div><div class="ch-s">Cole os nomes e cadastre todos de uma vez</div></div></div>
+    <div class="md-b">
+    <div class="mg-pick" style="grid-template-columns:1fr 1fr;align-items:end">
+      <div><label class="ch-lb">Turma</label>
+        <input class="ch-in" id="impTur" list="lsTur2" placeholder="Ex.: Nov/2026" value="${TU||''}">
+        <datalist id="lsTur2">${ts.map(([t])=>`<option value="${esc(t)}">`).join('')}</datalist></div>
+      <div><label class="ch-lb">Data do retiro</label>
+        <input class="ch-in" id="impRet" placeholder="DD/MM/AAAA" value="${hoje()}"></div>
+    </div>
+    <div class="imp-hint">Um por linha. O telefone é opcional — separe por vírgula, tabulação ou traço.<br>
+      <code>Maria Silva, 54 99999-1234</code> &nbsp; <code>João Souza</code></div>
+    <textarea class="imp-ta" id="impTa" placeholder="Maria Silva, 54 99999-1234&#10;João Souza&#10;Ana Paula - 54 98888-4321"></textarea>
+    <div style="display:flex;gap:9px;margin-top:13px">
+      <button class="btn btn-s" style="flex:1" onclick="cl('ovi')">Cancelar</button>
+      <button class="btn btn-p" style="flex:1" onclick="impLer()">Conferir lista</button>
+    </div>
+    <div id="impRes"></div></div>`;
+  $('ovi').classList.add('on');
+  setTimeout(()=>$('impTa').focus(),80);
+}
+
+function impLer(){
+  const txt=$('impTa').value, tur=$('impTur').value.trim();
+  if(!tur){tst('Informe a turma',1);return}
+  const linhas=txt.split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
+  if(!linhas.length){tst('Cole a lista primeiro',1);return}
+
+  const vistos=new Set();
+  impLin=linhas.map(l=>{
+    // separa nome e telefone
+    let nome=l, tel='';
+    const mt=l.match(/^(.*?)[\s,;\t·|-]+\+?([\d\s()+-]{8,})$/);
+    if(mt){nome=mt[1].trim(); tel=mt[2].trim()}
+    nome=nome.replace(/^[\d]+[.)\s-]+/,'').replace(/[,;:\s-]+$/,'').trim();   // tira "1." do começo
+    const dig=tel.replace(/\D/g,'');
+    if(dig.length>=10) tel='+55 '+dig.replace(/^55/,'').replace(/^(\d{2})(\d{4,5})(\d{4})$/,'$1 $2-$3');
+    else tel='';
+
+    let estado='ok', why='';
+    if(!nome||nome.length<2){estado='err';why='linha sem nome'}
+    else{
+      const k=nrm(nome).join(' ');
+      if(vistos.has(k)){estado='err';why='repetido na lista'} else vistos.add(k);
+      const ja=D.find(p=>nrm(p.nome).join(' ')===k);
+      if(ja&&estado==='ok'){estado='dup';why=`já existe · nº${ja.n} · ${ja.turma}`}
+    }
+    return {nome,tel,estado,why,on:estado==='ok'};
+  });
+
+  const g=e=>impLin.filter(x=>x.estado===e);
+  const bloco=(cls,tit,arr,sel)=>arr.length?`<div class="imp-g imp-${cls}"><div class="imp-gt">${tit}<span class="n">${arr.length}</span></div>
+    ${arr.map(x=>{const i=impLin.indexOf(x);
+      return `<div class="imp-i ${x.on?'on':''}" id="ii${i}" ${sel?`onclick="impTog(${i})"`:''}>
+        ${sel?'<div class="imp-cb">✓</div>':''}
+        <span class="nm">${esc(x.nome||'(vazio)')}</span>
+        ${x.tel?`<span class="tel">${esc(x.tel)}</span>`:''}
+        ${x.why?`<span class="why">${esc(x.why)}</span>`:''}</div>`}).join('')}</div>`:'';
+
+  $('impRes').innerHTML=`<div class="imp-res">
+    ${bloco('ok','Prontos para cadastrar',g('ok'),true)}
+    ${bloco('dup','Já cadastrados — marque se quiser criar mesmo assim',g('dup'),true)}
+    ${bloco('err','Ignorados',g('err'),false)}
+    </div>
+    <div style="display:flex;gap:9px">
+      <button class="btn btn-s" style="flex:1" onclick="$('impRes').innerHTML=''">Voltar</button>
+      <button class="btn btn-p" style="flex:1" id="impGo" onclick="impSalvar()">Cadastrar marcados</button>
+    </div>`;
+  impCnt();
+}
+
+function impTog(i){
+  const x=impLin[i]; x.on=!x.on;
+  const e=$('ii'+i); if(e)e.classList.toggle('on',x.on);
+  impCnt();
+}
+function impCnt(){
+  const n=impLin.filter(x=>x.on).length, b=$('impGo');
+  if(b){b.textContent=n?`Cadastrar ${n}`:'Cadastrar marcados'; b.style.opacity=n?'1':'.45'}
+}
+
+async function impSalvar(){
+  const sel=impLin.filter(x=>x.on);
+  if(!sel.length){tst('Marque ao menos um nome',1);return}
+  const tur=$('impTur').value.trim(), ret=$('impRet').value.trim();
+  if(ret && !br2iso(ret)){tst('Data do retiro inválida',1);return}
+  if(!confirm(`Cadastrar ${sel.length} ${sel.length===1?'participante':'participantes'} na turma "${tur}"?`))return;
+
+  busy('impGo',1);
+  let num=D.length?Math.max(...D.map(p=>p.n)):0;
+  const novos=sel.map(x=>({numero:++num,nome:x.nome,celular:x.tel,retiro:br2iso(ret),turma:tur,modulos:{}}));
+  const {error}=await sb.from('participantes').insert(novos);
+  busy('impGo',0,'Cadastrar marcados');
+  if(error){tst('Erro: '+error.message,1);return}
+
+  await log(null,null,'Importação em lote',`${novos.length} participante(s) · turma ${tur}`);
+  cl('ovi'); TU=tur; await load();
+  tst(`✓ ${novos.length} cadastrados na turma ${tur}`);
+}
 
 // ═══════════ MESCLAR CADASTROS ═══════════
 const nrm = s => s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z ]/g,'').trim().split(/\s+/).filter(Boolean);
@@ -1359,10 +1523,10 @@ async function openHist(){
 // ═══════════ CSV ═══════════
 function exportCsv(){
   $('udrop').classList.remove('on');
-  const head=['Nº','Nome','Celular','Retiro',...M,'% Ciclo'];
+  const head=['Nº','Nome','Turma','Celular','Retiro',...M,'% Ciclo'];
   const q=s=>'"'+String(s??'').replace(/"/g,'""')+'"';
   const lines=[head.map(q).join(';'),...[...D].sort((a,b)=>a.n-b.n).map(p=>
-    [p.n,p.nome,p.celular,p.retiro,...M.map(m=>p.modulos[m]||''),p.pct+'%'].map(q).join(';'))];
+    [p.n,p.nome,p.turma,p.celular,p.retiro,...M.map(m=>p.modulos[m]||''),p.pct+'%'].map(q).join(';'))];
   const blob=new Blob(['\uFEFF'+lines.join('\n')],{type:'text/csv;charset=utf-8'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
