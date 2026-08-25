@@ -390,6 +390,8 @@ td{padding:10px 13px;vertical-align:middle}
 
 /* ===== TURMAS ===== */
 .tbar{display:flex;align-items:center;gap:9px;margin-bottom:18px;flex-wrap:wrap}
+.tbar-warn{font-size:.75rem;color:var(--yellow);background:rgba(242,193,78,.07);border:1px solid rgba(242,193,78,.22);border-radius:20px;padding:5px 13px;line-height:1.45}
+.tbar-warn b{font-weight:700}
 .tbar-l{font-size:.66rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--txt3);margin-right:2px}
 .tpill{padding:7px 15px;border-radius:20px;border:1px solid var(--bdr);background:var(--card);color:var(--txt2);font-size:.79rem;font-weight:600;cursor:pointer;transition:.18s;font-family:inherit;white-space:nowrap}
 .tpill:hover{border-color:var(--green);color:var(--green)}
@@ -781,6 +783,8 @@ const AB=["A.S","R.P","5M","A.E","P.O","M.R","B.E","Pd","Dz","E.S","G.F","B.A"];
 
 let ME=null, D=[], f='all', s='n', v='t', pend='', dir={nome:1,pct:-1}, chSel=new Set();
 const STEP=5; let lim=STEP; let TU='';   // '' = todas as turmas
+let HAS_TURMA=false;             // vira true quando a coluna existe no banco
+const comTurma=(o,t)=>HAS_TURMA?{...o,turma:t}:o;
 
 const can = a => ME && (a==='del' ? ME.role==='admin' : ME.role==='admin'||ME.role==='editor');
 const $ = i => document.getElementById(i);
@@ -900,6 +904,7 @@ async function boot(){
 async function load(){
   const {data,error} = await sb.from('participantes').select('*').order('numero');
   if(error){tst('Erro ao carregar dados: '+error.message,1);return}
+  HAS_TURMA = data.length ? Object.prototype.hasOwnProperty.call(data[0],'turma') : HAS_TURMA;
   D = data.map(r=>{
     const mods={}; M.forEach(m=>mods[m]=iso2br(r.modulos?.[m])||null);
     return {id:r.id,n:r.numero,nome:r.nome,celular:r.celular||'',retiro:iso2br(r.retiro)||'',
@@ -929,7 +934,7 @@ function barraTurmas(){
   if(!ts.length||!D.length){bar.innerHTML='';return}
   const semTurma = ts.length===1 && ts[0][0]==='—';
   if(semTurma){   // banco ainda sem a coluna turma
-    bar.innerHTML='<span class="tbar-l">Turma</span><span style="font-size:.76rem;color:var(--txt3)">ainda não configurada — rode o turmas.sql no Supabase</span>';
+    bar.innerHTML='<span class="tbar-l">Turma</span><span class="tbar-warn">⚠ Coluna <b>turma</b> ainda não existe no banco — rode o <b>turmas.sql</b> no Supabase para ativar</span>';
     return;
   }
   bar.innerHTML='<span class="tbar-l">Turma</span>'
@@ -1029,7 +1034,7 @@ function op(n){
   const p=D.find(x=>x.n===n); if(!p)return;
   const dn=M.filter(m=>p.modulos[m]).length;
   $('md').innerHTML=`<div class="md-h"><button class="md-x" onclick="cl('ov')">✕</button><div class="md-in">
-    <div class="md-nm">${esc(p.nome)}</div><div class="md-mt">nº${p.n} · ${esc(p.turma)} · Retiro: ${p.retiro||'—'}</div>
+    <div class="md-nm">${esc(p.nome)}</div><div class="md-mt">nº${p.n}${HAS_TURMA?' · '+esc(p.turma):''} · Retiro: ${p.retiro||'—'}</div>
     <div class="md-r"><div><div class="md-p" style="color:${col(p.pct)}">${p.pct}%</div><div class="md-ps">${dn} de 12 módulos concluídos</div></div>${bdg(p.pct)}</div>
     <div class="md-bar"><div class="md-bf" style="width:${p.pct}%"></div></div></div></div>
     <div class="md-b">${p.celular?`<a class="md-wa" href="${wal(p.celular)}" target="_blank" rel="noopener"><span>💬</span><b>Abrir WhatsApp</b><i>${esc(p.celular)}</i></a>`:''}
@@ -1143,8 +1148,8 @@ function formP(p){
     <div class="fg"><label class="fl">Nome completo *</label><input class="fi" id="fNome" value="${p?esc(p.nome):''}" placeholder="Nome do participante"></div>
     <div class="fg"><label class="fl">Celular / WhatsApp</label><input class="fi" id="fCel" value="${p?esc(p.celular):''}" placeholder="+55 54 99999-9999"></div>
     <div class="fg"><label class="fl">Data do retiro</label><input class="fi" id="fRet" value="${p?p.retiro:''}" placeholder="DD/MM/AAAA"></div>
-    <div class="fg"><label class="fl">Turma</label><input class="fi" id="fTur" list="lsTur" value="${p?esc(p.turma):(TU||'')}" placeholder="Ex.: Jun/2026">
-    <datalist id="lsTur">${turmas().map(([t])=>`<option value="${esc(t)}">`).join('')}</datalist></div>
+    ${HAS_TURMA?`<div class="fg"><label class="fl">Turma</label><input class="fi" id="fTur" list="lsTur" value="${p?esc(p.turma):(TU||'')}" placeholder="Ex.: Jun/2026">
+    <datalist id="lsTur">${turmas().map(([t])=>`<option value="${esc(t)}">`).join('')}</datalist></div>`:''}
     <div style="display:flex;gap:9px;margin-top:20px">
     <button class="btn btn-s" style="flex:1" onclick="cl('ovn')">Cancelar</button>
     <button class="btn btn-p" style="flex:1" id="fSave" onclick="${p?`saveEdit(${p.n})`:'saveNew()'}">Salvar</button></div></div>`;
@@ -1153,12 +1158,12 @@ function openNew(){if(!can())return;$('mdn').innerHTML=formP(null);$('ovn').clas
 function openEdit(n){if(!can())return;const p=D.find(x=>x.n===n);cl('ov');$('mdn').innerHTML=formP(p);$('ovn').classList.add('on')}
 
 async function saveNew(){
-  const nome=$('fNome').value.trim(), cel=$('fCel').value.trim(), ret=$('fRet').value.trim(), tur=$('fTur').value.trim();
+  const nome=$('fNome').value.trim(), cel=$('fCel').value.trim(), ret=$('fRet').value.trim(), tur=($('fTur')?$('fTur').value.trim():'');
   if(!nome){tst('Informe o nome',1);return}
   if(ret && !br2iso(ret)){tst('Data do retiro inválida — use DD/MM/AAAA',1);return}
   busy('fSave',1);
   const num=D.length?Math.max(...D.map(p=>p.n))+1:1;
-  const {error}=await sb.from('participantes').insert({numero:num,nome,celular:cel,retiro:br2iso(ret),turma:tur,modulos:{}});
+  const {error}=await sb.from('participantes').insert(comTurma({numero:num,nome,celular:cel,retiro:br2iso(ret),modulos:{}},tur));
   busy('fSave',0,'Salvar');
   if(error){tst('Erro: '+error.message,1);return}
   log(num,nome,'Participante cadastrado','');
@@ -1166,11 +1171,11 @@ async function saveNew(){
 }
 async function saveEdit(n){
   const p=D.find(x=>x.n===n);
-  const nome=$('fNome').value.trim(), cel=$('fCel').value.trim(), ret=$('fRet').value.trim(), tur=$('fTur').value.trim();
+  const nome=$('fNome').value.trim(), cel=$('fCel').value.trim(), ret=$('fRet').value.trim(), tur=($('fTur')?$('fTur').value.trim():'');
   if(!nome){tst('Informe o nome',1);return}
   if(ret && !br2iso(ret)){tst('Data do retiro inválida — use DD/MM/AAAA',1);return}
   busy('fSave',1);
-  const {error}=await sb.from('participantes').update({nome,celular:cel,retiro:br2iso(ret),turma:tur}).eq('id',p.id);
+  const {error}=await sb.from('participantes').update(comTurma({nome,celular:cel,retiro:br2iso(ret)},tur)).eq('id',p.id);
   busy('fSave',0,'Salvar');
   if(error){tst('Erro: '+error.message,1);return}
   log(n,nome,'Dados alterados','');
@@ -1408,7 +1413,7 @@ async function impSalvar(){
 
   busy('impGo',1);
   let num=D.length?Math.max(...D.map(p=>p.n)):0;
-  const novos=sel.map(x=>({numero:++num,nome:x.nome,celular:x.tel,retiro:br2iso(ret),turma:tur,modulos:{}}));
+  const novos=sel.map(x=>comTurma({numero:++num,nome:x.nome,celular:x.tel,retiro:br2iso(ret),modulos:{}},tur));
   const {error}=await sb.from('participantes').insert(novos);
   busy('impGo',0,'Cadastrar marcados');
   if(error){tst('Erro: '+error.message,1);return}
