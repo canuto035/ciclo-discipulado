@@ -484,6 +484,8 @@ td{padding:10px 13px;vertical-align:middle}
 .emp-i{font-size:2.4rem;margin-bottom:11px;opacity:.5}
 .emp-t{font-size:.94rem;font-weight:600;color:var(--txt2)}
 .emp-s{font-size:.78rem;margin-top:5px}
+.dt-warn{display:flex;align-items:center;gap:9px;background:rgba(255,159,67,.08);border:1px solid rgba(255,159,67,.26);border-radius:11px;padding:10px 15px;margin-bottom:16px;font-size:.78rem;color:var(--orange);line-height:1.55}
+.dt-warn b{color:#FFC08A;font-weight:600}
 .ro-note{display:flex;align-items:center;gap:9px;background:rgba(53,167,255,.07);border:1px solid rgba(53,167,255,.22);border-radius:11px;padding:10px 14px;margin-bottom:18px;font-size:.78rem;color:#7CC5FF}
 
 /* ===== RESPONSIVE ===== */
@@ -644,6 +646,7 @@ Seu cadastro foi criado, mas um administrador precisa liberar o acesso. Você se
 
 <div class="wrap">
 
+<div class="dt-warn hide" id="avDt"></div>
 <div class="ro-note hide" id="roNote">Seu acesso é somente leitura — você pode consultar tudo, mas não alterar.</div>
 
 <section class="hero">
@@ -965,9 +968,25 @@ function dash(){
   $('hNextMod').textContent=pior; $('hNextCard').dataset.m=pior;
   $('hNextSub').textContent=(t-pn)+' pessoas ainda não fizeram';
 
-  let ult=null;
-  V.forEach(p=>M.forEach(m=>{const d=p.modulos[m];if(d){const[dd,mm,yy]=d.split('/');const x=new Date(yy,mm-1,dd);if(!ult||x>ult)ult=x}}));
+  let ult=null, suspeitas=[];
+  const limite=new Date().getFullYear()+1;
+  V.forEach(p=>M.forEach(m=>{
+    const d=p.modulos[m]; if(!d) return;
+    const [dd,mm,yy]=d.split('/').map(Number);
+    if(yy>limite||yy<2000){ suspeitas.push({n:p.n,nome:p.nome,mod:m,data:d}); return }  // ignora datas absurdas
+    const x=new Date(yy,mm-1,dd);
+    if(!ult||x>ult) ult=x;
+  }));
+  window.__datasSuspeitas=suspeitas;
   $('hUpd').textContent = ult?String(ult.getDate()).padStart(2,'0')+'/'+String(ult.getMonth()+1).padStart(2,'0')+'/'+ult.getFullYear():'—';
+  const av=$('avDt');
+  if(suspeitas.length){
+    av.classList.remove('hide');
+    av.innerHTML=`⚠ ${suspeitas.length} ${suspeitas.length===1?'data com ano inválido':'datas com ano inválido'} — `
+      + suspeitas.slice(0,3).map(s=>`<b>${esc(s.nome)}</b> (${esc(s.mod)}: ${s.data})`).join(', ')
+      + (suspeitas.length>3?` e mais ${suspeitas.length-3}`:'')
+      + '. Corrija abrindo a ficha da pessoa.';
+  } else av.classList.add('hide');
 
   // concluídos (100%) — saem do ranking
   $('nD').textContent=V.filter(p=>p.pct>=100).length;
