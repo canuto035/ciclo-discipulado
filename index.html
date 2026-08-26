@@ -1025,10 +1025,10 @@ function dash(){
   const cel=t*12, fe=V.reduce((a,p)=>a+M.filter(m=>p.modulos[m]).length,0), gp=Math.round(fe/cel*100);
   $('hPct').textContent=gp+'%';
   $('hBar').style.width=gp+'%';
-  const faltando=cel-fe;
-  $('hSub').innerHTML = faltando
-    ? `faltam <b>${faltando.toLocaleString('pt-BR')}</b> aulas para todos fecharem os 12 módulos`
-    : `todos os ${t} participantes concluíram os 12 módulos`;
+  const naoFecharam=V.filter(p=>p.pct<100).length;
+  $('hSub').innerHTML = naoFecharam
+    ? `<b>${naoFecharam}</b> de ${t} ainda não fecharam os 12 módulos`
+    : `todos os ${t} concluíram os 12 módulos`;
 
   const fila=filaModulos(V), alvo=fila[0];
   const dc=$('decCard');
