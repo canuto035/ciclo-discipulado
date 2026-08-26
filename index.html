@@ -105,7 +105,8 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .hb-n{font-family:'Inter',sans-serif;font-variant-numeric:tabular-nums;font-feature-settings:'tnum' 1,'ss01' 1;font-size:3.9rem;font-weight:800;line-height:.92;letter-spacing:-.045em;background:linear-gradient(120deg,var(--green),#7BFFC4);-webkit-background-clip:text;background-clip:text;color:transparent}
 .hb-t{display:flex;flex-direction:column;gap:3px;padding-bottom:6px}
 .hb-t strong{font-size:1.02rem;font-weight:700;letter-spacing:-.2px}
-.hb-t span{font-size:.79rem;color:var(--txt3)}
+.hb-t span{font-size:.79rem;color:var(--txt3);line-height:1.45;max-width:340px}
+.hb-t span b{color:var(--txt2);font-weight:700}
 .hero-bar{height:7px;background:rgba(255,255,255,.06);border-radius:6px;overflow:hidden;margin-bottom:22px;max-width:430px}
 .hero-bf{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--green),#7BFFC4);transition:width 1.1s cubic-bezier(.4,0,.2,1);box-shadow:0 0 14px var(--green-glow)}
 .hero-btns{display:flex;gap:10px;flex-wrap:wrap}
@@ -1024,7 +1025,10 @@ function dash(){
   const cel=t*12, fe=V.reduce((a,p)=>a+M.filter(m=>p.modulos[m]).length,0), gp=Math.round(fe/cel*100);
   $('hPct').textContent=gp+'%';
   $('hBar').style.width=gp+'%';
-  $('hSub').textContent=fe.toLocaleString('pt-BR')+' módulos registrados de '+cel.toLocaleString('pt-BR');
+  const faltando=cel-fe;
+  $('hSub').innerHTML = faltando
+    ? `faltam <b>${faltando.toLocaleString('pt-BR')}</b> aulas para todos fecharem os 12 módulos`
+    : `todos os ${t} participantes concluíram os 12 módulos`;
 
   const fila=filaModulos(V), alvo=fila[0];
   const dc=$('decCard');
