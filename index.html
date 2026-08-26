@@ -354,6 +354,14 @@ td{padding:10px 13px;vertical-align:middle}
   .rp-miss b{display:block;margin-bottom:6px;color:#8A4F1E;font-size:8.5pt;text-transform:uppercase;letter-spacing:.7px}
   .rp-done{background:#EDF9F2;border:1px solid #B8E5CC;border-radius:7px;padding:14px 16px;font-size:10pt;color:#12694A;font-weight:600;text-align:center;page-break-inside:avoid}
 
+  /* relatorio de lista */
+  .rp-sum{background:#F4F7F9;border:1px solid #DDE3E8;border-radius:7px;padding:12px 16px;margin-bottom:6px;font-size:9.5pt;color:#444;line-height:1.55}
+  .rp-sum b{color:#0D1117;font-weight:700}
+  .rp-pos{width:34px;text-align:center;font-weight:800;color:#1BA968;white-space:nowrap;overflow:visible}
+  .rp-tb td.rp-tel{width:118px;white-space:nowrap;color:#555;font-size:9pt}
+  .rp-tb td.rp-val{width:70px;text-align:right;white-space:nowrap;font-weight:700}
+  .rp-med{width:24px;text-align:center}
+
   /* rodape */
   .rp-ft{width:100%;margin-top:24px;padding-top:9px;border-top:1px solid #DDE3E8;font-size:7.5pt;color:#999}
   .rp-ft td{padding:0}
@@ -1315,7 +1323,8 @@ function openDone(){
         `<div class="dn-i" onclick="cl('ovu');op(${p.n})"><span class="dn-m">🏅</span><span class="dn-nm">${esc(p.nome)}</span><span class="dn-dt">${ultimaData(p)}</span></div>`).join('')}</div>`
     : '<div class="emp"><div class="emp-i">🏅</div><div class="emp-t">Ninguém concluiu o ciclo ainda</div><div class="emp-s">Quem fechar os 12 módulos aparece aqui</div></div>';
   $('mdu').innerHTML=mdShell('🏅 Concluídos',
-    `${done.length} ${done.length===1?'pessoa fechou':'pessoas fecharam'} os 12 módulos · ${escopo}`, corpo);
+    `${done.length} ${done.length===1?'pessoa fechou':'pessoas fecharam'} os 12 módulos · ${escopo}`,
+    corpo + (done.length?`<div class="md-acts"><button class="btn btn-p" onclick="pdfConcluidos()">Gerar PDF da lista</button></div>`:''));
   $('ovu').classList.add('on');
 }
 
@@ -1328,8 +1337,68 @@ function openRank(){
         return `<div class="rank-i" onclick="cl('ovu');op(${p.n})"><div class="rank-n ${i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkn'}">${i+1}</div><div style="flex:1;min-width:0"><div class="rank-nm">${esc(p.nome)}</div><div class="td-sub">faltam ${fa} ${fa===1?'módulo':'módulos'}</div></div><div class="rank-b"><div class="rank-bf" style="width:${p.pct}%;background:${col(p.pct)}"></div></div><span class="rank-p" style="color:${col(p.pct)}">${p.pct}%</span></div>`}).join('')}</div>`
     : '<div class="emp"><div class="emp-i">🏆</div><div class="emp-t">Todos concluíram o ciclo</div></div>';
   $('mdu').innerHTML=mdShell('🏆 Mais avançados',
-    `Quem está mais perto de fechar o ciclo · ${escopo}`, corpo);
+    `Quem está mais perto de fechar o ciclo · ${escopo}`,
+    corpo + (lista.length?`<div class="md-acts"><button class="btn btn-p" onclick="pdfRanking()">Gerar PDF da lista</button></div>`:''));
   $('ovu').classList.add('on');
+}
+
+
+// ═══════════ RELATORIO DE LISTA (PDF) ═══════════
+function rpCabecalho(){
+  const ag=new Date(), f2=v=>String(v).padStart(2,'0');
+  return `<table class="rp-hd"><tr>
+    <td><img class="rp-logo" src="${LOGO}" alt="Integração"><h1>Controle de Integração</h1><p>Ciclo de Discipulado · Carazinho</p></td>
+    <td class="rp-dt">Emitido em<br>${f2(ag.getDate())}/${f2(ag.getMonth()+1)}/${ag.getFullYear()} às ${f2(ag.getHours())}:${f2(ag.getMinutes())}</td>
+  </tr></table>`;
+}
+function rpRodape(){
+  return `<table class="rp-ft"><tr>
+    <td><img class="rp-seal" src="${LOGO}" alt="">Carazinho · 2026</td>
+    <td>Emitido por ${esc(ME.nome||ME.email)}</td>
+  </tr></table>`;
+}
+function escopoTxt(){ return TU ? 'Turma '+TU : 'Todas as turmas' }
+
+function pdfConcluidos(){
+  const V=DT();
+  const done=V.filter(p=>p.pct>=100).sort((a,b)=>a.nome.localeCompare(b.nome,'pt'));
+  if(!done.length){tst('Ninguém concluiu o ciclo ainda',1);return}
+  const linhas=done.map(p=>`<tr>
+    <td class="rp-med">🏅</td>
+    <td>${esc(p.nome)}</td>
+    <td class="rp-tel">${esc(p.celular)||'—'}</td>
+    <td class="rp-val rp-ok">${ultimaData(p)||'—'}</td></tr>`).join('');
+  $('report').innerHTML = rpCabecalho() + `
+    <div class="rp-sum"><b>${done.length}</b> ${done.length===1?'participante concluiu':'participantes concluíram'} os 12 módulos do ciclo · ${esc(escopoTxt())} · ${V.length} ${V.length===1?'participante no total':'participantes no total'}</div>
+    <div class="rp-ttl">Ciclo concluído</div>
+    <table class="rp-tb"><thead><tr><th class="rp-med"></th><th>Nome</th><th class="rp-tel">Celular</th><th class="rp-val">Concluído em</th></tr></thead>
+    <tbody>${linhas}</tbody></table>` + rpRodape();
+  window.print();
+}
+
+function pdfRanking(){
+  const V=DT();
+  const lista=V.filter(p=>p.pct<100).sort((a,b)=>b.pct-a.pct).slice(0,10);
+  if(!lista.length){tst('Todos já concluíram o ciclo',1);return}
+  const linhas=lista.map((p,i)=>{const fa=12-M.filter(m=>p.modulos[m]).length;
+    return `<tr>
+      <td class="rp-pos">${i+1}</td>
+      <td>${esc(p.nome)}<div style="font-size:8pt;color:#8A4F1E;margin-top:2px">faltam ${fa} ${fa===1?'módulo':'módulos'}</div></td>
+      <td class="rp-tel">${esc(p.celular)||'—'}</td>
+      <td class="rp-val">${p.pct}%</td></tr>`}).join('');
+  const pend={};
+  V.filter(p=>p.pct<100).forEach(p=>M.forEach(m=>{if(!p.modulos[m])pend[m]=(pend[m]||0)+1}));
+  const top=Object.entries(pend).sort((a,b)=>b[1]-a[1]).slice(0,3);
+  $('report').innerHTML = rpCabecalho() + `
+    <div class="rp-sum">Os <b>${lista.length}</b> participantes mais próximos de concluir o ciclo · ${esc(escopoTxt())}</div>
+    <div class="rp-ttl">Mais avançados</div>
+    <table class="rp-tb"><thead><tr><th class="rp-pos">#</th><th>Nome</th><th class="rp-tel">Celular</th><th class="rp-val">Progresso</th></tr></thead>
+    <tbody>${linhas}</tbody></table>
+    ${top.length?`<div class="rp-ttl">Módulos que mais faltam</div>
+      <div class="rp-miss"><b>Prioridade para as próximas aulas</b>
+      ${top.map((t,i)=>`${i+1}. ${esc(t[0])} — ${t[1]} ${t[1]===1?'pessoa':'pessoas'}`).join('<br>')}</div>`:''}`
+    + rpRodape();
+  window.print();
 }
 
 // ═══════════ IMPORTAR LISTA ═══════════
