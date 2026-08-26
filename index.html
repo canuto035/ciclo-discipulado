@@ -390,8 +390,6 @@ td{padding:10px 13px;vertical-align:middle}
 
 /* ===== TURMAS ===== */
 .tbar{display:flex;align-items:center;gap:9px;margin-bottom:18px;flex-wrap:wrap}
-.tbar-warn{font-size:.75rem;color:var(--yellow);background:rgba(242,193,78,.07);border:1px solid rgba(242,193,78,.22);border-radius:20px;padding:5px 13px;line-height:1.45}
-.tbar-warn b{font-weight:700}
 .tbar-l{font-size:.66rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--txt3);margin-right:2px}
 .tpill{padding:7px 15px;border-radius:20px;border:1px solid var(--bdr);background:var(--card);color:var(--txt2);font-size:.79rem;font-weight:600;cursor:pointer;transition:.18s;font-family:inherit;white-space:nowrap}
 .tpill:hover{border-color:var(--green);color:var(--green)}
@@ -937,7 +935,7 @@ function barraTurmas(){
   if(!ts.length||!D.length){bar.innerHTML='';return}
   const semTurma = ts.length===1 && ts[0][0]==='—';
   if(semTurma){   // banco ainda sem a coluna turma
-    bar.innerHTML='<span class="tbar-l">Turma</span><span class="tbar-warn">⚠ Coluna <b>turma</b> ainda não existe no banco — rode o <b>turmas.sql</b> no Supabase para ativar</span>';
+    bar.innerHTML='';   // recurso ainda não ativado no banco: não mostra nada
     return;
   }
   bar.innerHTML='<span class="tbar-l">Turma</span>'
