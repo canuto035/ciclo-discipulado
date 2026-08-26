@@ -397,6 +397,24 @@ td{padding:10px 13px;vertical-align:middle}
 .mod-list-modal{display:flex;flex-direction:column;gap:4px}
 
 
+/* ===== CONVOCAR ===== */
+.cv-ta{width:100%;min-height:132px;padding:12px 14px;border-radius:var(--r-sm);border:1px solid var(--bdr);background:var(--bg2);color:var(--txt);font-size:.84rem;font-family:'Inter',sans-serif;line-height:1.6;outline:none;resize:vertical;transition:.16s}
+.cv-ta:focus{border-color:var(--green);box-shadow:0 0 0 3px var(--green-glow)}
+.cv-hint{font-size:.72rem;color:var(--txt3);line-height:1.65;margin:8px 0 16px}
+.cv-hint code{background:rgba(255,255,255,.06);padding:1.5px 6px;border-radius:5px;color:var(--green);font-size:.72rem}
+.cv-bar{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.cv-bar .btn{flex:1 1 auto;min-width:130px}
+.cv-l{display:flex;flex-direction:column;gap:5px;max-height:290px;overflow-y:auto;margin-bottom:4px}
+.cv-i{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:var(--r-sm);background:rgba(255,255,255,.025);border:1px solid var(--bdr);font-size:.81rem}
+.cv-i.sent{background:rgba(46,229,140,.06);border-color:rgba(46,229,140,.2)}
+.cv-nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.cv-tel{font-size:.71rem;color:var(--txt3);white-space:nowrap}
+.cv-wa{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:8px;border:1px solid rgba(46,229,140,.3);background:rgba(46,229,140,.08);color:var(--green);font-size:.71rem;font-weight:600;text-decoration:none;white-space:nowrap;transition:.15s;flex-shrink:0}
+.cv-wa:hover{background:rgba(46,229,140,.16)}
+.cv-no{font-size:.71rem;color:var(--txt3);padding:5px 11px;flex-shrink:0}
+.cv-tt{font-size:.68rem;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:var(--txt3);margin:16px 0 9px;display:flex;align-items:center;gap:8px}
+.cv-tt::after{content:'';flex:1;height:1px;background:var(--bdr)}
+
 /* ===== CARD DE DECISAO ===== */
 .dec{background:linear-gradient(150deg,rgba(46,229,140,.09),rgba(53,167,255,.05));border:1px solid rgba(46,229,140,.28);border-radius:var(--r);padding:15px 17px}
 .dec-lb{font-size:.63rem;font-weight:700;letter-spacing:.9px;text-transform:uppercase;color:var(--green);margin-bottom:7px}
@@ -699,6 +717,7 @@ Seu cadastro foi criado, mas um administrador precisa liberar o acesso. Você se
 <div class="dec-s" id="decSub">—</div>
 <div class="dec-acts" id="decActs">
 <button class="dec-b p" onclick="chamarModulo()">Marcar chamada</button>
+<button class="dec-b" onclick="convocar($('decCard').dataset.m)">Convocar</button>
 <button class="dec-b" onclick="setPend($('decCard').dataset.m)">Ver quem falta</button>
 </div>
 </div>
@@ -799,6 +818,7 @@ Seu cadastro foi criado, mas um administrador precisa liberar o acesso. Você se
 <div class="ov" id="ovu" onclick="ovc(event,'ovu')"><div class="md md-wide" id="mdu"></div></div>
 <div class="ov" id="ovn" onclick="ovc(event,'ovn')"><div class="md" id="mdn"></div></div>
 <div class="ov" id="ovi" onclick="ovc(event,'ovi')"><div class="md md-wide" id="mdi"></div></div>
+<div class="ov" id="ovc" onclick="ovc(event,'ovc')"><div class="md md-wide" id="mdc"></div></div>
 <div class="tst" id="tst"></div>
 <div id="report"></div>
 
@@ -1295,6 +1315,81 @@ async function delP(n){
   if(error){tst('Erro: '+error.message,1);return}
   log(n,p.nome,'Participante excluído','');
   cl('ov'); await load(); tst('Participante excluído');
+}
+
+
+// ═══════════ CONVOCAR PARA A AULA ═══════════
+let cvMod='', cvEnviados=new Set();
+
+function convocar(mod){
+  if(!mod)return;
+  cvMod=mod; cvEnviados.clear();
+  const falta=DT().filter(p=>!p.modulos[mod]).sort((a,b)=>a.nome.localeCompare(b.nome,'pt'));
+  const comTel=falta.filter(p=>p.celular), semTel=falta.filter(p=>!p.celular);
+
+  const msg=`📖 *${mod}*\n📅 ${hoje()} — horário a confirmar\n\nOlá {nome}! Você ainda não participou desse módulo do ciclo. Conto com você!\n\n_Integração · Carazinho_`;
+
+  $('mdc').innerHTML=`<div class="md-h"><button class="md-x" onclick="cl('ovc')">✕</button><div class="md-in">
+    <div class="ch-t">Convocar para a aula</div>
+    <div class="ch-s">${esc(mod)} · ${falta.length} ${falta.length===1?'pessoa':'pessoas'}${TU?' · turma '+esc(TU):''}</div></div></div>
+    <div class="md-b">
+
+    <label class="ch-lb">Mensagem</label>
+    <textarea class="cv-ta" id="cvMsg">${esc(msg)}</textarea>
+    <div class="cv-hint">Use <code>{nome}</code> para personalizar. No envio individual vira o primeiro nome; na mensagem do grupo vira "pessoal".</div>
+
+    <div class="cv-bar">
+      <button class="btn btn-p" onclick="cvCopiarGrupo()">Copiar para o grupo</button>
+      <button class="btn btn-s" onclick="cvCopiarNums()">Copiar os ${comTel.length} números</button>
+    </div>
+
+    <div class="cv-tt">Enviar um a um</div>
+    <div class="cv-l">
+      ${comTel.map(p=>`<div class="cv-i" id="cv${p.n}">
+        <span class="cv-nm">${esc(p.nome)}</span>
+        <span class="cv-tel">${esc(p.celular)}</span>
+        <a class="cv-wa" href="#" onclick="return cvAbrir(event,${p.n})">💬 Abrir</a></div>`).join('')}
+      ${semTel.map(p=>`<div class="cv-i">
+        <span class="cv-nm" style="color:var(--txt3)">${esc(p.nome)}</span>
+        <span class="cv-no">sem telefone</span></div>`).join('')}
+    </div>
+    ${semTel.length?`<div class="cv-hint" style="margin-top:10px">${semTel.length} ${semTel.length===1?'pessoa está':'pessoas estão'} sem telefone cadastrado — não ${semTel.length===1?'aparece':'aparecem'} para envio.</div>`:''}
+    </div>`;
+  $('ovc').classList.add('on');
+}
+
+function cvTexto(nome){
+  let t=$('cvMsg').value;
+  return t.replace(/\{nome\}/g, nome || 'pessoal');
+}
+
+async function copiar(txt, ok){
+  try{
+    if(navigator.clipboard&&window.isSecureContext) await navigator.clipboard.writeText(txt);
+    else{ const a=document.createElement('textarea'); a.value=txt; a.style.position='fixed'; a.style.opacity='0';
+          document.body.appendChild(a); a.select(); document.execCommand('copy'); a.remove() }
+    tst(ok);
+  }catch(e){ tst('Não consegui copiar — selecione o texto manualmente',1) }
+}
+
+function cvCopiarGrupo(){ copiar(cvTexto(null), '✓ Mensagem copiada — cole no grupo') }
+
+function cvCopiarNums(){
+  const nums=DT().filter(p=>!p.modulos[cvMod]&&p.celular)
+    .map(p=>p.celular.replace(/\D/g,'').replace(/^55/,''))
+    .map(n=>'+55'+n).join('\n');
+  copiar(nums, '✓ Números copiados — use numa lista de transmissão');
+}
+
+function cvAbrir(ev,n){
+  ev.preventDefault();
+  const p=D.find(x=>x.n===n); if(!p)return false;
+  const url='https://wa.me/'+p.celular.replace(/\D/g,'')+'?text='+encodeURIComponent(cvTexto(p.nome.split(' ')[0]));
+  window.open(url,'_blank','noopener');
+  cvEnviados.add(n);
+  const e=$('cv'+n);
+  if(e){ e.classList.add('sent'); const a=e.querySelector('.cv-wa'); if(a)a.textContent='✓ Aberto' }
+  return false;
 }
 
 // ═══════════ CHAMADA ═══════════
