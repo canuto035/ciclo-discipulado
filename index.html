@@ -397,6 +397,19 @@ td{padding:10px 13px;vertical-align:middle}
 .mod-list-modal{display:flex;flex-direction:column;gap:4px}
 
 
+/* ===== GERIR TURMAS ===== */
+.tg-i{display:flex;align-items:center;gap:11px;padding:11px 13px;border-radius:var(--r-sm);background:rgba(255,255,255,.025);border:1px solid var(--bdr);margin-bottom:7px;transition:.15s}
+.tg-i:hover{border-color:#2A3E4B}
+.tg-nm{flex:1;min-width:0;font-size:.87rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tg-c{font-size:.72rem;color:var(--txt3);white-space:nowrap;flex-shrink:0}
+.tg-b{background:none;border:1px solid var(--bdr);border-radius:8px;padding:5px 11px;font-size:.7rem;font-weight:600;color:var(--txt3);cursor:pointer;font-family:inherit;transition:.15s;white-space:nowrap;flex-shrink:0}
+.tg-b:hover{border-color:var(--green);color:var(--green)}
+.tg-in{flex:1;min-width:0;padding:7px 10px;border-radius:8px;border:1px solid var(--green);background:var(--bg2);color:var(--txt);font-size:.85rem;font-family:inherit;outline:none}
+.tg-new{display:flex;gap:8px;margin-top:16px;padding-top:16px;border-top:1px solid var(--bdr)}
+.tg-new input{flex:1;min-width:0;padding:9px 12px;border-radius:var(--r-sm);border:1px solid var(--bdr);background:var(--bg2);color:var(--txt);font-size:.84rem;font-family:inherit;outline:none;transition:.16s}
+.tg-new input:focus{border-color:var(--green);box-shadow:0 0 0 3px var(--green-glow)}
+.tg-hint{font-size:.73rem;color:var(--txt3);line-height:1.65;margin-top:14px}
+
 /* ===== MARCA FAMILIA ===== */
 .fam-btn{display:flex;align-items:center;gap:10px;width:100%;padding:11px 15px;border-radius:11px;border:1px solid var(--bdr);background:rgba(255,255,255,.03);color:var(--txt2);font-size:.84rem;font-weight:600;cursor:pointer;font-family:inherit;transition:.2s;margin-bottom:20px;text-align:left}
 .fam-btn:hover{border-color:var(--gold);color:var(--gold)}
@@ -707,6 +720,7 @@ Seu cadastro foi criado, mas um administrador precisa liberar o acesso. Você se
 <div class="udrop" id="udrop">
 <div class="uhead"><b id="uNome">—</b><span class="rb" id="uRole">—</span></div>
 <button class="uitem" id="miUsers" onclick="openUsers()">Usuários<span class="pend-badge hide" id="pendN">0</span></button>
+<button class="uitem" id="miTur" onclick="openTurmas()">Turmas</button>
 <button class="uitem" id="miImp" onclick="openImp()">Importar lista</button>
 <button class="uitem" id="miMerge" onclick="openMerge()">Mesclar cadastros</button>
 <button class="uitem" onclick="openHist()">Histórico</button>
@@ -982,6 +996,7 @@ async function boot(){
   $('miUsers').classList.toggle('hide', prof.role!=='admin');
   $('miMerge').classList.toggle('hide', prof.role!=='admin');
   $('miImp').classList.toggle('hide', !can());
+  $('miTur').classList.toggle('hide', !(can()&&HAS_TURMA));
   $('heroBtns').classList.toggle('hide', !can());
   $('roNote').classList.toggle('hide', can());
 
@@ -1672,6 +1687,82 @@ function pdfRanking(){
     + rpRodape();
   window.print();
 }
+
+
+// ═══════════ GERIR TURMAS ═══════════
+function openTurmas(){
+  if(!can()||!HAS_TURMA)return;
+  $('udrop').classList.remove('on');
+  const ts=turmas();
+  $('mdu').innerHTML=mdShell('Turmas','Renomeie ou mova participantes entre turmas',
+    `<div id="tgL">${ts.map(([t,n])=>tgLinha(t,n)).join('')}</div>
+     <div class="tg-new">
+       <input id="tgNova" placeholder="Nome da nova turma — ex.: Nov/2026">
+       <button class="btn btn-s" onclick="tgCriar()">Criar</button>
+     </div>
+     <div class="tg-hint">Uma turma existe enquanto tiver participantes. Ao criar uma nova, ela fica disponível no cadastro e na importação — e aparece aqui assim que alguém for atribuído a ela.</div>`);
+  $('ovu').classList.add('on');
+}
+
+function tgLinha(t,n){
+  const id=btoa(unescape(encodeURIComponent(t))).replace(/[^A-Za-z0-9]/g,'');
+  return `<div class="tg-i" id="tg${id}" data-t="${esc(t)}">
+    <span class="tg-nm">${esc(t)}</span>
+    <span class="tg-c">${n} ${n===1?'participante':'participantes'}</span>
+    <button class="tg-b" onclick="tgEditar('${id}')">Renomear</button></div>`;
+}
+
+function tgEditar(id){
+  const el=$('tg'+id); if(!el)return;
+  const atual=el.dataset.t;
+  if(el.querySelector('.tg-in')){ tgFechar(id,atual); return }
+  const n=el.querySelector('.tg-c').textContent;
+  el.innerHTML=`<input class="tg-in" id="tgi${id}" value="${esc(atual)}">
+    <button class="tg-b" onclick="tgSalvar('${id}')">Salvar</button>
+    <button class="tg-b" onclick="tgFechar('${id}','${esc(atual).replace(/'/g,"\\'")}')">Cancelar</button>`;
+  const inp=$('tgi'+id);
+  inp.focus(); inp.select();
+  inp.onkeydown=e=>{ if(e.key==='Enter')tgSalvar(id); if(e.key==='Escape')tgFechar(id,atual) };
+}
+
+function tgFechar(id,t){
+  const el=$('tg'+id); if(!el)return;
+  const n=D.filter(p=>p.turma===t).length;
+  el.outerHTML=tgLinha(t,n);
+}
+
+async function tgSalvar(id){
+  const el=$('tg'+id), antigo=el.dataset.t;
+  const novo=$('tgi'+id).value.trim();
+  if(!novo){tst('Informe um nome',1);return}
+  if(novo===antigo){tgFechar(id,antigo);return}
+
+  const qtd=D.filter(p=>p.turma===antigo).length;
+  const juntar=turmas().some(([t])=>t===novo);
+  const msg=juntar
+    ? `Já existe a turma "${novo}".\n\nOs ${qtd} participantes de "${antigo}" serão movidos para ela e as duas viram uma só. Continuar?`
+    : `Renomear "${antigo}" para "${novo}"?\n\n${qtd} ${qtd===1?'participante será atualizado':'participantes serão atualizados'}.`;
+  if(!confirm(msg))return;
+
+  const {error}=await sb.from('participantes').update({turma:novo}).eq('turma',antigo);
+  if(error){tst('Erro: '+error.message,1);return}
+  await log(null,null, juntar?'Turmas unidas':'Turma renomeada', `${antigo} → ${novo} · ${qtd} participante(s)`);
+  if(TU===antigo) TU=novo;
+  await load(); openTurmas();
+  tst(juntar?`✓ Turmas unidas em ${novo}`:`✓ Turma renomeada para ${novo}`);
+}
+
+function tgCriar(){
+  const nome=$('tgNova').value.trim();
+  if(!nome){tst('Informe o nome da turma',1);return}
+  if(turmas().some(([t])=>t===nome)){tst('Essa turma já existe',1);return}
+  cl('ovu');
+  TU_NOVA=nome;
+  openNew();
+  setTimeout(()=>{ const f=$('fTur'); if(f)f.value=nome; },90);
+  tst(`Cadastre alguém em "${nome}" para a turma passar a existir`);
+}
+let TU_NOVA='';
 
 // ═══════════ IMPORTAR LISTA ═══════════
 let impLin=[];
