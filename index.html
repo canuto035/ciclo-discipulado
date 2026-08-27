@@ -417,11 +417,18 @@ td{padding:10px 13px;vertical-align:middle}
 
 /* ===== CARD DE DECISAO ===== */
 .dec{background:linear-gradient(150deg,rgba(46,229,140,.09),rgba(53,167,255,.05));border:1px solid rgba(46,229,140,.28);border-radius:var(--r);padding:15px 17px}
+
+.dec-hd{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.dec-hd .dec-lb{margin-bottom:0;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dec-sw{background:none;border:1px solid var(--bdr);border-radius:20px;padding:2px 10px;font-size:.63rem;font-weight:600;color:var(--txt3);cursor:pointer;font-family:inherit;transition:.15s;flex-shrink:0;text-transform:lowercase;letter-spacing:0}
+.dec-sw:hover{border-color:var(--green);color:var(--green)}
+.dec-sel{width:100%;padding:8px 10px;border-radius:9px;border:1px solid var(--green);background:var(--bg2);color:var(--txt);font-size:.81rem;font-family:inherit;outline:none;margin-bottom:9px}
 .dec-lb{font-size:.63rem;font-weight:700;letter-spacing:.9px;text-transform:uppercase;color:var(--green);margin-bottom:7px}
 .dec-v{font-size:1.02rem;font-weight:700;line-height:1.25;margin-bottom:3px;color:var(--txt)}
 .dec-s{font-size:.74rem;color:var(--txt3);margin-bottom:12px}
-.dec-acts{display:flex;gap:7px;flex-wrap:wrap}
-.dec-b{flex:1 1 0;min-width:0;padding:8px 10px;border-radius:9px;border:1px solid var(--bdr);background:rgba(255,255,255,.04);color:var(--txt2);font-size:.72rem;font-weight:600;cursor:pointer;font-family:inherit;transition:.16s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dec-acts{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.dec-acts .dec-b.p{grid-column:1/-1}
+.dec-b{min-width:0;padding:8px 10px;border-radius:9px;border:1px solid var(--bdr);background:rgba(255,255,255,.04);color:var(--txt2);font-size:.72rem;font-weight:600;cursor:pointer;font-family:inherit;transition:.16s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .dec-b:hover{border-color:var(--green);color:var(--green)}
 .dec-b.p{background:var(--green);color:#04160D;border-color:var(--green);font-weight:700}
 .dec-b.p:hover{filter:brightness(1.08);color:#04160D}
@@ -712,7 +719,11 @@ Seu cadastro foi criado, mas um administrador precisa liberar o acesso. Você se
 </div>
 <div class="hero-right">
 <div class="dec" id="decCard">
-<div class="dec-lb">Próxima aula sugerida</div>
+<div class="dec-hd">
+<span class="dec-lb" id="decLb">Próxima aula sugerida</span>
+<button class="dec-sw" id="decSw" onclick="trocarAula()">trocar</button>
+</div>
+<select class="dec-sel hide" id="decPick" onchange="escolherAula(this.value)"></select>
 <div class="dec-v" id="decMod">—</div>
 <div class="dec-s" id="decSub">—</div>
 <div class="dec-acts" id="decActs">
@@ -840,6 +851,7 @@ const AB=["A.S","R.P","5M","A.E","P.O","M.R","B.E","Pd","Dz","E.S","G.F","B.A"];
 let ME=null, D=[], f='all', s='n', v='t', pend='', dir={nome:1,pct:-1}, chSel=new Set();
 const STEP=5; let lim=STEP; let TU='';   // '' = todas as turmas
 let barsAll=false;
+let decSel='';   // aula escolhida à mão ('' = sugestão automática)
 let HAS_TURMA=false;             // vira true quando a coluna existe no banco
 const comTurma=(o,t)=>HAS_TURMA?{...o,turma:t}:o;
 
@@ -1025,7 +1037,7 @@ function barraTurmas(){
     + ts.map(([t,n])=>`<button class="tpill ${TU===t?'on':''}" onclick="setTurma('${t.replace(/'/g,"\\'")}')">${esc(t)}<span class="c">${n}</span></button>`).join('');
 }
 
-function setTurma(t){ TU=t; lim=STEP; pend=''; barraTurmas(); dash(); rd();
+function setTurma(t){ TU=t; lim=STEP; pend=''; decSel=''; $('decPick').classList.add('hide'); barraTurmas(); dash(); rd();
   $('lista').scrollIntoView({behavior:'smooth',block:'start'}) }
 
 function dash(){
@@ -1050,14 +1062,29 @@ function dash(){
     ? `<b>${naoFecharam}</b> de ${t} ainda não fecharam os 12 módulos`
     : `todos os ${t} concluíram os 12 módulos`;
 
-  const fila=filaModulos(V), alvo=fila[0];
+  const fila=filaModulos(V);
+  const manual = decSel ? fila.find(x=>x.mod===decSel) : null;
+  const alvo = manual || fila[0];
   const dc=$('decCard');
+
+  const sel=$('decPick');
+  sel.innerHTML = fila.map(x=>`<option value="${esc(x.mod)}">${esc(x.mod)} — ${x.falta?'faltam '+x.falta:'completo'}</option>`).join('');
+  if(alvo) sel.value=alvo.mod;
+
+  $('decLb').textContent = manual ? 'Aula escolhida' : 'Próxima aula sugerida';
+  $('decSw').textContent = manual ? 'voltar à sugestão' : 'trocar';
+
   if(alvo && alvo.falta>0){
     dc.classList.remove('done');
     $('decMod').textContent=alvo.mod;
     $('decSub').textContent=`${alvo.falta} ${alvo.falta===1?'pessoa ainda precisa':'pessoas ainda precisam'} · ${alvo.feitos} já fizeram`;
     dc.dataset.m=alvo.mod;
-    $('decActs').style.display = can()?'flex':'none';
+    $('decActs').style.display = can()?'grid':'none';
+  } else if(alvo){
+    dc.classList.add('done'); dc.dataset.m=alvo.mod;
+    $('decMod').textContent=alvo.mod;
+    $('decSub').textContent='Todos já fizeram este módulo';
+    $('decActs').style.display='none';
   } else {
     dc.classList.add('done'); dc.dataset.m='';
     $('decMod').textContent='Ciclo completo';
@@ -1102,6 +1129,17 @@ function dash(){
   $('pendSel').value=pend; $('pendSel').classList.toggle('act',!!pend);
 }
 
+function trocarAula(){
+  if(decSel){ decSel=''; $('decPick').classList.add('hide'); dash(); return }   // volta à sugestão
+  const sel=$('decPick');
+  sel.classList.toggle('hide');
+  if(!sel.classList.contains('hide')) sel.focus();
+}
+function escolherAula(m){
+  decSel=m;
+  $('decPick').classList.add('hide');
+  dash();
+}
 function setPend(m){pend=m||'';$('pendSel').value=pend;$('pendSel').classList.toggle('act',!!pend);
   document.querySelectorAll('.mrow').forEach((r,i)=>r.classList.toggle('act',M[i]===pend));
   lim=STEP; rd(); if(pend)$('lista').scrollIntoView({behavior:'smooth',block:'start'})}
