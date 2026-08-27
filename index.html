@@ -96,7 +96,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 /* ===== HERO ===== */
 .hero{position:relative;background:linear-gradient(135deg,#0C1A24 0%,#0A1620 55%,#0B1D1A 100%);border:1px solid var(--bdr);border-radius:var(--r-lg);padding:30px 34px;margin-bottom:20px;overflow:hidden}
 .hero::before{content:'';position:absolute;top:-140px;right:-100px;width:420px;height:420px;background:radial-gradient(circle,rgba(46,229,140,.11),transparent 65%);pointer-events:none}
-.hero-in{position:relative;z-index:1;display:grid;grid-template-columns:1fr 312px;gap:30px;align-items:center}
+.hero-in{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(200px,.72fr) 300px;gap:26px;align-items:center}
 .hero-left{min-width:0}
 .eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:.66rem;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--green);background:var(--green-glow);border:1px solid rgba(46,229,140,.22);padding:5px 12px;border-radius:20px;margin-bottom:16px}
 .dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:blink 2s infinite}
@@ -118,19 +118,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .hr-s{font-size:.72rem;color:var(--txt3)}
 #hRitmo{font-family:'Inter',sans-serif;font-variant-numeric:tabular-nums;font-size:1.6rem;font-weight:800;color:var(--blue);letter-spacing:-.035em}
 
-/* ===== KPIs ===== */
-.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:13px;margin-bottom:20px}
-.kpi{position:relative;background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:19px 20px;overflow:hidden;transition:.22s;cursor:pointer}
-.kpi:hover{transform:translateY(-3px);border-color:#2A3E4B}
-.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
-.k-g::before{background:var(--green)}.k-b::before{background:var(--blue)}
-.k-y::before{background:var(--yellow)}.k-o::before{background:var(--orange)}
-.k-t::before{background:linear-gradient(90deg,var(--green),var(--blue))}
-.kpi-v{font-family:'Inter',sans-serif;font-variant-numeric:tabular-nums;font-feature-settings:'tnum' 1,'ss01' 1;font-size:2.05rem;font-weight:800;line-height:1;margin-bottom:6px;letter-spacing:-.04em}
-.k-g .kpi-v{color:var(--green)}.k-b .kpi-v{color:var(--blue)}
-.k-y .kpi-v{color:var(--yellow)}.k-o .kpi-v{color:var(--orange)}
-.kpi-l{font-size:.67rem;font-weight:600;letter-spacing:.9px;text-transform:uppercase;color:var(--txt3)}
-
+.k-g .k-b .k-y .k-o 
 /* ===== PANELS ===== */
 .panels{display:grid;grid-template-columns:.85fr 1.15fr;gap:16px;margin-bottom:22px}
 .panel{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:22px}
@@ -370,7 +358,6 @@ td{padding:10px 13px;vertical-align:middle}
   .rp-ft .rp-seal{height:17px;width:auto;opacity:.5;vertical-align:middle;margin-right:7px}
 }
 
-
 /* ===== CONCLUIDOS ===== */
 .dn-i{display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:var(--r-sm);cursor:pointer;transition:.15s;margin-bottom:3px;background:rgba(46,229,140,.045);border:1px solid rgba(46,229,140,.14)}
 .dn-i:hover{background:rgba(46,229,140,.1)}
@@ -395,7 +382,6 @@ td{padding:10px 13px;vertical-align:middle}
 .bars-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 30px}
 @media(max-width:900px){.bars-grid{grid-template-columns:1fr}}
 .mod-list-modal{display:flex;flex-direction:column;gap:4px}
-
 
 /* ===== GERIR TURMAS ===== */
 .tg-i{display:flex;align-items:center;gap:11px;padding:11px 13px;border-radius:var(--r-sm);background:rgba(255,255,255,.025);border:1px solid var(--bdr);margin-bottom:7px;transition:.15s}
@@ -445,6 +431,25 @@ td{padding:10px 13px;vertical-align:middle}
 .cv-no{font-size:.71rem;color:var(--txt3);padding:5px 11px;flex-shrink:0}
 .cv-tt{font-size:.68rem;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:var(--txt3);margin:16px 0 9px;display:flex;align-items:center;gap:8px}
 .cv-tt::after{content:'';flex:1;height:1px;background:var(--bdr)}
+
+/* ===== SITUACAO DO GRUPO (meio do hero) ===== */
+.hero-mid{display:flex;flex-direction:column;gap:3px;min-width:0;padding-left:6px}
+.hm-t{font-size:.63rem;font-weight:700;letter-spacing:.9px;text-transform:uppercase;color:var(--txt3);margin-bottom:8px;padding-left:11px}
+.hm-r{display:flex;align-items:baseline;gap:10px;width:100%;padding:6px 11px;border-radius:9px;border:none;border-left:2px solid transparent;background:none;cursor:pointer;font-family:inherit;text-align:left;transition:.16s}
+.hm-r:hover{background:rgba(255,255,255,.045)}
+.hm-n{font-variant-numeric:tabular-nums;font-size:1.22rem;font-weight:800;letter-spacing:-.03em;min-width:34px;line-height:1.15}
+.hm-l{flex:1;min-width:0;font-size:.79rem;font-weight:500;color:var(--txt2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.r-t{border-left-color:rgba(255,255,255,.14)} .r-t .hm-n{color:var(--txt)}
+.r-g{border-left-color:var(--green)}  .r-g .hm-n{color:var(--green)}
+.r-b{border-left-color:var(--blue)}   .r-b .hm-n{color:var(--blue)}
+.r-y{border-left-color:var(--yellow)} .r-y .hm-n{color:var(--yellow)}
+.r-o{border-left-color:var(--orange)} .r-o .hm-n{color:var(--orange)}
+.r-g:hover{background:rgba(46,229,140,.07)}
+.r-b:hover{background:rgba(53,167,255,.07)}
+.r-y:hover{background:rgba(242,193,78,.07)}
+.r-o:hover{background:rgba(255,159,67,.07)}
+
+/* ===== SITUACAO — FIM ===== */
 
 /* ===== CARD DE DECISAO ===== */
 .dec{background:linear-gradient(150deg,rgba(46,229,140,.09),rgba(53,167,255,.05));border:1px solid rgba(46,229,140,.28);border-radius:var(--r);padding:15px 17px}
@@ -576,10 +581,11 @@ td{padding:10px 13px;vertical-align:middle}
 /* ===== RESPONSIVE ===== */
 @media(max-width:1080px){
 .panels{grid-template-columns:1fr}
-.kpis{grid-template-columns:repeat(3,1fr)}
-.hero-in{grid-template-columns:1fr;gap:22px}
-.hero-right{flex-direction:row}
+.hero-in{grid-template-columns:minmax(0,1fr) minmax(190px,.8fr);gap:22px}
+.hero-right{grid-column:1/-1;flex-direction:row}
 .hr-card{flex:1}
+.dec{flex:1.3}
+.hero-mid{padding-left:0}
 }
 @media(max-width:760px){
 .search{display:none}
@@ -590,12 +596,20 @@ td{padding:10px 13px;vertical-align:middle}
 .hb-t strong{font-size:.9rem}
 .hero-big{gap:12px;margin-bottom:13px}
 .hero-bar{margin-bottom:18px}
-.hero-right{flex-direction:column}
-.hero-btns{flex-direction:column}
+.hero-in{grid-template-columns:1fr;gap:16px}
+.hero-right{flex-direction:column;gap:9px}
+.hero-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.hero-btns .btn{width:100%;padding:10px 8px;font-size:.79rem}
+.hero-bar{margin-bottom:14px}
+.hero-mid{padding-left:0;display:grid;grid-template-columns:1fr 1fr;gap:3px}
+.hm-t{grid-column:1/-1;padding-left:8px;margin-bottom:2px}
+.hm-r{padding:6px 8px;gap:7px;border-left-width:2px}
+.hm-n{font-size:1.02rem;min-width:26px}
+.hm-l{font-size:.7rem}
+.dec{padding:13px 15px}
+.dec-v{font-size:.95rem}
+.hr-card{padding:12px 15px}
 .hero-btns .btn{width:100%}
-.kpis{grid-template-columns:repeat(2,1fr);gap:10px}
-.kpi{padding:15px 16px}
-.kpi-v{font-size:1.75rem}
 .tw{display:none}
 .cards{display:grid!important}
 .views{display:none}
@@ -642,11 +656,7 @@ td{padding:10px 13px;vertical-align:middle}
   .dec-b{font-size:.75rem;padding:9px 10px}
   .md-acts{grid-template-columns:1fr}
   .md-acts .btn{grid-column:1/-1}
-  .kpis{gap:8px}
-  .kpi{padding:13px}
-  .kpi-v{font-size:1.55rem}
-  .kpi-l{font-size:.62rem;letter-spacing:.6px}
-  .hb-n{font-size:2.7rem}
+          .hb-n{font-size:2.7rem}
   .wrap{padding:14px 11px 56px}
   .hero{padding:19px 15px}
   .mrow-n{width:96px;font-size:.7rem}
@@ -751,6 +761,15 @@ Seu cadastro foi criado, mas um administrador precisa liberar o acesso. Você se
 <button class="btn btn-s" onclick="openNew()">+ Novo participante</button>
 </div>
 </div>
+<div class="hero-mid">
+<div class="hm-t">Situação do grupo</div>
+<button class="hm-r r-t" onclick="goFlt('all')"><span class="hm-n" id="k1">0</span><span class="hm-l">Total</span></button>
+<button class="hm-r r-g" onclick="goFlt('done')"><span class="hm-n" id="k2">0</span><span class="hm-l">Concluíram o ciclo</span></button>
+<button class="hm-r r-b" onclick="goFlt('high')"><span class="hm-n" id="k3">0</span><span class="hm-l">Quase lá · +75%</span></button>
+<button class="hm-r r-y" onclick="goFlt('mid')"><span class="hm-n" id="k4">0</span><span class="hm-l">Em andamento</span></button>
+<button class="hm-r r-o" onclick="goFlt('parado')"><span class="hm-n" id="k5">0</span><span class="hm-l">Parados há 30d+</span></button>
+</div>
+
 <div class="hero-right">
 <div class="dec" id="decCard">
 <div class="dec-hd">
@@ -776,14 +795,6 @@ Seu cadastro foi criado, mas um administrador precisa liberar o acesso. Você se
 </section>
 
 <div class="tbar" id="tbar"></div>
-
-<div class="kpis">
-<div class="kpi k-t" onclick="goFlt('all')"><div class="kpi-v" id="k1">0</div><div class="kpi-l">Total</div></div>
-<div class="kpi k-g" onclick="goFlt('done')"><div class="kpi-v" id="k2">0</div><div class="kpi-l">Concluídos</div></div>
-<div class="kpi k-b" onclick="goFlt('high')"><div class="kpi-v" id="k3">0</div><div class="kpi-l">Quase lá · +75%</div></div>
-<div class="kpi k-y" onclick="goFlt('mid')"><div class="kpi-v" id="k4">0</div><div class="kpi-l">Em andamento</div></div>
-<div class="kpi k-o" onclick="goFlt('parado')"><div class="kpi-v" id="k5">0</div><div class="kpi-l">Parados 30d+</div></div>
-</div>
 
 <div class="panels one">
 <div class="panel panel-wide">
@@ -1293,7 +1304,6 @@ async function sv(n,m,val,i){
   dash(); rd(); tst('✓ '+m+' atualizado');
 }
 
-
 // ═══════════ RELATORIO PDF ═══════════
 function genPdf(n){
   const p=D.find(x=>x.n===n); if(!p)return;
@@ -1347,7 +1357,6 @@ function genPdf(n){
 
   window.print();
 }
-
 
 // ═══════════ MARCA FAMILIA ═══════════
 async function toggleFam(n){
@@ -1420,7 +1429,6 @@ async function delP(n){
   log(n,p.nome,'Participante excluído','');
   cl('ov'); await load(); tst('Participante excluído');
 }
-
 
 // ═══════════ CONVOCAR PARA A AULA ═══════════
 let cvMod='', cvEnviados=new Set();
@@ -1583,9 +1591,6 @@ async function setAppr(id,ok){
   openUsers(); checkPend();
 }
 
-
-
-
 // ═══════════ CONCLUIDOS / RANKING ═══════════
 function ultimaData(p){
   const dts=M.map(m=>p.modulos[m]).filter(Boolean)
@@ -1628,7 +1633,6 @@ function openRank(){
     corpo + (lista.length?`<div class="md-acts"><button class="btn btn-p" onclick="pdfRanking()">Gerar PDF da lista</button></div>`:''));
   $('ovu').classList.add('on');
 }
-
 
 // ═══════════ RELATORIO DE LISTA (PDF) ═══════════
 function rpCabecalho(){
@@ -1687,7 +1691,6 @@ function pdfRanking(){
     + rpRodape();
   window.print();
 }
-
 
 // ═══════════ GERIR TURMAS ═══════════
 function openTurmas(){
