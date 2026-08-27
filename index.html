@@ -397,6 +397,24 @@ td{padding:10px 13px;vertical-align:middle}
 .mod-list-modal{display:flex;flex-direction:column;gap:4px}
 
 
+/* ===== MARCA FAMILIA ===== */
+.fam-btn{display:flex;align-items:center;gap:10px;width:100%;padding:11px 15px;border-radius:11px;border:1px solid var(--bdr);background:rgba(255,255,255,.03);color:var(--txt2);font-size:.84rem;font-weight:600;cursor:pointer;font-family:inherit;transition:.2s;margin-bottom:20px;text-align:left}
+.fam-btn:hover{border-color:var(--gold);color:var(--gold)}
+.fam-btn .ic{font-size:1.15rem;line-height:1;filter:grayscale(1) opacity(.55);transition:.2s}
+.fam-btn .tx{flex:1;min-width:0}
+.fam-btn .st{display:block;font-size:.71rem;color:var(--txt3);font-weight:500;margin-top:2px;line-height:1.35}
+.fam-btn .sw{width:34px;height:19px;border-radius:20px;background:rgba(255,255,255,.09);position:relative;flex-shrink:0;transition:.22s}
+.fam-btn .sw::after{content:'';position:absolute;top:2.5px;left:3px;width:14px;height:14px;border-radius:50%;background:var(--txt3);transition:.22s}
+.fam-btn.on{background:rgba(197,162,56,.11);border-color:rgba(197,162,56,.42);color:var(--gold)}
+.fam-btn.on .ic{filter:none}
+.fam-btn.on .st{color:rgba(197,162,56,.75)}
+.fam-btn.on .sw{background:var(--gold)}
+.fam-btn.on .sw::after{left:16px;background:#1A1405}
+.fam-tag{display:inline-flex;align-items:center;gap:4px;background:rgba(197,162,56,.14);border:1px solid rgba(197,162,56,.32);color:var(--gold);border-radius:20px;padding:2px 8px;font-size:.65rem;font-weight:700;white-space:nowrap;line-height:1.5}
+.fam-ic{font-size:.88rem;margin-left:5px;vertical-align:-1px}
+.chip.fam.on{background:var(--gold);color:#1A1405;border-color:var(--gold)}
+.chip.fam:hover{border-color:var(--gold);color:var(--gold)}
+
 /* ===== CONVOCAR ===== */
 .cv-ta{width:100%;min-height:132px;padding:12px 14px;border-radius:var(--r-sm);border:1px solid var(--bdr);background:var(--bg2);color:var(--txt);font-size:.84rem;font-family:'Inter',sans-serif;line-height:1.6;outline:none;resize:vertical;transition:.16s}
 .cv-ta:focus{border-color:var(--green);box-shadow:0 0 0 3px var(--green-glow)}
@@ -778,6 +796,7 @@ Seu cadastro foi criado, mas um administrador precisa liberar o acesso. Você se
 <button class="chip" onclick="flt('high',this)">+75%</button>
 <button class="chip" onclick="flt('mid',this)">50–74%</button>
 <button class="chip" onclick="flt('low',this)">-50%</button>
+<button class="chip fam hide" id="chipFam" onclick="flt('familia',this)">👨‍👩‍👧 Em grupo</button>
 </div>
 <select class="sel sel-pend" id="pendSel" onchange="setPend(this.value)"><option value="">Falta o módulo…</option></select>
 <select class="sel" id="srt">
@@ -854,7 +873,8 @@ let ME=null, D=[], f='all', s='n', v='t', pend='', dir={nome:1,pct:-1}, chSel=ne
 const STEP=5; let lim=STEP; let TU='';   // '' = todas as turmas
 let barsAll=false;
 let decSel='';   // aula escolhida à mão ('' = sugestão automática)
-let HAS_TURMA=false;             // vira true quando a coluna existe no banco
+let HAS_TURMA=false;
+let HAS_FAM=false;             // vira true quando a coluna existe no banco
 const comTurma=(o,t)=>HAS_TURMA?{...o,turma:t}:o;
 
 const can = a => ME && (a==='del' ? ME.role==='admin' : ME.role==='admin'||ME.role==='editor');
@@ -976,10 +996,11 @@ async function load(){
   const {data,error} = await sb.from('participantes').select('*').order('numero');
   if(error){tst('Erro ao carregar dados: '+error.message,1);return}
   HAS_TURMA = data.length ? Object.prototype.hasOwnProperty.call(data[0],'turma') : HAS_TURMA;
+  HAS_FAM   = data.length ? Object.prototype.hasOwnProperty.call(data[0],'familia') : HAS_FAM;
   D = data.map(r=>{
     const mods={}; M.forEach(m=>mods[m]=iso2br(r.modulos?.[m])||null);
     return {id:r.id,n:r.numero,nome:r.nome,celular:r.celular||'',retiro:iso2br(r.retiro)||'',
-            turma:r.turma||'—',modulos:mods,pct:Math.round(M.filter(m=>mods[m]).length/12*100)};
+            turma:r.turma||'—',familia:!!r.familia,modulos:mods,pct:Math.round(M.filter(m=>mods[m]).length/12*100)};
   });
   dash(); rd();
 }
@@ -1069,6 +1090,7 @@ function dash(){
   const alvo = manual || fila[0];
   const dc=$('decCard');
 
+  $('chipFam').classList.toggle('hide',!HAS_FAM);
   const sel=$('decPick');
   sel.innerHTML = fila.map(x=>`<option value="${esc(x.mod)}">${esc(x.mod)} — ${x.falta?'faltam '+x.falta:'completo'}</option>`).join('');
   if(alvo) sel.value=alvo.mod;
@@ -1133,6 +1155,7 @@ function dash(){
 
 function trocarAula(){
   if(decSel){ decSel=''; $('decPick').classList.add('hide'); dash(); return }   // volta à sugestão
+  $('chipFam').classList.toggle('hide',!HAS_FAM);
   const sel=$('decPick');
   sel.classList.toggle('hide');
   if(!sel.classList.contains('hide')) sel.focus();
@@ -1148,7 +1171,7 @@ function setPend(m){pend=m||'';$('pendSel').value=pend;$('pendSel').classList.to
 
 function getQ(){return (($('q').value||$('qm').value)||'').trim().toLowerCase()}
 function flist(){const q=getQ();
-  let d=DT().filter(p=>(p.nome.toLowerCase().includes(q)||p.celular.includes(q))&&(f==='all'||(f==='parado'?estaParado(p):f==='ritmo'?diasParado(p)<=30:cls(p.pct)===f))&&(!pend||!p.modulos[pend]));
+  let d=DT().filter(p=>(p.nome.toLowerCase().includes(q)||p.celular.includes(q))&&(f==='all'||(f==='parado'?estaParado(p):f==='ritmo'?diasParado(p)<=30:f==='familia'?p.familia:cls(p.pct)===f))&&(!pend||!p.modulos[pend]));
   if(s==='n')d.sort((a,b)=>a.n-b.n); else if(s==='nome')d.sort((a,b)=>dir.nome*a.nome.localeCompare(b.nome,'pt'));
   else if(s==='pd')d.sort((a,b)=>b.pct-a.pct); else if(s==='pa')d.sort((a,b)=>a.pct-b.pct);
   return d}
@@ -1165,10 +1188,10 @@ function rd(){
   else if(all.length>STEP){mw.classList.add('on');mb.innerHTML=`Ver menos <span>(mostrando ${all.length})</span>`}
   else mw.classList.remove('on');
   $('tb').innerHTML=d.length?d.map(p=>{const c=col(p.pct);
-    return `<tr onclick="op(${p.n})"><td class="t-n">${p.n}</td><td><div class="t-nm">${esc(p.nome)}</div><div class="t-sub">Retiro: ${p.retiro||'—'}</div></td><td>${p.celular?`<a class="wa" href="${wal(p.celular)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">💬 ${esc(p.celular)}</a>`:'<span style="color:var(--txt3)">—</span>'}</td>${M.map(m=>`<td style="text-align:center"><span class="${p.modulos[m]?'tick':'tick tick-n'}">${p.modulos[m]?'✓':'·'}</span></td>`).join('')}<td><div class="pg"><div class="pg-t"><div class="pg-f" style="width:${p.pct}%;background:${c}"></div></div><span class="pg-l" style="color:${c}">${p.pct}%</span></div></td><td>${bdg(p.pct)}</td></tr>`}).join('')
+    return `<tr onclick="op(${p.n})"><td class="t-n">${p.n}</td><td><div class="t-nm">${esc(p.nome)}${p.familia?'<span class="fam-ic" title="Em grupo familiar">👨‍👩‍👧</span>':''}</div><div class="t-sub">Retiro: ${p.retiro||'—'}</div></td><td>${p.celular?`<a class="wa" href="${wal(p.celular)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">💬 ${esc(p.celular)}</a>`:'<span style="color:var(--txt3)">—</span>'}</td>${M.map(m=>`<td style="text-align:center"><span class="${p.modulos[m]?'tick':'tick tick-n'}">${p.modulos[m]?'✓':'·'}</span></td>`).join('')}<td><div class="pg"><div class="pg-t"><div class="pg-f" style="width:${p.pct}%;background:${c}"></div></div><span class="pg-l" style="color:${c}">${p.pct}%</span></div></td><td>${bdg(p.pct)}</td></tr>`}).join('')
     :`<tr><td colspan="17"><div class="emp"><div class="emp-i">🔍</div><div class="emp-t">Nenhum resultado</div><div class="emp-s">Tente outro nome ou filtro</div></div></td></tr>`;
   $('cd').innerHTML=d.length?d.map((p,i)=>{const c=col(p.pct),fa=12-M.filter(m=>p.modulos[m]).length;
-    return `<div class="pc pc-${cls(p.pct)==='done'?'g':cls(p.pct)==='high'?'b':cls(p.pct)==='mid'?'y':'o'}" onclick="op(${p.n})" style="animation-delay:${Math.min(i*.028,.5)}s"><div class="pc-h"><div class="pc-nm">${esc(p.nome)}</div>${bdg(p.pct)}</div><div class="pc-mt">nº${p.n} · ${esc(p.celular)||'Sem telefone'}</div><div class="miss">${fa?`faltam <b>${fa}</b> módulos`:'ciclo completo'}</div><div class="pc-dots">${M.map((m,j)=>`<span class="dt ${p.modulos[m]?'dt-y':'dt-n'}" title="${m}${p.modulos[m]?' — '+p.modulos[m]:''}">${AB[j]}</span>`).join('')}</div><div class="pc-pg"><div class="pc-t"><div class="pc-f" style="width:${p.pct}%;background:${c}"></div></div><span class="pc-p" style="color:${c}">${p.pct}%</span></div></div>`}).join('')
+    return `<div class="pc pc-${cls(p.pct)==='done'?'g':cls(p.pct)==='high'?'b':cls(p.pct)==='mid'?'y':'o'}" onclick="op(${p.n})" style="animation-delay:${Math.min(i*.028,.5)}s"><div class="pc-h"><div class="pc-nm">${esc(p.nome)}${p.familia?'<span class="fam-ic" title="Em grupo familiar">👨‍👩‍👧</span>':''}</div>${bdg(p.pct)}</div><div class="pc-mt">nº${p.n} · ${esc(p.celular)||'Sem telefone'}</div><div class="miss">${fa?`faltam <b>${fa}</b> módulos`:'ciclo completo'}</div><div class="pc-dots">${M.map((m,j)=>`<span class="dt ${p.modulos[m]?'dt-y':'dt-n'}" title="${m}${p.modulos[m]?' — '+p.modulos[m]:''}">${AB[j]}</span>`).join('')}</div><div class="pc-pg"><div class="pc-t"><div class="pc-f" style="width:${p.pct}%;background:${c}"></div></div><span class="pc-p" style="color:${c}">${p.pct}%</span></div></div>`}).join('')
     :`<div style="grid-column:1/-1"><div class="emp"><div class="emp-i">🔍</div><div class="emp-t">Nenhum resultado</div></div></div>`;
 }
 
@@ -1205,6 +1228,10 @@ function op(n){
     <div class="md-r"><div><div class="md-p" style="color:${col(p.pct)}">${p.pct}%</div><div class="md-ps">${dn} de 12 módulos concluídos</div></div>${bdg(p.pct)}</div>
     <div class="md-bar"><div class="md-bf" style="width:${p.pct}%"></div></div></div></div>
     <div class="md-b">${p.celular?`<a class="md-wa" href="${wal(p.celular)}" target="_blank" rel="noopener"><span>💬</span><b>Abrir WhatsApp</b><i>${esc(p.celular)}</i></a>`:''}
+    ${HAS_FAM?`<button class="fam-btn ${p.familia?'on':''}" id="famBtn" onclick="toggleFam(${n})" ${can()?'':'disabled style="cursor:default"'}>
+      <span class="ic">👨‍👩‍👧</span>
+      <span class="tx">Em grupo familiar<span class="st" id="famSt">${p.familia?'sim — participa de um grupo':'ainda não está em um grupo'}</span></span>
+      <span class="sw"></span></button>`:''}
     <div class="p-title" style="margin-bottom:13px">Módulos</div>
     <div class="ml">${M.map((m,i)=>{const d=p.modulos[m];
       return `<div class="mi ${d?'mi-y':'mi-n'}" id="r${i}"><span class="mi-ic">${d?'✅':'⬜'}</span><div class="mi-t"><div class="mi-nm">${m}</div><div class="mi-dt" id="dt${i}">${d||'Pendente'}</div></div>${can()?`<button class="mi-b" id="bt${i}" onclick="te(${n},${i})">${d?'Editar':'+ Data'}</button>`:''}</div>`}).join('')}</div>
@@ -1281,7 +1308,7 @@ function genPdf(n){
       <h2>${esc(p.nome)}</h2>
       <div class="rp-meta">
         Participante <b>nº ${p.n}</b> · Turma <b>${esc(p.turma)}</b>${p.celular?' · '+esc(p.celular):''}<br>
-        Retiro: <b>${p.retiro||'—'}</b> &nbsp;·&nbsp; Última aula: <b>${ultStr}</b>
+        Retiro: <b>${p.retiro||'—'}</b> &nbsp;·&nbsp; Última aula: <b>${ultStr}</b>${p.familia?' &nbsp;·&nbsp; <b>Em grupo familiar</b>':''}
       </div>
     </td>
     <td class="rp-pctc"><span class="n">${p.pct}%</span><span class="l">${feitos.length} de 12</span></td>
@@ -1304,6 +1331,28 @@ function genPdf(n){
   </tr></table>`;
 
   window.print();
+}
+
+
+// ═══════════ MARCA FAMILIA ═══════════
+async function toggleFam(n){
+  if(!can()||!HAS_FAM)return;
+  const p=D.find(x=>x.n===n); if(!p)return;
+  const novo=!p.familia;
+  const b=$('famBtn');
+  b.classList.toggle('on',novo);
+  $('famSt').textContent = novo?'sim — participa de um grupo':'ainda não está em um grupo';
+
+  const {error}=await sb.from('participantes').update({familia:novo}).eq('id',p.id);
+  if(error){
+    b.classList.toggle('on',!novo);
+    $('famSt').textContent = !novo?'sim — participa de um grupo':'ainda não está em um grupo';
+    tst('Erro ao salvar: '+error.message,1); return;
+  }
+  p.familia=novo;
+  log(n,p.nome,novo?'Marcado em grupo familiar':'Removido do grupo familiar','');
+  dash(); rd();
+  tst(novo?'✓ '+p.nome+' marcado em grupo familiar':p.nome+' removido do grupo familiar');
 }
 
 // ═══════════ CADASTRO / EDIÇÃO ═══════════
@@ -1910,10 +1959,10 @@ async function openHist(){
 // ═══════════ CSV ═══════════
 function exportCsv(){
   $('udrop').classList.remove('on');
-  const head=['Nº','Nome','Turma','Celular','Retiro',...M,'% Ciclo'];
+  const head=['Nº','Nome','Turma','Grupo familiar','Celular','Retiro',...M,'% Ciclo'];
   const q=s=>'"'+String(s??'').replace(/"/g,'""')+'"';
   const lines=[head.map(q).join(';'),...[...D].sort((a,b)=>a.n-b.n).map(p=>
-    [p.n,p.nome,p.turma,p.celular,p.retiro,...M.map(m=>p.modulos[m]||''),p.pct+'%'].map(q).join(';'))];
+    [p.n,p.nome,p.turma,p.familia?'Sim':'Não',p.celular,p.retiro,...M.map(m=>p.modulos[m]||''),p.pct+'%'].map(q).join(';'))];
   const blob=new Blob(['\uFEFF'+lines.join('\n')],{type:'text/csv;charset=utf-8'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
