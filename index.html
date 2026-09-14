@@ -258,6 +258,11 @@ td{padding:10px 13px;vertical-align:middle}
 .ch-lb{display:block;font-size:.63rem;font-weight:700;letter-spacing:.9px;text-transform:uppercase;color:var(--txt3);margin-bottom:6px}
 .ch-in{width:100%;padding:9px 11px;border-radius:9px;border:1px solid var(--bdr);background:var(--bg2);color:var(--txt);font-size:.82rem;font-family:inherit;outline:none;transition:.16s}
 .ch-in:focus{border-color:var(--green);box-shadow:0 0 0 3px var(--green-glow)}
+.ch-dt{font-size:.68rem;margin-top:5px;line-height:1.4;min-height:14px}
+.ch-dt.hoje{color:var(--txt3)}
+.ch-dt.passado{color:var(--yellow);font-weight:600}
+.ch-dt.futuro{color:var(--orange);font-weight:600}
+.ch-dt.ruim{color:var(--red);font-weight:600}
 .ch-bar{padding:11px 24px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--bdr);flex-shrink:0;flex-wrap:wrap}
 .ch-cnt{font-size:.76rem;color:var(--txt2);font-weight:600}
 .ch-cnt b{color:var(--green)}
@@ -876,7 +881,9 @@ Seu cadastro foi criado, mas um administrador precisa liberar o acesso. Você se
 <div class="md-in"><div class="ch-t">Registrar chamada</div><div class="ch-s">Marque quem participou e salve de uma vez</div></div></div>
 <div class="ch-f">
 <div class="ch-fg"><label class="ch-lb">Módulo</label><select class="ch-in" id="chMod" onchange="chRender()"></select></div>
-<div class="ch-fg" style="max-width:150px"><label class="ch-lb">Data</label><input class="ch-in" id="chDate" type="text" placeholder="DD/MM/AAAA"></div>
+<div class="ch-fg" style="max-width:168px"><label class="ch-lb">Data da aula</label>
+<input class="ch-in" id="chDate" type="text" placeholder="DD/MM/AAAA" oninput="chData()">
+<div class="ch-dt" id="chDtAviso"></div></div>
 </div>
 <div class="ch-bar"><span class="ch-cnt" id="chCnt">—</span><div class="ch-sp"></div>
 <button class="ch-mini" onclick="chAll(1)">Marcar todos</button><button class="ch-mini" onclick="chAll(0)">Limpar</button></div>
@@ -1296,6 +1303,25 @@ async function log(pn,nome,acao,det){
   try{await sb.from('historico').insert({participante:pn,nome,acao,detalhe:det,usuario:ME.nome||ME.email})}catch(e){}
 }
 
+
+// ═══════════ GRAVACAO SEGURA DE MODULOS ═══════════
+// Relê o registro no banco antes de gravar e funde as alterações,
+// para que dois editores simultâneos não apaguem o trabalho um do outro.
+async function gravarModulos(id, alteracoes){
+  const {data, error} = await sb.from('participantes').select('modulos').eq('id',id).maybeSingle();
+  if(error) return {error};
+  const atual = (data && data.modulos) ? {...data.modulos} : {};
+  let mudou = false;
+  for(const [mod, valBr] of Object.entries(alteracoes)){
+    const iso = valBr ? br2iso(valBr) : null;
+    if(iso){ if(atual[mod]!==iso){ atual[mod]=iso; mudou=true } }
+    else   { if(mod in atual){ delete atual[mod]; mudou=true } }
+  }
+  const up = await sb.from('participantes').update({modulos:atual}).eq('id',id);
+  if(up.error) return {error:up.error};
+  return {modulos:atual, mudou};
+}
+
 // ═══════════ MODAL PARTICIPANTE ═══════════
 function op(n){
   const p=D.find(x=>x.n===n); if(!p)return;
@@ -1335,11 +1361,11 @@ function te(n,i){
 async function sv(n,m,val,i){
   if(val && !br2iso(val)){tst('Data inválida — use DD/MM/AAAA entre 2000 e 2100',1);return}
   const p=D.find(x=>x.n===n);
-  const mods={}; M.forEach(k=>{const d=k===m?val:p.modulos[k];if(d)mods[k]=br2iso(d)});
-  const {error}=await sb.from('participantes').update({modulos:mods}).eq('id',p.id);
-  if(error){tst('Erro ao salvar: '+error.message,1);return}
+  const res=await gravarModulos(p.id, {[m]: val||null});
+  if(res.error){tst('Erro ao salvar: '+res.error.message,1);return}
   log(n,p.nome,val?'Módulo registrado':'Módulo removido',m+(val?' — '+val:''));
-  p.modulos[m]=val||null;
+  // adota o que voltou do banco (pode incluir registros de outro editor)
+  M.forEach(k=>{ p.modulos[k] = iso2br(res.modulos[k]) || null });
   p.pct=Math.round(M.filter(k=>p.modulos[k]).length/12*100);
   const r=$('r'+i),b=$('bt'+i),inp=r.querySelector('.mi-i');
   if(inp)inp.remove();
@@ -1489,10 +1515,22 @@ async function saveEdit(n){
 }
 async function delP(n){
   const p=D.find(x=>x.n===n);
-  if(!confirm('Excluir '+p.nome+' definitivamente?\n\nEsta ação não pode ser desfeita.'))return;
+  const feitos=M.filter(m=>p.modulos[m]);
+  const ult=ultimaData(p);
+  const perdas=[];
+  if(feitos.length) perdas.push(`${feitos.length} ${feitos.length===1?'módulo concluído':'módulos concluídos'}${ult?' · último em '+ult:''}`);
+  if(p.celular) perdas.push('telefone cadastrado');
+  if(p.retiro) perdas.push('retiro de '+p.retiro);
+  if(p.familia) perdas.push('marcação de grupo familiar');
+
+  const msg = `Excluir ${p.nome}${p.turma&&p.turma!=='—'?' (turma '+p.turma+')':''}?\n\n`
+    + (perdas.length ? `Será perdido:\n${perdas.map(x=>'   • '+x).join('\n')}\n\n` : 'Esta ficha não tem nenhum módulo registrado.\n\n')
+    + (feitos.length>=6 ? `⚠ Atenção: esta pessoa está com ${p.pct}% do ciclo.\n\n` : '')
+    + 'Esta ação não pode ser desfeita.';
+  if(!confirm(msg))return;
   const {error}=await sb.from('participantes').delete().eq('id',p.id);
   if(error){tst('Erro: '+error.message,1);return}
-  log(n,p.nome,'Participante excluído','');
+  log(n,p.nome,'Participante excluído',`${feitos.length} módulo(s)${p.celular?' · '+p.celular:''}`);
   cl('ov'); await load(); tst('Participante excluído');
 }
 
@@ -1575,7 +1613,7 @@ function chamarModulo(){
   const m=$('decCard').dataset.m;
   if(!m||!can())return;
   chSel.clear(); $('chDate').value=hoje(); $('chMod').value=m;
-  chRender(); $('ovch').classList.add('on');
+  chRender(); chData(); $('ovch').classList.add('on');
 }
 function chOpen(){
   if(!can())return;
@@ -1583,6 +1621,24 @@ function chOpen(){
   if(pend)$('chMod').value=pend;
   chRender(); $('ovch').classList.add('on');
 }
+
+function chData(){
+  const el=$('chDtAviso'), v=$('chDate').value.trim();
+  if(!el) return;
+  const iso=br2iso(v);
+  if(!iso){ el.className='ch-dt ruim'; el.textContent = v? 'data inválida':''; return }
+  const [a,b2,c]=v.split('/').map(Number);
+  const d=new Date(c,b2-1,a), hj=new Date();
+  d.setHours(0,0,0,0); hj.setHours(0,0,0,0);
+  const dif=Math.round((hj-d)/DIA);
+  const sem=['domingo','segunda','terça','quarta','quinta','sexta','sábado'][d.getDay()];
+  if(dif===0){ el.className='ch-dt hoje'; el.textContent=`hoje, ${sem}` }
+  else if(dif===1){ el.className='ch-dt passado'; el.textContent=`ontem, ${sem}` }
+  else if(dif>1){ el.className='ch-dt passado'; el.textContent=`${sem} · há ${dif} dias` }
+  else if(dif===-1){ el.className='ch-dt futuro'; el.textContent=`amanhã, ${sem}` }
+  else { el.className='ch-dt futuro'; el.textContent=`${sem} · daqui a ${-dif} dias` }
+}
+
 function chRender(){
   const m=$('chMod').value;
   const falta=DT().filter(p=>!p.modulos[m]).sort((a,b)=>a.nome.localeCompare(b.nome,'pt'));
@@ -1601,13 +1657,20 @@ async function chSave(){
   const m=$('chMod').value, dt=$('chDate').value.trim();
   if(!chSel.size){tst('Marque ao menos um participante',1);return}
   if(!br2iso(dt)){tst('Data inválida — use DD/MM/AAAA entre 2000 e 2100',1);return}
+  if(dt!==hoje()){
+    const [a2,b2,c2]=dt.split('/').map(Number);
+    const d2=new Date(c2,b2-1,a2), hj2=new Date();
+    d2.setHours(0,0,0,0); hj2.setHours(0,0,0,0);
+    const dif2=Math.round((hj2-d2)/DIA);
+    const txt = dif2>0 ? `há ${dif2} ${dif2===1?'dia':'dias'}` : `daqui a ${-dif2} ${dif2===-1?'dia':'dias'}`;
+    if(!confirm(`A data da aula é ${dt} — ${txt}, não hoje.\n\nRegistrar com essa data?`)) return;
+  }
   busy('chSave',1);
   let ok=0; const falhas=[];
   for(const n of chSel){
     const p=D.find(x=>x.n===n); if(!p)continue;
-    const mods={}; M.forEach(k=>{const d=k===m?dt:p.modulos[k];if(d)mods[k]=br2iso(d)});
-    const {error}=await sb.from('participantes').update({modulos:mods}).eq('id',p.id);
-    if(error) falhas.push({n, nome:p.nome, erro:error.message});
+    const res=await gravarModulos(p.id, {[m]: dt});
+    if(res.error) falhas.push({n, nome:p.nome, erro:res.error.message});
     else ok++;
   }
   if(ok) await log(null,null,'Chamada registrada',m+' — '+dt+' — '+ok+' participante(s)');
