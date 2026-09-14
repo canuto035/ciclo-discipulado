@@ -1244,9 +1244,11 @@ function setPend(m){pend=m||'';$('pendSel').value=pend;$('pendSel').classList.to
   document.querySelectorAll('.mrow').forEach((r,i)=>r.classList.toggle('act',M[i]===pend));
   lim=STEP; rd(); if(pend)$('lista').scrollIntoView({behavior:'smooth',block:'start'})}
 
-function getQ(){return (($('q').value||$('qm').value)||'').trim().toLowerCase()}
+// tira acento para comparar (ninguém digita acento numa busca rápida)
+const semAcento = s => (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+function getQ(){return semAcento((($('q').value||$('qm').value)||'').trim())}
 function flist(){const q=getQ();
-  let d=DT().filter(p=>(p.nome.toLowerCase().includes(q)||p.celular.includes(q))&&(f==='all'||(f==='parado'?estaParado(p):f==='ritmo'?diasParado(p)<=30:f==='familia'?p.familia:cls(p.pct)===f))&&(!pend||!p.modulos[pend]));
+  let d=DT().filter(p=>(semAcento(p.nome).includes(q)||p.celular.replace(/\D/g,'').includes(q.replace(/\D/g,''))&&q.replace(/\D/g,'')!=='')&&(f==='all'||(f==='parado'?estaParado(p):f==='ritmo'?diasParado(p)<=30:f==='familia'?p.familia:cls(p.pct)===f))&&(!pend||!p.modulos[pend]));
   if(s==='n')d.sort((a,b)=>a.n-b.n); else if(s==='nome')d.sort((a,b)=>dir.nome*a.nome.localeCompare(b.nome,'pt'));
   else if(s==='pd')d.sort((a,b)=>b.pct-a.pct); else if(s==='pa')d.sort((a,b)=>a.pct-b.pct);
   return d}
@@ -1450,6 +1452,21 @@ async function saveNew(){
   const nome=$('fNome').value.trim(), cel=$('fCel').value.trim(), ret=$('fRet').value.trim(), tur=($('fTur')?$('fTur').value.trim():'');
   if(!nome){tst('Informe o nome',1);return}
   if(ret && !br2iso(ret)){tst('Data do retiro inválida — use DD/MM/AAAA',1);return}
+
+  // avisa se já existe alguém com nome igual ou muito parecido
+  const chave=nrm(nome).join(' ');
+  const iguais=D.filter(p=>nrm(p.nome).join(' ')===chave);
+  const parecidos=D.filter(p=>{
+    const k=nrm(p.nome).join(' ');
+    return k!==chave && sim(k,chave)>=.82;
+  });
+  if(iguais.length||parecidos.length){
+    const lista=[...iguais,...parecidos].slice(0,4)
+      .map(p=>`   • ${p.nome}${p.turma&&p.turma!=='—'?' ('+p.turma+')':''} — ${p.pct}% do ciclo`).join('\n');
+    const titulo = iguais.length ? 'Já existe alguém com esse nome:' : 'Já existe alguém com nome parecido:';
+    if(!confirm(`${titulo}\n\n${lista}\n\nCadastrar "${nome}" mesmo assim?`)) return;
+  }
+
   busy('fSave',1);
   const num=D.length?Math.max(...D.map(p=>p.n))+1:1;
   const {error}=await sb.from('participantes').insert(comTurma({numero:num,nome,celular:cel,retiro:br2iso(ret),modulos:{}},tur));
@@ -1585,17 +1602,33 @@ async function chSave(){
   if(!chSel.size){tst('Marque ao menos um participante',1);return}
   if(!br2iso(dt)){tst('Data inválida — use DD/MM/AAAA entre 2000 e 2100',1);return}
   busy('chSave',1);
-  const iso=br2iso(dt); let ok=0, fail=0;
+  let ok=0; const falhas=[];
   for(const n of chSel){
     const p=D.find(x=>x.n===n); if(!p)continue;
     const mods={}; M.forEach(k=>{const d=k===m?dt:p.modulos[k];if(d)mods[k]=br2iso(d)});
     const {error}=await sb.from('participantes').update({modulos:mods}).eq('id',p.id);
-    error?fail++:ok++;
+    if(error) falhas.push({n, nome:p.nome, erro:error.message});
+    else ok++;
   }
-  await log(null,null,'Chamada registrada',m+' — '+dt+' — '+ok+' participante(s)');
+  if(ok) await log(null,null,'Chamada registrada',m+' — '+dt+' — '+ok+' participante(s)');
   busy('chSave',0,'Salvar chamada');
+
+  if(falhas.length){
+    // mantém só quem falhou marcado, para tentar de novo sem refazer tudo
+    chSel.clear(); falhas.forEach(f=>chSel.add(f.n));
+    await load();
+    chRender();
+    const nomes=falhas.slice(0,8).map(f=>'   • '+f.nome).join('\n');
+    alert(`${ok} ${ok===1?'participante salvo':'participantes salvos'}.\n\n`
+      + `${falhas.length} não ${falhas.length===1?'foi gravado':'foram gravados'}:\n${nomes}`
+      + (falhas.length>8?`\n   • e mais ${falhas.length-8}`:'')
+      + `\n\nMotivo: ${falhas[0].erro}\n\nEles continuam marcados — clique em Salvar chamada para tentar de novo.`);
+    tst(`${falhas.length} ${falhas.length===1?'pendente':'pendentes'} — confira a lista`,1);
+    return;
+  }
+
   chSel.clear(); cl('ovch'); await load();
-  tst(fail ? `${ok} salvos, ${fail} com erro` : `✓ ${ok} ${ok===1?'participante registrado':'participantes registrados'} em ${m}`, !!fail);
+  tst(`✓ ${ok} ${ok===1?'participante registrado':'participantes registrados'} em ${m}`);
 }
 
 // ═══════════ USUÁRIOS (admin) ═══════════
