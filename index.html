@@ -1054,6 +1054,12 @@ async function boot(){
   if($('pendSel').options.length<2) M.forEach(m=>$('pendSel').add(new Option('Falta: '+m,m)));
 
   await load();
+
+  // abre na turma mais recente em vez do consolidado (evita misturar estágios)
+  if(HAS_TURMA && !TU){
+    const ts=turmas();
+    if(ts.length>1){ TU=ts[0][0]; barraTurmas(); dash(); rd(); }
+  }
   if(prof.role==='admin') checkPend();
 }
 
@@ -1079,7 +1085,9 @@ function ultObj(p){
   return ds.length? new Date(Math.max(...ds)) : null;
 }
 function diasParado(p){
-  const u=ultObj(p); if(!u)return Infinity;
+  // sem módulo ainda: conta a partir do retiro, não do infinito
+  const u = ultObj(p) || dtObj(p.retiro);
+  if(!u) return 0;                      // sem retiro nem módulo: não dá para julgar
   return Math.floor((Date.now()-u.getTime())/DIA);
 }
 const estaParado = p => p.pct<100 && diasParado(p)>30;
@@ -2096,14 +2104,16 @@ function exportCsv(){
   $('udrop').classList.remove('on');
   const head=['Nº','Nome','Turma','Grupo familiar','Celular','Retiro',...M,'% Ciclo'];
   const q=s=>'"'+String(s??'').replace(/"/g,'""')+'"';
-  const lines=[head.map(q).join(';'),...[...D].sort((a,b)=>a.n-b.n).map(p=>
+  const base=DT();
+  const lines=[head.map(q).join(';'),...[...base].sort((a,b)=>a.n-b.n).map(p=>
     [p.n,p.nome,p.turma,p.familia?'Sim':'Não',p.celular,p.retiro,...M.map(m=>p.modulos[m]||''),p.pct+'%'].map(q).join(';'))];
   const blob=new Blob(['\uFEFF'+lines.join('\n')],{type:'text/csv;charset=utf-8'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
-  a.download='controle-integracao-'+new Date().toISOString().slice(0,10)+'.csv';
+  const sufixo = TU ? '-'+TU.replace(/[^\w]/g,'') : '';
+  a.download='controle-integracao'+sufixo+'-'+new Date().toISOString().slice(0,10)+'.csv';
   a.click(); URL.revokeObjectURL(a.href);
-  tst('✓ CSV baixado');
+  tst(`✓ CSV com ${base.length} participantes${TU?' · turma '+TU:''}`);
 }
 
 // ═══════════ EVENTOS ═══════════
