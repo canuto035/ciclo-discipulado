@@ -116,7 +116,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .hr-lb{font-size:.63rem;font-weight:700;letter-spacing:.9px;text-transform:uppercase;color:var(--txt3);margin-bottom:6px}
 .hr-v{font-size:.94rem;font-weight:700;line-height:1.25;margin-bottom:3px}
 .hr-s{font-size:.72rem;color:var(--txt3)}
-#hRitmo{font-family:'Inter',sans-serif;font-variant-numeric:tabular-nums;font-size:1.6rem;font-weight:800;color:var(--blue);letter-spacing:-.035em}
+
 
 .k-g .k-b .k-y .k-o 
 /* ===== PANELS ===== */
@@ -448,6 +448,18 @@ td{padding:10px 13px;vertical-align:middle}
 .bkp-aviso b{color:#9BD0FF}
 .bkp-aviso button{background:var(--blue);color:#04141F;border:none;border-radius:8px;padding:5px 13px;font-size:.74rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s;margin-left:auto}
 .bkp-aviso button:hover{filter:brightness(1.1)}
+
+
+.prev .hr-lb{color:var(--blue)}
+.prev-n{font-family:'Inter',sans-serif;font-variant-numeric:tabular-nums;font-size:1.6rem;font-weight:800;color:var(--blue);letter-spacing:-.035em}
+.prev .hr-s b{color:var(--txt2);font-weight:700}
+.prev-ft{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:10px;padding-top:9px;border-top:1px solid var(--bdr);font-size:.7rem;color:var(--txt3)}
+.prev-cmp{margin-left:auto;color:var(--txt3)}
+
+/* zeros recuam — painel mostra exceção, não censo */
+.hm-r.zero .hm-n{color:var(--txt3)!important;font-weight:600}
+.hm-r.zero .hm-l{color:var(--txt3);opacity:.7}
+.hm-r.zero{border-left-color:rgba(255,255,255,.07)!important}
 
 /* ===== MARCA FAMILIA ===== */
 .fam-btn{display:flex;align-items:center;gap:10px;width:100%;padding:11px 15px;border-radius:11px;border:1px solid var(--bdr);background:rgba(255,255,255,.03);color:var(--txt2);font-size:.84rem;font-weight:600;cursor:pointer;font-family:inherit;transition:.2s;margin-bottom:20px;text-align:left}
@@ -857,10 +869,11 @@ Seu cadastro foi criado, mas um administrador precisa liberar o acesso. Você se
 <div class="hr-v" id="aniN">—</div>
 <div class="hr-s" id="aniS">—</div>
 </div>
-<div class="hr-card" onclick="goFlt('ritmo')">
-<div class="hr-lb">Ritmo · últimos 30 dias</div>
-<div class="hr-v"><span id="hRitmo">0</span> <span class="hr-un">módulos registrados</span></div>
-<div class="hr-s" id="hRitmoS">—</div>
+<div class="hr-card prev" onclick="goFlt('ritmo')">
+<div class="hr-lb" id="prevLb">Para fechar o ciclo</div>
+<div class="hr-v" id="prevV">—</div>
+<div class="hr-s" id="prevS">—</div>
+<div class="prev-ft hide" id="prevFt"></div>
 </div>
 </div>
 </div>
@@ -1187,15 +1200,53 @@ function diasParado(p){
   return Math.floor((Date.now()-u.getTime())/DIA);
 }
 const estaParado = p => p.pct<100 && diasParado(p)>30;
-function ritmo30(V){
-  const corte=Date.now()-30*DIA; let n=0;
-  V.forEach(p=>M.forEach(m=>{const d=dtObj(p.modulos[m]); if(d&&d.getTime()>=corte)n++}));
-  return n;
+// Uma AULA = um módulo dado numa data. Vários registros do mesmo
+// módulo na mesma data são a mesma aula, não N eventos.
+function aulasDadas(V){
+  const set=new Set();
+  V.forEach(p=>M.forEach(m=>{
+    const d=dtObj(p.modulos[m]);
+    if(d) set.add(m+'|'+d.toISOString().slice(0,10));
+  }));
+  return [...set].map(k=>{const [mod,dia]=k.split('|');return {mod, dia, t:new Date(dia+'T00:00:00').getTime()}})
+                 .sort((a,b)=>b.t-a.t);
 }
-function ritmoAnterior(V){
-  const fim=Date.now()-30*DIA, ini=Date.now()-60*DIA; let n=0;
-  V.forEach(p=>M.forEach(m=>{const d=dtObj(p.modulos[m]); if(d&&d.getTime()>=ini&&d.getTime()<fim)n++}));
-  return n;
+function aulasNoPeriodo(V, ini, fim){
+  return aulasDadas(V).filter(a=>a.t>=ini && a.t<fim).length;
+}
+function ritmo30(V){ return aulasNoPeriodo(V, Date.now()-30*DIA, Date.now()+DIA) }
+function ritmoAnterior(V){ return aulasNoPeriodo(V, Date.now()-60*DIA, Date.now()-30*DIA) }
+
+// Dias médios entre aulas — a cadência real do grupo
+function cadencia(V){
+  const dias=[...new Set(aulasDadas(V).map(a=>a.dia))].sort().reverse().slice(0,8);
+  if(dias.length<2) return null;
+  const ts=dias.map(d=>new Date(d+'T00:00:00').getTime());
+  let soma=0;
+  for(let i=0;i<ts.length-1;i++) soma += (ts[i]-ts[i+1])/DIA;
+  const med=soma/(ts.length-1);
+  return med>0 && med<120 ? med : null;
+}
+
+// A turma anda junta ou espalhada? Muda o modo de gerir.
+function sincronia(V){
+  if(V.length<2) return {sinc:true, grau:1};
+  const pcts=V.map(p=>p.pct);
+  const media=pcts.reduce((a,b)=>a+b,0)/pcts.length;
+  const dp=Math.sqrt(pcts.reduce((a,b)=>a+(b-media)**2,0)/pcts.length);
+  return {sinc: dp<=12, grau: dp};
+}
+
+// Previsão: quantas aulas faltam e quando o ciclo fecha
+function previsao(V){
+  const pend = M.filter(m=>V.some(p=>!p.modulos[m]));
+  if(!pend.length) return {aulas:0, cad:null, data:null, geral:false};
+  // turma nova ainda não tem cadência própria: usa o ritmo geral da igreja
+  let cad = cadencia(V), geral=false;
+  if(!cad){ cad = cadencia(D); geral = !!cad }
+  if(!cad) return {aulas:pend.length, cad:null, data:null, geral:false};
+  const d=new Date(); d.setDate(d.getDate()+Math.ceil(pend.length*cad));
+  return {aulas:pend.length, cad, data:d, geral};
 }
 function filaModulos(V){
   return M.map(m=>({mod:m, feitos:V.filter(p=>p.modulos[m]).length, falta:V.filter(p=>!p.modulos[m]).length}))
@@ -1242,11 +1293,35 @@ function dash(){
   $('k3').textContent=V.filter(p=>p.pct>=75&&p.pct<100).length;
   $('k4').textContent=V.filter(p=>p.pct>=50&&p.pct<75).length;
   $('k5').textContent=V.filter(estaParado).length;
-  const r30=ritmo30(V), r60=ritmoAnterior(V);
-  $('hRitmo').textContent=r30;
-  $('hRitmoS').textContent = r60
-    ? (r30>r60?`↑ acima dos ${r60} do mês anterior`:r30<r60?`↓ abaixo dos ${r60} do mês anterior`:`igual ao mês anterior`)
-    : (r30?'primeiro mês com registros':'nenhum registro no período');
+  // números em zero recuam visualmente
+  [['k1',1],['k2',1],['k3',1],['k4',1],['k5',1]].forEach(([id])=>{
+    const el=$(id), row=el&&el.closest('.hm-r');
+    if(row) row.classList.toggle('zero', (el.textContent||'').trim()==='0');
+  });
+  const pv=previsao(V), sy=sincronia(V), r30=ritmo30(V), r60=ritmoAnterior(V);
+  const mes=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+
+  if(!pv.aulas){
+    $('prevLb').textContent='Ciclo completo';
+    $('prevV').innerHTML='<span style="color:var(--green)">✓</span> <span class="hr-un">todos os módulos dados</span>';
+    $('prevS').textContent=`${t} ${t===1?'participante':'participantes'}`;
+  } else {
+    $('prevLb').textContent = sy.sinc ? 'Para fechar o ciclo' : 'Módulos ainda pendentes';
+    $('prevV').innerHTML=`<span class="prev-n">${pv.aulas}</span> <span class="hr-un">${pv.aulas===1?'aula restante':'aulas restantes'}</span>`;
+    if(pv.data){
+      const c=Math.round(pv.cad);
+      const cadTxt = c<=8?'1 por semana' : c<=16?'1 a cada 2 semanas' : `1 a cada ${c} dias`;
+      $('prevS').innerHTML=`termina por volta de <b>${pv.data.getDate()} de ${mes[pv.data.getMonth()]}</b> · ${pv.geral?'ritmo geral de ':''}${cadTxt}`;
+    } else {
+      $('prevS').textContent = r30 ? 'defina o ritmo para ver a previsão' : 'nenhuma aula registrada ainda';
+    }
+  }
+
+  const ft=$('prevFt');
+  const aulas30 = r30===1?'1 aula':`${r30} aulas`;
+  const comp = r60 ? (r30>r60?`↑ ${r60} no mês anterior`:r30<r60?`↓ ${r60} no mês anterior`:'igual ao anterior') : '';
+  ft.classList.remove('hide');
+  ft.innerHTML = `<span>${aulas30} nos últimos 30 dias</span>${comp?`<span class="prev-cmp">${comp}</span>`:''}`;
 
   const cel=t*12, fe=V.reduce((a,p)=>a+M.filter(m=>p.modulos[m]).length,0), gp=Math.round(fe/cel*100);
   $('hPct').textContent=gp+'%';
