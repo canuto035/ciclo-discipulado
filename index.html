@@ -413,6 +413,42 @@ td{padding:10px 13px;vertical-align:middle}
 .tg-new input:focus{border-color:var(--green);box-shadow:0 0 0 3px var(--green-glow)}
 .tg-hint{font-size:.73rem;color:var(--txt3);line-height:1.65;margin-top:14px}
 
+
+.fg-2{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+@media(max-width:430px){.fg-2{grid-template-columns:1fr;gap:0}}
+.fi-ta{min-height:76px;resize:vertical;line-height:1.55;font-family:inherit;padding-top:11px}
+.fl-hint{font-size:.68rem;color:var(--txt3);margin-top:5px;min-height:13px}
+.fl-hint.ok{color:var(--blue)}
+.fl-hint.ruim{color:var(--red)}
+.md-obs{background:rgba(53,167,255,.06);border:1px solid rgba(53,167,255,.2);border-radius:var(--r-sm);padding:11px 14px;margin-bottom:18px;font-size:.81rem;line-height:1.6;color:var(--txt2);white-space:pre-wrap;word-break:break-word}
+.md-obs b{display:block;font-size:.63rem;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--blue);margin-bottom:5px}
+.obs-ic{font-size:.8rem;margin-left:5px;opacity:.75;vertical-align:-1px}
+.md-idade{color:var(--txt3)}
+
+
+.ani-i{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:var(--r-sm);background:rgba(255,255,255,.025);border:1px solid var(--bdr);cursor:pointer;transition:.15s}
+.ani-i:hover{border-color:var(--gold);background:rgba(197,162,56,.06)}
+.ani-i.hoje{background:rgba(197,162,56,.1);border-color:rgba(197,162,56,.35)}
+.ani-d{font-variant-numeric:tabular-nums;font-size:.8rem;font-weight:700;color:var(--gold);width:44px;flex-shrink:0}
+.ani-nm{font-size:.84rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+
+.hist-bar{display:flex;gap:9px;margin-bottom:12px;flex-wrap:wrap}
+.hist-sel{padding:8px 11px;border-radius:9px;border:1px solid var(--bdr);background:var(--bg2);color:var(--txt2);font-size:.79rem;font-family:inherit;outline:none;cursor:pointer;flex-shrink:0}
+.hist-sel:focus{border-color:var(--green)}
+.hist-cnt{font-size:.75rem;color:var(--txt2);margin-bottom:12px;min-height:16px}
+.hist-cnt b{color:var(--green);font-weight:700}
+.hist-cnt .filt{color:var(--txt3)}
+.hist-dia{display:flex;align-items:center;gap:9px;font-size:.66rem;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--txt3);margin:16px 0 7px;padding-top:11px;border-top:1px solid var(--bdr)}
+.hist-dia:first-child{margin-top:0;padding-top:0;border-top:none}
+.hist-dia span{background:rgba(255,255,255,.07);border-radius:20px;padding:1px 8px;font-size:.65rem;letter-spacing:0}
+
+
+.bkp-aviso{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:rgba(53,167,255,.07);border:1px solid rgba(53,167,255,.24);border-radius:11px;padding:10px 15px;margin-bottom:16px;font-size:.78rem;color:var(--blue);line-height:1.55}
+.bkp-aviso b{color:#9BD0FF}
+.bkp-aviso button{background:var(--blue);color:#04141F;border:none;border-radius:8px;padding:5px 13px;font-size:.74rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s;margin-left:auto}
+.bkp-aviso button:hover{filter:brightness(1.1)}
+
 /* ===== MARCA FAMILIA ===== */
 .fam-btn{display:flex;align-items:center;gap:10px;width:100%;padding:11px 15px;border-radius:11px;border:1px solid var(--bdr);background:rgba(255,255,255,.03);color:var(--txt2);font-size:.84rem;font-weight:600;cursor:pointer;font-family:inherit;transition:.2s;margin-bottom:20px;text-align:left}
 .fam-btn:hover{border-color:var(--gold);color:var(--gold)}
@@ -764,6 +800,7 @@ Seu cadastro foi criado, mas um administrador precisa liberar o acesso. Você se
 <button class="uitem" id="miMerge" onclick="openMerge()">Mesclar cadastros</button>
 <button class="uitem" onclick="openHist()">Histórico</button>
 <button class="uitem" onclick="exportCsv()">Baixar CSV</button>
+<button class="uitem" onclick="baixarBackup()">Backup completo</button>
 <button class="uitem dang" onclick="doLogout()">Sair</button>
 <div style="padding:8px 11px 4px;font-size:.64rem;color:var(--txt3);border-top:1px solid var(--bdr);margin-top:5px">versão 2.4 · PDF</div>
 </div>
@@ -773,6 +810,7 @@ Seu cadastro foi criado, mas um administrador precisa liberar o acesso. Você se
 
 <div class="wrap">
 
+<div class="bkp-aviso hide" id="bkpAviso"></div>
 <div class="dt-warn hide" id="avDt"></div>
 <div class="ro-note hide" id="roNote">Seu acesso é somente leitura — você pode consultar tudo, mas não alterar.</div>
 
@@ -813,6 +851,11 @@ Seu cadastro foi criado, mas um administrador precisa liberar o acesso. Você se
 <button class="dec-b" onclick="convocar($('decCard').dataset.m)">Convocar</button>
 <button class="dec-b" onclick="setPend($('decCard').dataset.m)">Ver quem falta</button>
 </div>
+</div>
+<div class="hr-card hide" id="aniCard" onclick="openAniver()">
+<div class="hr-lb">🎂 Aniversários</div>
+<div class="hr-v" id="aniN">—</div>
+<div class="hr-s" id="aniS">—</div>
 </div>
 <div class="hr-card" onclick="goFlt('ritmo')">
 <div class="hr-lb">Ritmo · últimos 30 dias</div>
@@ -961,7 +1004,9 @@ let decSel='';   // aula escolhida à mão ('' = sugestão automática)
 // ═══ TURMAS: mude para true quando quiser reativar o recurso ═══
 const TURMAS_ON=true;
 let HAS_TURMA=false;
-let HAS_FAM=false;             // vira true quando a coluna existe no banco
+let HAS_FAM=false;
+let HAS_OBS=false;
+let HAS_NASC=false;             // vira true quando a coluna existe no banco
 const comTurma=(o,t)=>HAS_TURMA?{...o,turma:t}:o;
 
 const can = a => ME && (a==='del' ? ME.role==='admin' : ME.role==='admin'||ME.role==='editor');
@@ -1091,13 +1136,40 @@ async function load(){
   if(error){tst('Erro ao carregar dados: '+error.message,1);return}
   HAS_TURMA = TURMAS_ON && (data.length ? Object.prototype.hasOwnProperty.call(data[0],'turma') : HAS_TURMA);
   HAS_FAM   = data.length ? Object.prototype.hasOwnProperty.call(data[0],'familia') : HAS_FAM;
+  HAS_OBS   = data.length ? Object.prototype.hasOwnProperty.call(data[0],'obs') : HAS_OBS;
+  HAS_NASC  = data.length ? Object.prototype.hasOwnProperty.call(data[0],'nascimento') : HAS_NASC;
   D = data.map(r=>{
     const mods={}; M.forEach(m=>mods[m]=iso2br(r.modulos?.[m])||null);
     return {id:r.id,n:r.numero,nome:r.nome,celular:r.celular||'',retiro:iso2br(r.retiro)||'',
-            turma:r.turma||'—',familia:!!r.familia,modulos:mods,pct:Math.round(M.filter(m=>mods[m]).length/12*100)};
+            turma:r.turma||'—',familia:!!r.familia,obs:r.obs||'',nascimento:iso2br(r.nascimento)||'',modulos:mods,pct:Math.round(M.filter(m=>mods[m]).length/12*100)};
   });
   dash(); rd();
   ultimaSync = Date.now();
+}
+
+// ═══════════ IDADE E ANIVERSARIO ═══════════
+function idade(p){
+  if(!p.nascimento) return null;
+  const [d,m,a]=p.nascimento.split('/').map(Number);
+  if(!a||a<1900||a>new Date().getFullYear()) return null;
+  const hj=new Date(); let i=hj.getFullYear()-a;
+  const passou = (hj.getMonth()+1 > m) || (hj.getMonth()+1===m && hj.getDate()>=d);
+  if(!passou) i--;
+  return i>=0&&i<130 ? i : null;
+}
+// dias até o próximo aniversário (0 = hoje)
+function diasAniver(p){
+  if(!p.nascimento) return null;
+  const [d,m]=p.nascimento.split('/').map(Number);
+  if(!d||!m) return null;
+  const hj=new Date(); hj.setHours(0,0,0,0);
+  let alvo=new Date(hj.getFullYear(),m-1,d); alvo.setHours(0,0,0,0);
+  if(alvo<hj) alvo=new Date(hj.getFullYear()+1,m-1,d);
+  return Math.round((alvo-hj)/DIA);
+}
+function aniversariantes(dias){
+  return DT().filter(p=>{const x=diasAniver(p); return x!==null && x<=(dias||7)})
+             .sort((a,b)=>diasAniver(a)-diasAniver(b));
 }
 
 // ═══════════ DASHBOARD ═══════════
@@ -1190,6 +1262,8 @@ function dash(){
   const dc=$('decCard');
 
   $('chipFam').classList.toggle('hide',!HAS_FAM);
+  aniverCard();
+  avisoBackup();
   const sel=$('decPick');
   sel.innerHTML = fila.map(x=>`<option value="${esc(x.mod)}">${esc(x.mod)} — ${x.falta?'faltam '+x.falta:'completo'}</option>`).join('');
   if(alvo) sel.value=alvo.mod;
@@ -1255,6 +1329,8 @@ function dash(){
 function trocarAula(){
   if(decSel){ decSel=''; $('decPick').classList.add('hide'); dash(); return }   // volta à sugestão
   $('chipFam').classList.toggle('hide',!HAS_FAM);
+  aniverCard();
+  avisoBackup();
   const sel=$('decPick');
   sel.classList.toggle('hide');
   if(!sel.classList.contains('hide')) sel.focus();
@@ -1272,7 +1348,7 @@ function setPend(m){pend=m||'';$('pendSel').value=pend;$('pendSel').classList.to
 const semAcento = s => (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
 function getQ(){return semAcento((($('q').value||$('qm').value)||'').trim())}
 function flist(){const q=getQ();
-  let d=DT().filter(p=>(semAcento(p.nome).includes(q)||p.celular.replace(/\D/g,'').includes(q.replace(/\D/g,''))&&q.replace(/\D/g,'')!=='')&&(f==='all'||(f==='parado'?estaParado(p):f==='ritmo'?diasParado(p)<=30:f==='familia'?p.familia:cls(p.pct)===f))&&(!pend||!p.modulos[pend]));
+  let d=DT().filter(p=>(semAcento(p.nome).includes(q)||(p.obs&&semAcento(p.obs).includes(q))||p.celular.replace(/\D/g,'').includes(q.replace(/\D/g,''))&&q.replace(/\D/g,'')!=='')&&(f==='all'||(f==='parado'?estaParado(p):f==='ritmo'?diasParado(p)<=30:f==='familia'?p.familia:cls(p.pct)===f))&&(!pend||!p.modulos[pend]));
   if(s==='n')d.sort((a,b)=>a.n-b.n); else if(s==='nome')d.sort((a,b)=>dir.nome*a.nome.localeCompare(b.nome,'pt'));
   else if(s==='pd')d.sort((a,b)=>b.pct-a.pct); else if(s==='pa')d.sort((a,b)=>a.pct-b.pct);
   return d}
@@ -1289,10 +1365,10 @@ function rd(){
   else if(all.length>STEP){mw.classList.add('on');mb.innerHTML=`Ver menos <span>(mostrando ${all.length})</span>`}
   else mw.classList.remove('on');
   $('tb').innerHTML=d.length?d.map(p=>{const c=col(p.pct);
-    return `<tr onclick="op(${p.n})"><td class="t-n">${p.n}</td><td><div class="t-nm">${esc(p.nome)}${p.familia?'<span class="fam-ic" title="Em grupo familiar">👨‍👩‍👧</span>':''}</div><div class="t-sub">Retiro: ${p.retiro||'—'}</div></td><td>${p.celular?`<a class="wa" href="${wal(p.celular)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">💬 ${esc(p.celular)}</a>`:'<span style="color:var(--txt3)">—</span>'}</td>${M.map(m=>`<td style="text-align:center"><span class="${p.modulos[m]?'tick':'tick tick-n'}">${p.modulos[m]?'✓':'·'}</span></td>`).join('')}<td><div class="pg"><div class="pg-t"><div class="pg-f" style="width:${p.pct}%;background:${c}"></div></div><span class="pg-l" style="color:${c}">${p.pct}%</span></div></td><td>${bdg(p.pct)}</td></tr>`}).join('')
+    return `<tr onclick="op(${p.n})"><td class="t-n">${p.n}</td><td><div class="t-nm">${esc(p.nome)}${p.familia?'<span class="fam-ic" title="Em grupo familiar">👨‍👩‍👧</span>':''}${p.obs?`<span class="obs-ic" title="${esc(p.obs).slice(0,120)}">📝</span>`:''}</div><div class="t-sub">Retiro: ${p.retiro||'—'}</div></td><td>${p.celular?`<a class="wa" href="${wal(p.celular)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">💬 ${esc(p.celular)}</a>`:'<span style="color:var(--txt3)">—</span>'}</td>${M.map(m=>`<td style="text-align:center"><span class="${p.modulos[m]?'tick':'tick tick-n'}">${p.modulos[m]?'✓':'·'}</span></td>`).join('')}<td><div class="pg"><div class="pg-t"><div class="pg-f" style="width:${p.pct}%;background:${c}"></div></div><span class="pg-l" style="color:${c}">${p.pct}%</span></div></td><td>${bdg(p.pct)}</td></tr>`}).join('')
     :`<tr><td colspan="17"><div class="emp"><div class="emp-i">🔍</div><div class="emp-t">Nenhum resultado</div><div class="emp-s">Tente outro nome ou filtro</div></div></td></tr>`;
   $('cd').innerHTML=d.length?d.map((p,i)=>{const c=col(p.pct),fa=12-M.filter(m=>p.modulos[m]).length;
-    return `<div class="pc pc-${cls(p.pct)==='done'?'g':cls(p.pct)==='high'?'b':cls(p.pct)==='mid'?'y':'o'}" onclick="op(${p.n})" style="animation-delay:${Math.min(i*.028,.5)}s"><div class="pc-h"><div class="pc-nm">${esc(p.nome)}${p.familia?'<span class="fam-ic" title="Em grupo familiar">👨‍👩‍👧</span>':''}</div>${bdg(p.pct)}</div><div class="pc-mt">nº${p.n} · ${esc(p.celular)||'Sem telefone'}</div><div class="miss">${fa?`faltam <b>${fa}</b> módulos`:'ciclo completo'}</div><div class="pc-dots">${M.map((m,j)=>`<span class="dt ${p.modulos[m]?'dt-y':'dt-n'}" title="${m}${p.modulos[m]?' — '+p.modulos[m]:''}">${AB[j]}</span>`).join('')}</div><div class="pc-pg"><div class="pc-t"><div class="pc-f" style="width:${p.pct}%;background:${c}"></div></div><span class="pc-p" style="color:${c}">${p.pct}%</span></div></div>`}).join('')
+    return `<div class="pc pc-${cls(p.pct)==='done'?'g':cls(p.pct)==='high'?'b':cls(p.pct)==='mid'?'y':'o'}" onclick="op(${p.n})" style="animation-delay:${Math.min(i*.028,.5)}s"><div class="pc-h"><div class="pc-nm">${esc(p.nome)}${p.familia?'<span class="fam-ic" title="Em grupo familiar">👨‍👩‍👧</span>':''}${p.obs?`<span class="obs-ic" title="${esc(p.obs).slice(0,120)}">📝</span>`:''}</div>${bdg(p.pct)}</div><div class="pc-mt">nº${p.n} · ${esc(p.celular)||'Sem telefone'}</div><div class="miss">${fa?`faltam <b>${fa}</b> módulos`:'ciclo completo'}</div><div class="pc-dots">${M.map((m,j)=>`<span class="dt ${p.modulos[m]?'dt-y':'dt-n'}" title="${m}${p.modulos[m]?' — '+p.modulos[m]:''}">${AB[j]}</span>`).join('')}</div><div class="pc-pg"><div class="pc-t"><div class="pc-f" style="width:${p.pct}%;background:${c}"></div></div><span class="pc-p" style="color:${c}">${p.pct}%</span></div></div>`}).join('')
     :`<div style="grid-column:1/-1"><div class="emp"><div class="emp-i">🔍</div><div class="emp-t">Nenhum resultado</div></div></div>`;
 }
 
@@ -1344,10 +1420,11 @@ function op(n){
   const p=D.find(x=>x.n===n); if(!p)return;
   const dn=M.filter(m=>p.modulos[m]).length;
   $('md').innerHTML=`<div class="md-h"><button class="md-x" onclick="cl('ov')">✕</button><div class="md-in">
-    <div class="md-nm">${esc(p.nome)}</div><div class="md-mt">nº${p.n}${HAS_TURMA?' · '+esc(p.turma):''} · Retiro: ${p.retiro||'—'}</div>
+    <div class="md-nm">${esc(p.nome)}</div><div class="md-mt">nº${p.n}${HAS_TURMA?' · '+esc(p.turma):''} · Retiro: ${p.retiro||'—'}${(()=>{const i=idade(p);return i!==null?` · <span class="md-idade">${i} anos</span>`:''})()}</div>
     <div class="md-r"><div><div class="md-p" style="color:${col(p.pct)}">${p.pct}%</div><div class="md-ps">${dn} de 12 módulos concluídos</div></div>${bdg(p.pct)}</div>
     <div class="md-bar"><div class="md-bf" style="width:${p.pct}%"></div></div></div></div>
     <div class="md-b">${p.celular?`<a class="md-wa" href="${wal(p.celular)}" target="_blank" rel="noopener"><span>💬</span><b>Abrir WhatsApp</b><i>${esc(p.celular)}</i></a>`:''}
+    ${HAS_OBS&&p.obs?`<div class="md-obs"><b>Observações</b>${esc(p.obs)}</div>`:''}
     ${HAS_FAM?`<button class="fam-btn ${p.familia?'on':''}" id="famBtn" onclick="toggleFam(${n})" ${can()?'':'disabled style="cursor:default"'}>
       <span class="ic">👨‍👩‍👧</span>
       <span class="tx">Em grupo familiar<span class="st" id="famSt">${p.familia?'sim — participa de um grupo':'ainda não está em um grupo'}</span></span>
@@ -1357,6 +1434,7 @@ function op(n){
       return `<div class="mi ${d?'mi-y':'mi-n'}" id="r${i}"><span class="mi-ic">${d?'✅':'⬜'}</span><div class="mi-t"><div class="mi-nm">${m}</div><div class="mi-dt" id="dt${i}">${d||'Pendente'}</div></div>${can()?`<button class="mi-b" id="bt${i}" onclick="te(${n},${i})">${d?'Editar':'+ Data'}</button>`:''}</div>`}).join('')}</div>
     <div class="md-acts">
     <button class="btn btn-p" onclick="genPdf(${n})">Gerar PDF</button>
+    <button class="btn btn-s" onclick="cl('ov');openHist(${n})">Histórico</button>
     ${can()?`<button class="btn btn-s" onclick="openEdit(${n})">Editar dados</button>`:''}
     ${can()&&ME.role==='admin'?`<button class="btn btn-d" onclick="delP(${n})">Excluir</button>`:''}
     </div>
@@ -1503,9 +1581,14 @@ function formP(p){
     <div class="md-b">
     <div class="fg"><label class="fl">Nome completo *</label><input class="fi" id="fNome" value="${p?esc(p.nome):''}" placeholder="Nome do participante"></div>
     <div class="fg"><label class="fl">Celular / WhatsApp</label><input class="fi" id="fCel" value="${p?esc(p.celular):''}" placeholder="+55 54 99999-9999"></div>
-    <div class="fg"><label class="fl">Data do retiro</label><input class="fi" id="fRet" value="${p?p.retiro:''}" placeholder="DD/MM/AAAA"></div>
+    <div class="fg-2">
+      <div class="fg"><label class="fl">Data do retiro</label><input class="fi" id="fRet" value="${p?p.retiro:''}" placeholder="DD/MM/AAAA"></div>
+      ${HAS_NASC?`<div class="fg"><label class="fl">Nascimento</label><input class="fi" id="fNasc" value="${p?p.nascimento:''}" placeholder="DD/MM/AAAA" oninput="fIdade()"><div class="fl-hint" id="fIdadeTxt"></div></div>`:''}
+    </div>
     ${HAS_TURMA?`<div class="fg"><label class="fl">Turma</label><input class="fi" id="fTur" list="lsTur" value="${p?esc(p.turma):(TU||'')}" placeholder="Ex.: Jun/2026">
     <datalist id="lsTur">${turmas().map(([t])=>`<option value="${esc(t)}">`).join('')}</datalist></div>`:''}
+    ${HAS_OBS?`<div class="fg"><label class="fl">Observações</label>
+      <textarea class="fi fi-ta" id="fObs" rows="3" placeholder="Anotações sobre a pessoa — mudou de cidade, está afastada, quem trouxe…">${p?esc(p.obs):''}</textarea></div>`:''}
     <div style="display:flex;gap:9px;margin-top:20px">
     <button class="btn btn-s" style="flex:1" onclick="cl('ovn')">Cancelar</button>
     <button class="btn btn-p" style="flex:1" id="fSave" onclick="${p?`saveEdit(${p.n})`:'saveNew()'}">Salvar</button></div></div>`;
@@ -1513,8 +1596,24 @@ function formP(p){
 function openNew(){if(!can())return;$('mdn').innerHTML=formP(null);$('ovn').classList.add('on');setTimeout(()=>$('fNome').focus(),80)}
 function openEdit(n){if(!can())return;const p=D.find(x=>x.n===n);cl('ov');$('mdn').innerHTML=formP(p);$('ovn').classList.add('on')}
 
+
+function fIdade(){
+  const el=$('fIdadeTxt'); if(!el) return;
+  const v=$('fNasc').value.trim();
+  if(!v){el.className='fl-hint';el.textContent='';return}
+  if(!br2iso(v)){el.className='fl-hint ruim';el.textContent='data inválida';return}
+  const i=idade({nascimento:v});
+  el.className='fl-hint ok';
+  el.textContent = i===null ? '' : `${i} anos`;
+}
+
 async function saveNew(){
   const nome=$('fNome').value.trim(), cel=$('fCel').value.trim(), ret=$('fRet').value.trim(), tur=($('fTur')?$('fTur').value.trim():'');
+  const obs=($('fObs')?$('fObs').value.trim():''), nasc=($('fNasc')?$('fNasc').value.trim():'');
+  if(nasc && !br2iso(nasc)){tst('Data de nascimento inválida — use DD/MM/AAAA',1);return}
+  const extra = {};
+  if(HAS_OBS) extra.obs = obs || null;
+  if(HAS_NASC) extra.nascimento = nasc ? br2iso(nasc) : null;
   if(!nome){tst('Informe o nome',1);return}
   if(ret && !br2iso(ret)){tst('Data do retiro inválida — use DD/MM/AAAA',1);return}
 
@@ -1533,7 +1632,7 @@ async function saveNew(){
   }
 
   busy('fSave',1);
-  const res=await inserirParticipante(comTurma({nome,celular:cel,retiro:br2iso(ret),modulos:{}},tur));
+  const res=await inserirParticipante(comTurma({nome,celular:cel,retiro:br2iso(ret),modulos:{},...extra},tur));
   busy('fSave',0,'Salvar');
   if(res.error){tst('Erro: '+res.error.message,1);return}
   log(res.numero,nome,'Participante cadastrado','');
@@ -1542,10 +1641,15 @@ async function saveNew(){
 async function saveEdit(n){
   const p=D.find(x=>x.n===n);
   const nome=$('fNome').value.trim(), cel=$('fCel').value.trim(), ret=$('fRet').value.trim(), tur=($('fTur')?$('fTur').value.trim():'');
+  const obs=($('fObs')?$('fObs').value.trim():''), nasc=($('fNasc')?$('fNasc').value.trim():'');
+  if(nasc && !br2iso(nasc)){tst('Data de nascimento inválida — use DD/MM/AAAA',1);return}
+  const extra = {};
+  if(HAS_OBS) extra.obs = obs || null;
+  if(HAS_NASC) extra.nascimento = nasc ? br2iso(nasc) : null;
   if(!nome){tst('Informe o nome',1);return}
   if(ret && !br2iso(ret)){tst('Data do retiro inválida — use DD/MM/AAAA',1);return}
   busy('fSave',1);
-  const {error}=await sb.from('participantes').update(comTurma({nome,celular:cel,retiro:br2iso(ret)},tur)).eq('id',p.id);
+  const {error}=await sb.from('participantes').update(comTurma({nome,celular:cel,retiro:br2iso(ret),...extra},tur)).eq('id',p.id);
   busy('fSave',0,'Salvar');
   if(error){tst('Erro: '+error.message,1);return}
   log(n,nome,'Dados alterados','');
@@ -1570,6 +1674,48 @@ async function delP(n){
   if(error){tst('Erro: '+error.message,1);return}
   log(n,p.nome,'Participante excluído',`${feitos.length} módulo(s)${p.celular?' · '+p.celular:''}`);
   cl('ov'); await load(); tst('Participante excluído');
+}
+
+
+// ═══════════ ANIVERSARIANTES ═══════════
+function aniverCard(){
+  const c=$('aniCard'); if(!c) return;
+  if(!HAS_NASC){ c.classList.add('hide'); return }
+  const lista=aniversariantes(7);
+  if(!lista.length){ c.classList.add('hide'); return }
+  c.classList.remove('hide');
+  const hoje0=lista.filter(p=>diasAniver(p)===0);
+  if(hoje0.length){
+    $('aniN').innerHTML=`<span style="color:var(--gold)">${hoje0.length}</span> <span class="hr-un">${hoje0.length===1?'faz anos hoje':'fazem anos hoje'}</span>`;
+    $('aniS').textContent = hoje0.map(p=>p.nome.split(' ')[0]).slice(0,3).join(', ')
+      + (hoje0.length>3?` e mais ${hoje0.length-3}`:'');
+  } else {
+    const prox=lista[0], d=diasAniver(prox);
+    $('aniN').innerHTML=`<span style="color:var(--gold)">${lista.length}</span> <span class="hr-un">nos próximos 7 dias</span>`;
+    $('aniS').textContent=`${prox.nome.split(' ')[0]} ${d===1?'amanhã':'em '+d+' dias'}`;
+  }
+}
+
+function openAniver(){
+  const lista=aniversariantes(30);
+  const fmt=d=> d===0?'hoje':d===1?'amanhã':`em ${d} dias`;
+  const sem=['domingo','segunda','terça','quarta','quinta','sexta','sábado'];
+  const corpo = lista.length
+    ? `<div class="mod-list-modal">${lista.map(p=>{
+        const d=diasAniver(p), i=idade(p);
+        const alvo=new Date(); alvo.setDate(alvo.getDate()+d);
+        return `<div class="ani-i ${d===0?'hoje':''}" onclick="cl('ovu');op(${p.n})">
+          <span class="ani-d">${p.nascimento.slice(0,5)}</span>
+          <div style="flex:1;min-width:0">
+            <div class="ani-nm">${esc(p.nome)}</div>
+            <div class="td-sub">${sem[alvo.getDay()]} · ${fmt(d)}${i!==null?` · faz ${i+(d===0?0:1)} anos`:''}</div>
+          </div>
+          ${p.celular?`<a class="cv-wa" href="https://wa.me/${p.celular.replace(/\D/g,'')}" target="_blank" rel="noopener" onclick="event.stopPropagation()">💬</a>`:''}
+        </div>`}).join('')}</div>`
+    : '<div class="emp"><div class="emp-i">🎂</div><div class="emp-t">Nenhum aniversário nos próximos 30 dias</div></div>';
+  $('mdu').innerHTML=mdShell('🎂 Aniversários',
+    `Próximos 30 dias${TU?' · turma '+esc(TU):''}`, corpo);
+  $('ovu').classList.add('on');
 }
 
 // ═══════════ CONVOCAR PARA A AULA ═══════════
@@ -2291,32 +2437,151 @@ async function doMerge(){
 }
 
 // ═══════════ HISTÓRICO ═══════════
-async function openHist(){
+let HIST=[];
+async function openHist(n){
   $('udrop').classList.remove('on');
-  $('mdu').innerHTML=`<div class="md-h"><button class="md-x" onclick="cl('ovu')">✕</button><div class="md-in"><div class="ch-t">Histórico</div><div class="ch-s">Últimas alterações no sistema</div></div></div><div class="md-b"><div class="emp"><div class="spin" style="border-color:var(--bdr);border-top-color:var(--green)"></div></div></div>`;
+  const alvo = n ? D.find(p=>p.n===n) : null;
+  $('mdu').innerHTML=`<div class="md-h"><button class="md-x" onclick="cl('ovu')">✕</button><div class="md-in">
+    <div class="ch-t">Histórico</div><div class="ch-s">${alvo?esc(alvo.nome):'Todas as alterações no sistema'}</div></div></div>
+    <div class="md-b">
+    <div class="hist-bar">
+      <div class="ch-bsc"><span class="ch-bsc-i">⌕</span>
+        <input id="hQ" class="ch-bsc-in" placeholder="Buscar por nome ou ação…" oninput="histRender()" autocomplete="off"
+          value="${alvo?esc(alvo.nome):''}">
+        <button class="ch-bsc-x hide" id="hQx" onclick="$('hQ').value='';histRender()">✕</button></div>
+      <select class="hist-sel" id="hPer" onchange="histRender()">
+        <option value="7">Últimos 7 dias</option>
+        <option value="30" selected>Últimos 30 dias</option>
+        <option value="90">Últimos 3 meses</option>
+        <option value="0">Tudo</option>
+      </select>
+    </div>
+    <div id="histCnt" class="hist-cnt"></div>
+    <div id="histL"><div class="emp"><div class="spin" style="border-color:var(--bdr);border-top-color:var(--green)"></div></div></div>
+    </div>`;
   $('ovu').classList.add('on');
-  const {data,error}=await sb.from('historico').select('*').order('created_at',{ascending:false}).limit(60);
-  const b=$('mdu').querySelector('.md-b');
-  if(error){b.innerHTML='<div class="emp"><div class="emp-t">Erro ao carregar</div></div>';return}
-  if(!data.length){b.innerHTML='<div class="emp"><div class="emp-i">📋</div><div class="emp-t">Nada registrado ainda</div></div>';return}
-  b.innerHTML=data.map(h=>{const d=new Date(h.created_at);
-    return `<div class="hist-i"><div class="hist-d">${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}</div><div class="hist-t"><b>${esc(h.acao)}</b>${h.nome?' — '+esc(h.nome):''}${h.detalhe?`<div style="color:var(--txt2);font-size:.75rem;margin-top:2px">${esc(h.detalhe)}</div>`:''}<div class="hist-u">por ${esc(h.usuario||'—')}</div></div></div>`}).join('');
+
+  const {data,error}=await sb.from('historico').select('*').order('created_at',{ascending:false}).limit(600);
+  if(error){$('histL').innerHTML='<div class="emp"><div class="emp-t">Erro ao carregar</div></div>';return}
+  HIST=data||[];
+  histRender();
+}
+
+function histRender(){
+  if(!$('histL')) return;
+  const q=semAcento(($('hQ')?$('hQ').value:'').trim());
+  const per=+($('hPer')?$('hPer').value:30);
+  const x=$('hQx'); if(x) x.classList.toggle('hide', !q);
+
+  const corte = per ? Date.now()-per*DIA : 0;
+  const vis=HIST.filter(h=>{
+    if(corte && new Date(h.created_at).getTime()<corte) return false;
+    if(!q) return true;
+    return semAcento(h.nome||'').includes(q)
+        || semAcento(h.acao||'').includes(q)
+        || semAcento(h.detalhe||'').includes(q)
+        || semAcento(h.usuario||'').includes(q);
+  });
+
+  $('histCnt').innerHTML = HIST.length
+    ? `<b>${vis.length}</b> ${vis.length===1?'registro':'registros'}${q||per?` <span class="filt">de ${HIST.length}</span>`:''}`
+    : '';
+
+  if(!HIST.length){
+    $('histL').innerHTML='<div class="emp"><div class="emp-i">📋</div><div class="emp-t">Nada registrado ainda</div></div>';return}
+  if(!vis.length){
+    $('histL').innerHTML=`<div class="ch-nada">Nada encontrado${q?` para <b>${esc($('hQ').value.trim())}</b>`:''} neste período.</div>`;return}
+
+  // agrupa por dia
+  const porDia={};
+  vis.forEach(h=>{const d=new Date(h.created_at);
+    const k=`${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
+    (porDia[k]=porDia[k]||[]).push(h)});
+
+  const sem=['domingo','segunda','terça','quarta','quinta','sexta','sábado'];
+  $('histL').innerHTML = Object.entries(porDia).map(([dia,itens])=>{
+    const [dd,mm,aa]=dia.split('/').map(Number);
+    const dt=new Date(aa,mm-1,dd); dt.setHours(0,0,0,0);
+    const hj=new Date(); hj.setHours(0,0,0,0);
+    const dif=Math.round((hj-dt)/DIA);
+    const rot = dif===0?'Hoje' : dif===1?'Ontem' : `${dia} · ${sem[dt.getDay()]}`;
+    return `<div class="hist-dia">${rot}<span>${itens.length}</span></div>`
+      + itens.map(h=>{const d=new Date(h.created_at);
+        return `<div class="hist-i"><div class="hist-d">${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}</div>
+          <div class="hist-t"><b>${esc(h.acao)}</b>${h.nome?' — '+esc(h.nome):''}
+          ${h.detalhe?`<div style="color:var(--txt2);font-size:.75rem;margin-top:2px">${esc(h.detalhe)}</div>`:''}
+          <div class="hist-u">por ${esc(h.usuario||'—')}</div></div></div>`}).join('');
+  }).join('');
+}
+
+
+// ═══════════ BACKUP ═══════════
+const BKP_KEY='ciclo_ultimo_backup';
+function ultimoBackup(){
+  try{ const v=localStorage.getItem(BKP_KEY); return v?new Date(+v):null }catch(e){ return null }
+}
+function marcarBackup(){
+  try{ localStorage.setItem(BKP_KEY, String(Date.now())) }catch(e){}
+  avisoBackup();
+}
+function diasSemBackup(){
+  const u=ultimoBackup(); if(!u) return null;
+  return Math.floor((Date.now()-u.getTime())/DIA);
+}
+function avisoBackup(){
+  const el=$('bkpAviso'); if(!el) return;
+  if(!D.length){ el.classList.add('hide'); return }
+  const d=diasSemBackup();
+  if(d===null){
+    el.classList.remove('hide');
+    el.innerHTML=`Você ainda não baixou nenhuma cópia dos dados. <button onclick="baixarBackup()">Baixar agora</button>`;
+  } else if(d>=14){
+    el.classList.remove('hide');
+    el.innerHTML=`Última cópia dos dados foi há <b>${d} dias</b>. <button onclick="baixarBackup()">Baixar agora</button>`;
+  } else el.classList.add('hide');
+}
+
+// Baixa TUDO (todas as turmas), independente do filtro — é uma cópia de segurança
+function baixarBackup(){
+  $('udrop').classList.remove('on');
+  const stamp=new Date().toISOString().slice(0,10);
+  const head=['Nº','Nome','Turma','Grupo familiar','Celular','Nascimento','Idade','Retiro',...M,'% Ciclo','Observações'];
+  const q=s=>'"'+String(s??'').replace(/"/g,'""')+'"';
+  const lines=[head.map(q).join(';'),...[...D].sort((a,b)=>a.n-b.n).map(p=>
+    [p.n,p.nome,p.turma,p.familia?'Sim':'Não',p.celular,p.nascimento||'',idade(p)??'',p.retiro,
+     ...M.map(m=>p.modulos[m]||''),p.pct+'%',p.obs||''].map(q).join(';'))];
+  baixar(new Blob(['\uFEFF'+lines.join('\n')],{type:'text/csv;charset=utf-8'}), `backup-ciclo-${stamp}.csv`);
+
+  // JSON completo — permite restaurar exatamente como está
+  const json={gerado:new Date().toISOString(), total:D.length, modulos:M,
+    participantes:D.map(p=>({numero:p.n,nome:p.nome,celular:p.celular,turma:p.turma,
+      retiro:p.retiro,nascimento:p.nascimento,familia:p.familia,obs:p.obs,modulos:p.modulos}))};
+  setTimeout(()=>baixar(new Blob([JSON.stringify(json,null,2)],{type:'application/json'}), `backup-ciclo-${stamp}.json`), 400);
+
+  marcarBackup();
+  tst(`✓ Backup de ${D.length} participantes baixado`);
+}
+function baixar(blob, nome){
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob); a.download=nome; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
 }
 
 // ═══════════ CSV ═══════════
 function exportCsv(){
   $('udrop').classList.remove('on');
-  const head=['Nº','Nome','Turma','Grupo familiar','Celular','Retiro',...M,'% Ciclo'];
+  const head=['Nº','Nome','Turma','Grupo familiar','Celular','Nascimento','Idade','Retiro',...M,'% Ciclo','Observações'];
   const q=s=>'"'+String(s??'').replace(/"/g,'""')+'"';
   const base=DT();
   const lines=[head.map(q).join(';'),...[...base].sort((a,b)=>a.n-b.n).map(p=>
-    [p.n,p.nome,p.turma,p.familia?'Sim':'Não',p.celular,p.retiro,...M.map(m=>p.modulos[m]||''),p.pct+'%'].map(q).join(';'))];
+    [p.n,p.nome,p.turma,p.familia?'Sim':'Não',p.celular,p.nascimento||'',idade(p)??'',p.retiro,...M.map(m=>p.modulos[m]||''),p.pct+'%',p.obs||''].map(q).join(';'))];
   const blob=new Blob(['\uFEFF'+lines.join('\n')],{type:'text/csv;charset=utf-8'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
   const sufixo = TU ? '-'+TU.replace(/[^\w]/g,'') : '';
   a.download='controle-integracao'+sufixo+'-'+new Date().toISOString().slice(0,10)+'.csv';
   a.click(); URL.revokeObjectURL(a.href);
+  if(!TU) marcarBackup();
   tst(`✓ CSV com ${base.length} participantes${TU?' · turma '+TU:''}`);
 }
 
