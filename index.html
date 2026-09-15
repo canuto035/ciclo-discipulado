@@ -466,6 +466,13 @@ td{padding:10px 13px;vertical-align:middle}
 .ani-tx{flex:1;min-width:0;font-size:.76rem;font-weight:600;color:var(--gold);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ani-go{font-size:.68rem;font-weight:700;color:rgba(197,162,56,.7);flex-shrink:0;text-transform:uppercase;letter-spacing:.5px}
 
+
+.hm-tot{font-weight:800;color:var(--txt2);letter-spacing:0;text-transform:none;font-size:.72rem;margin-left:4px}
+.r-w{border-left-color:var(--orange)} .r-w .hm-n{color:var(--orange)}
+.r-w:hover{background:rgba(255,159,67,.07)}
+.hm-r.alerta{margin-top:7px;padding-top:11px;border-top:1px solid rgba(255,255,255,.07)}
+.hm-r.alerta .hm-l{font-size:.75rem}
+
 /* ===== MARCA FAMILIA ===== */
 .fam-btn{display:flex;align-items:center;gap:10px;width:100%;padding:11px 15px;border-radius:11px;border:1px solid var(--bdr);background:rgba(255,255,255,.03);color:var(--txt2);font-size:.84rem;font-weight:600;cursor:pointer;font-family:inherit;transition:.2s;margin-bottom:20px;text-align:left}
 .fam-btn:hover{border-color:var(--gold);color:var(--gold)}
@@ -846,12 +853,12 @@ Seu cadastro foi criado, mas um administrador precisa liberar o acesso. Você se
 </div>
 </div>
 <div class="hero-mid">
-<div class="hm-t">Situação do grupo</div>
-<button class="hm-r r-t" onclick="goFlt('all')"><span class="hm-n" id="k1">0</span><span class="hm-l">Total</span></button>
+<div class="hm-t">Situação do grupo <span class="hm-tot" id="k1">0</span></div>
 <button class="hm-r r-g" onclick="goFlt('done')"><span class="hm-n" id="k2">0</span><span class="hm-l">Concluíram o ciclo</span></button>
-<button class="hm-r r-b" onclick="goFlt('high')"><span class="hm-n" id="k3">0</span><span class="hm-l">Quase lá · +75%</span></button>
-<button class="hm-r r-y" onclick="goFlt('mid')"><span class="hm-n" id="k4">0</span><span class="hm-l">Em andamento</span></button>
-<button class="hm-r r-o" onclick="goFlt('parado')"><span class="hm-n" id="k5">0</span><span class="hm-l">Parados há 30d+</span></button>
+<button class="hm-r r-b" onclick="goFlt('high')"><span class="hm-n" id="k3">0</span><span class="hm-l">Quase lá · 75 a 99%</span></button>
+<button class="hm-r r-y" onclick="goFlt('mid')"><span class="hm-n" id="k4">0</span><span class="hm-l">Na metade · 50 a 74%</span></button>
+<button class="hm-r r-w" onclick="goFlt('low')"><span class="hm-n" id="k6">0</span><span class="hm-l">Começando · até 49%</span></button>
+<button class="hm-r r-o alerta" onclick="goFlt('parado')"><span class="hm-n" id="k5">0</span><span class="hm-l">Parados há 30d+</span></button>
 </div>
 
 <div class="hero-right">
@@ -1289,13 +1296,14 @@ function setTurma(t){ TU=t; lim=STEP; pend=''; decSel=''; $('decPick').classList
 function dash(){
   barraTurmas();
   const V=DT(); const t=V.length; if(!t){$('cnt').textContent='';return}
-  $('k1').textContent=t;
+  $('k1').textContent=t+(t===1?' pessoa':' pessoas');
   $('k2').textContent=V.filter(p=>p.pct>=100).length;
   $('k3').textContent=V.filter(p=>p.pct>=75&&p.pct<100).length;
   $('k4').textContent=V.filter(p=>p.pct>=50&&p.pct<75).length;
+  $('k6').textContent=V.filter(p=>p.pct<50).length;
   $('k5').textContent=V.filter(estaParado).length;
   // números em zero recuam visualmente
-  [['k1',1],['k2',1],['k3',1],['k4',1],['k5',1]].forEach(([id])=>{
+  [['k2',1],['k3',1],['k4',1],['k6',1],['k5',1]].forEach(([id])=>{
     const el=$(id), row=el&&el.closest('.hm-r');
     if(row) row.classList.toggle('zero', (el.textContent||'').trim()==='0');
   });
@@ -1314,10 +1322,11 @@ function dash(){
   const cel=t*12, fe=V.reduce((a,p)=>a+M.filter(m=>p.modulos[m]).length,0), gp=Math.round(fe/cel*100);
   $('hPct').textContent=gp+'%';
   $('hBar').style.width=gp+'%';
-  const naoFecharam=V.filter(p=>p.pct<100).length;
-  $('hSub').innerHTML = naoFecharam
-    ? `<b>${naoFecharam}</b> de ${t} ainda não fecharam os 12 módulos`
-    : `todos os ${t} concluíram os 12 módulos`;
+  const mediaMod = t ? (V.reduce((s,p)=>s+M.filter(m=>p.modulos[m]).length,0)/t) : 0;
+  const mm = Math.round(mediaMod*10)/10;
+  $('hSub').innerHTML = mediaMod>=11.95
+    ? `todos completaram os 12 módulos`
+    : `em média <b>${String(mm).replace('.',',')}</b> de 12 módulos por pessoa`;
 
   const fila=filaModulos(V);
   const manual = decSel ? fila.find(x=>x.mod===decSel) : null;
