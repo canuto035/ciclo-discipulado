@@ -263,6 +263,18 @@ td{padding:10px 13px;vertical-align:middle}
 .ch-dt.passado{color:var(--yellow);font-weight:600}
 .ch-dt.futuro{color:var(--orange);font-weight:600}
 .ch-dt.ruim{color:var(--red);font-weight:600}
+
+.ch-bsc{position:relative;flex:1 1 210px;min-width:150px;display:flex;align-items:center}
+.ch-bsc-i{position:absolute;left:11px;color:var(--txt3);font-size:1rem;pointer-events:none;line-height:1}
+.ch-bsc-in{width:100%;padding:8px 30px 8px 30px;border-radius:9px;border:1px solid var(--bdr);background:var(--bg2);color:var(--txt);font-size:.83rem;font-family:inherit;outline:none;transition:.16s}
+.ch-bsc-in:focus{border-color:var(--green);box-shadow:0 0 0 3px var(--green-glow)}
+.ch-bsc-in::placeholder{color:var(--txt3)}
+.ch-bsc-x{position:absolute;right:7px;background:none;border:none;color:var(--txt3);cursor:pointer;font-size:.8rem;padding:3px 5px;line-height:1;border-radius:5px;transition:.15s}
+.ch-bsc-x:hover{color:var(--txt);background:rgba(255,255,255,.08)}
+.ch-nada{padding:26px 22px;text-align:center;color:var(--txt3);font-size:.83rem;line-height:1.6}
+.ch-nada b{color:var(--txt2)}
+.ch-mk{background:rgba(46,229,140,.16);color:var(--green);border-radius:4px;padding:0 1px}
+.ch-cnt .filt{color:var(--txt3);font-weight:500}
 .ch-bar{padding:11px 24px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--bdr);flex-shrink:0;flex-wrap:wrap}
 .ch-cnt{font-size:.76rem;color:var(--txt2);font-weight:600}
 .ch-cnt b{color:var(--green)}
@@ -885,8 +897,12 @@ Seu cadastro foi criado, mas um administrador precisa liberar o acesso. Você se
 <input class="ch-in" id="chDate" type="text" placeholder="DD/MM/AAAA" oninput="chData()">
 <div class="ch-dt" id="chDtAviso"></div></div>
 </div>
-<div class="ch-bar"><span class="ch-cnt" id="chCnt">—</span><div class="ch-sp"></div>
-<button class="ch-mini" onclick="chAll(1)">Marcar todos</button><button class="ch-mini" onclick="chAll(0)">Limpar</button></div>
+<div class="ch-bar">
+<div class="ch-bsc"><span class="ch-bsc-i">⌕</span>
+<input id="chQ" class="ch-bsc-in" placeholder="Buscar pelo nome…" oninput="chRender()" autocomplete="off">
+<button class="ch-bsc-x hide" id="chQx" onclick="chLimparBusca()">✕</button></div>
+<span class="ch-cnt" id="chCnt">—</span><div class="ch-sp"></div>
+<button class="ch-mini" id="chMarcar" onclick="chAll(1)">Marcar todos</button><button class="ch-mini" onclick="chAll(0)">Limpar</button></div>
 <div class="ch-l" id="chList"></div>
 <div class="ch-ft"><button class="btn btn-s" onclick="cl('ovch')">Cancelar</button><button class="btn btn-p" id="chSave" onclick="chSave()">Salvar chamada</button></div>
 </div>
@@ -1635,13 +1651,15 @@ function chamarModulo(){
   const m=$('decCard').dataset.m;
   if(!m||!can())return;
   chSel.clear(); $('chDate').value=hoje(); $('chMod').value=m;
+  if($('chQ')) $('chQ').value='';
   chRender(); chData(); $('ovch').classList.add('on');
 }
 function chOpen(){
   if(!can())return;
   chSel.clear(); $('chDate').value=hoje();
   if(pend)$('chMod').value=pend;
-  chRender(); $('ovch').classList.add('on');
+  if($('chQ')) $('chQ').value='';
+  chRender(); chData(); $('ovch').classList.add('on');
 }
 
 function chData(){
@@ -1661,19 +1679,57 @@ function chData(){
   else { el.className='ch-dt futuro'; el.textContent=`${sem} · daqui a ${-dif} dias` }
 }
 
-function chRender(){
+// quem pode ser marcado neste módulo (ignora a busca)
+function chElegiveis(){
   const m=$('chMod').value;
-  const falta=DT().filter(p=>!p.modulos[m]).sort((a,b)=>a.nome.localeCompare(b.nome,'pt'));
-  $('chList').innerHTML = falta.length
-    ? falta.map(p=>`<div class="ch-i ${chSel.has(p.n)?'pick':''}" id="ci${p.n}" onclick="chTog(${p.n})"><div class="ch-cb">✓</div><span class="ch-nm">${esc(p.nome)}</span><span class="ch-pc">${p.pct}%</span></div>`).join('')
-    : '<div class="ch-empty">Todos os participantes já concluíram este módulo.</div>';
+  return DT().filter(p=>!p.modulos[m]).sort((a,b)=>a.nome.localeCompare(b.nome,'pt'));
+}
+// o que está visível agora (aplica a busca)
+function chVisiveis(){
+  const q=semAcento(($('chQ')?$('chQ').value:'').trim());
+  const base=chElegiveis();
+  if(!q) return base;
+  const dig=q.replace(/\D/g,'');
+  return base.filter(p=> semAcento(p.nome).includes(q)
+    || (dig && p.celular && p.celular.replace(/\D/g,'').includes(dig)) );
+}
+function chDestaca(nome,q){
+  if(!q) return esc(nome);
+  const i=semAcento(nome).indexOf(q);
+  if(i<0) return esc(nome);
+  return esc(nome.slice(0,i))+'<span class="ch-mk">'+esc(nome.slice(i,i+q.length))+'</span>'+esc(nome.slice(i+q.length));
+}
+
+function chRender(){
+  const q=semAcento(($('chQ')?$('chQ').value:'').trim());
+  const todos=chElegiveis(), vis=chVisiveis();
+  const x=$('chQx'); if(x) x.classList.toggle('hide', !q);
+
+  $('chList').innerHTML = !todos.length
+    ? '<div class="ch-empty">Todos os participantes já concluíram este módulo.</div>'
+    : vis.length
+      ? vis.map(p=>`<div class="ch-i ${chSel.has(p.n)?'pick':''}" id="ci${p.n}" onclick="chTog(${p.n})"><div class="ch-cb">✓</div><span class="ch-nm">${chDestaca(p.nome,q)}</span><span class="ch-pc">${p.pct}%</span></div>`).join('')
+      : `<div class="ch-nada">Ninguém encontrado para <b>${esc($('chQ').value.trim())}</b>.<br>Quem já fez este módulo não aparece aqui.</div>`;
+
+  const bm=$('chMarcar');
+  if(bm){
+    bm.textContent = !q ? 'Marcar todos'
+      : vis.length===1 ? 'Marcar este'
+      : `Marcar os ${vis.length}`;
+    bm.classList.toggle('hide', q && !vis.length);
+  }
   chCnt();
 }
+function chLimparBusca(){ const e=$('chQ'); if(e){e.value=''; e.focus()} chRender() }
 function chTog(n){chSel.has(n)?chSel.delete(n):chSel.add(n);const e=$('ci'+n);if(e)e.classList.toggle('pick',chSel.has(n));chCnt()}
-function chAll(on){const m=$('chMod').value;DT().filter(p=>!p.modulos[m]).forEach(p=>on?chSel.add(p.n):chSel.delete(p.n));chRender()}
-function chCnt(){const m=$('chMod').value,t=DT().filter(p=>!p.modulos[m]).length;
-  $('chCnt').innerHTML=`<b>${chSel.size}</b> de ${t} marcados`;
-  $('chSave').style.opacity=chSel.size?'1':'.45'}
+// marcar/limpar age sobre o que está visível — combina com a busca
+function chAll(on){ chVisiveis().forEach(p=>on?chSel.add(p.n):chSel.delete(p.n)); chRender() }
+function chCnt(){
+  const t=chElegiveis().length, q=($('chQ')?$('chQ').value.trim():''), v=chVisiveis().length;
+  $('chCnt').innerHTML=`<b>${chSel.size}</b> de ${t} marcados`
+    + (q?` <span class="filt">· mostrando ${v}</span>`:'');
+  $('chSave').style.opacity=chSel.size?'1':'.45';
+}
 
 async function chSave(){
   const m=$('chMod').value, dt=$('chDate').value.trim();
