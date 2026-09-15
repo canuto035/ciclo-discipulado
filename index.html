@@ -1081,6 +1081,7 @@ async function load(){
             turma:r.turma||'—',familia:!!r.familia,modulos:mods,pct:Math.round(M.filter(m=>mods[m]).length/12*100)};
   });
   dash(); rd();
+  ultimaSync = Date.now();
 }
 
 // ═══════════ DASHBOARD ═══════════
@@ -1456,6 +1457,28 @@ async function toggleFam(n){
   tst(novo?'✓ '+p.nome+' marcado em grupo familiar':p.nome+' removido do grupo familiar');
 }
 
+
+// ═══════════ NUMERACAO SEGURA ═══════════
+// Busca o último número no banco (a tela pode estar desatualizada)
+async function proximoNumero(){
+  const {data,error} = await sb.from('participantes').select('numero').order('numero',{ascending:false}).limit(1);
+  if(error) return (D.length?Math.max(...D.map(p=>p.n)):0)+1;   // sem rede: usa a tela
+  const ultimo = (data&&data.length) ? data[0].numero : 0;
+  return Math.max(ultimo, D.length?Math.max(...D.map(p=>p.n)):0) + 1;
+}
+
+// Insere tentando o próximo número livre se houver colisão
+async function inserirParticipante(registro, tentativas){
+  tentativas = tentativas || 5;
+  let num = await proximoNumero();
+  for(let i=0; i<tentativas; i++){
+    const {error} = await sb.from('participantes').insert({...registro, numero:num+i});
+    if(!error) return {numero:num+i};
+    if(!/duplicate key|unique constraint/i.test(error.message||'')) return {error};
+  }
+  return {error:{message:'não consegui um número livre — recarregue a página e tente de novo'}};
+}
+
 // ═══════════ CADASTRO / EDIÇÃO ═══════════
 function formP(p){
   return `<div class="md-h"><button class="md-x" onclick="cl('ovn')">✕</button><div class="md-in">
@@ -1494,12 +1517,11 @@ async function saveNew(){
   }
 
   busy('fSave',1);
-  const num=D.length?Math.max(...D.map(p=>p.n))+1:1;
-  const {error}=await sb.from('participantes').insert(comTurma({numero:num,nome,celular:cel,retiro:br2iso(ret),modulos:{}},tur));
+  const res=await inserirParticipante(comTurma({nome,celular:cel,retiro:br2iso(ret),modulos:{}},tur));
   busy('fSave',0,'Salvar');
-  if(error){tst('Erro: '+error.message,1);return}
-  log(num,nome,'Participante cadastrado','');
-  cl('ovn'); await load(); tst('✓ '+nome+' cadastrado como nº'+num);
+  if(res.error){tst('Erro: '+res.error.message,1);return}
+  log(res.numero,nome,'Participante cadastrado','');
+  cl('ovn'); await load(); tst('✓ '+nome+' cadastrado como nº'+res.numero);
 }
 async function saveEdit(n){
   const p=D.find(x=>x.n===n);
@@ -2009,9 +2031,15 @@ async function impSalvar(){
   if(!confirm(`Cadastrar ${sel.length} ${sel.length===1?'participante':'participantes'}${HAS_TURMA?` na turma "${tur}"`:''}?`))return;
 
   busy('impGo',1);
-  let num=D.length?Math.max(...D.map(p=>p.n)):0;
-  const novos=sel.map(x=>comTurma({numero:++num,nome:x.nome,celular:x.tel,retiro:br2iso(ret),modulos:{}},tur));
-  const {error}=await sb.from('participantes').insert(novos);
+  let base=await proximoNumero();
+  let novos=sel.map((x,i)=>comTurma({numero:base+i,nome:x.nome,celular:x.tel,retiro:br2iso(ret),modulos:{}},tur));
+  let {error}=await sb.from('participantes').insert(novos);
+  if(error && /duplicate key|unique constraint/i.test(error.message||'')){
+    // alguém cadastrou no meio: recalcula a partir do banco e tenta de novo
+    base=await proximoNumero();
+    novos=sel.map((x,i)=>comTurma({numero:base+i,nome:x.nome,celular:x.tel,retiro:br2iso(ret),modulos:{}},tur));
+    ({error}=await sb.from('participantes').insert(novos));
+  }
   busy('impGo',0,'Cadastrar marcados');
   if(error){tst('Erro: '+error.message,1);return}
 
@@ -2166,8 +2194,32 @@ async function doMerge(){
   if(!confirm(`Mesclar "${b.nome}" dentro de "${a.nome}"?\n\nA ficha nº${b.n} será apagada definitivamente.`))return;
 
   busy('mgGo',1);
-  const r=previa(a,b);
-  const mods={}; Object.entries(r.mods).forEach(([k,v])=>mods[k]=br2iso(v));
+
+  // relê as duas fichas no banco: outro editor pode ter registrado algo
+  const fresco = await sb.from('participantes')
+    .select('id,numero,nome,celular,retiro,modulos').in('id',[a.id,b.id]);
+  if(fresco.error){busy('mgGo',0,'Mesclar');tst('Erro ao reler: '+fresco.error.message,1);return}
+
+  const conv = r => ({...r, modulos:(()=>{const o={};M.forEach(m=>o[m]=iso2br(r.modulos?.[m])||null);return o})()});
+  const fa = (fresco.data||[]).find(x=>x.id===a.id);
+  const fb = (fresco.data||[]).find(x=>x.id===b.id);
+  if(!fa||!fb){busy('mgGo',0,'Mesclar');tst('Uma das fichas não existe mais — recarregando',1);await load();openMerge();return}
+
+  const A = conv(fa), B = conv(fb);
+  A.retiro = iso2br(fa.retiro)||''; B.retiro = iso2br(fb.retiro)||'';
+  const r = previa(A, B);
+
+  // avisa se algo mudou desde que a tela foi montada
+  const antes = M.filter(m=>a.modulos[m]||b.modulos[m]).length;
+  const agora = Object.keys(r.mods).length;
+  if(agora !== antes){
+    busy('mgGo',0,'Mesclar');
+    if(!confirm(`Alguém alterou estas fichas enquanto você decidia.\n\n`
+      + `Agora a mesclagem resulta em ${agora} módulo(s), não ${antes}.\n\nContinuar mesmo assim?`)) { openMerge(); return }
+    busy('mgGo',1);
+  }
+
+  const mods={}; Object.entries(r.mods).forEach(([k,v])=>{ if(v) mods[k]=br2iso(v) });
 
   const up=await sb.from('participantes')
     .update({modulos:mods, celular:r.celular, retiro:br2iso(r.retiro)}).eq('id',a.id);
@@ -2211,6 +2263,49 @@ function exportCsv(){
   a.click(); URL.revokeObjectURL(a.href);
   tst(`✓ CSV com ${base.length} participantes${TU?' · turma '+TU:''}`);
 }
+
+
+// ═══════════ ATUALIZACAO AO VOLTAR ═══════════
+// A tela pode ficar horas aberta enquanto outro editor registra coisas.
+let ultimaSync = Date.now();
+let sincronizando = false;
+
+async function sincronizar(motivo){
+  if(sincronizando || !sb || !ME) return;
+  // não recarrega se houver modal aberto (o usuário está no meio de algo)
+  const aberto = ['ov','ovch','ovu','ovn','ovi','ovc'].some(i=>{
+    const e=$(i); return e && e.classList.contains('on');
+  });
+  if(aberto) return;
+
+  sincronizando = true;
+  const antes = D.length;
+  const antesMods = D.reduce((s,p)=>s+M.filter(m=>p.modulos[m]).length,0);
+  try{
+    await load();
+    const depois = D.length;
+    const depoisMods = D.reduce((s,p)=>s+M.filter(m=>p.modulos[m]).length,0);
+    const dp = depois-antes, dm = depoisMods-antesMods;
+    if(dp||dm){
+      const partes=[];
+      if(dp>0) partes.push(`${dp} ${dp===1?'participante novo':'participantes novos'}`);
+      if(dp<0) partes.push(`${-dp} ${dp===-1?'removido':'removidos'}`);
+      if(dm>0) partes.push(`${dm} ${dm===1?'módulo registrado':'módulos registrados'}`);
+      if(dm<0) partes.push(`${-dm} ${dm===-1?'módulo removido':'módulos removidos'}`);
+      tst('↻ Atualizado · '+partes.join(' · '));
+    }
+  }catch(e){}
+  ultimaSync = Date.now();
+  sincronizando = false;
+}
+
+document.addEventListener('visibilitychange', ()=>{
+  // só busca se ficou fora por mais de 30s, para não pesar em trocas rápidas
+  if(!document.hidden && Date.now()-ultimaSync > 30000) sincronizar('foco');
+});
+window.addEventListener('focus', ()=>{
+  if(Date.now()-ultimaSync > 30000) sincronizar('janela');
+});
 
 // ═══════════ EVENTOS ═══════════
 function uTog(e){e.stopPropagation();$('udrop').classList.toggle('on')}
