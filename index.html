@@ -96,7 +96,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 /* ===== HERO ===== */
 .hero{position:relative;background:linear-gradient(135deg,#0C1A24 0%,#0A1620 55%,#0B1D1A 100%);border:1px solid var(--bdr);border-radius:var(--r-lg);padding:30px 34px;margin-bottom:20px;overflow:hidden}
 .hero::before{content:'';position:absolute;top:-140px;right:-100px;width:420px;height:420px;background:radial-gradient(circle,rgba(46,229,140,.11),transparent 65%);pointer-events:none}
-.hero-in{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(200px,.72fr) 300px;gap:26px;align-items:center}
+.hero-in{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,.85fr) minmax(210px,.75fr) 320px;gap:30px;align-items:center}
 .hero-left{min-width:0}
 .eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:.66rem;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--green);background:var(--green-glow);border:1px solid rgba(46,229,140,.22);padding:5px 12px;border-radius:20px;margin-bottom:16px}
 .dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:blink 2s infinite}
@@ -107,9 +107,8 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .hb-t strong{font-size:1.02rem;font-weight:700;letter-spacing:-.2px}
 .hb-t span{font-size:.79rem;color:var(--txt3);line-height:1.45;max-width:340px}
 .hb-t span b{color:var(--txt2);font-weight:700}
-.hero-bar{height:7px;background:rgba(255,255,255,.06);border-radius:6px;overflow:hidden;margin-bottom:22px;max-width:430px}
+.hero-bar{margin-bottom:0;height:7px;background:rgba(255,255,255,.06);border-radius:6px;overflow:hidden;margin-bottom:22px;max-width:430px}
 .hero-bf{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--green),#7BFFC4);transition:width 1.1s cubic-bezier(.4,0,.2,1);box-shadow:0 0 14px var(--green-glow)}
-.hero-btns{display:flex;gap:10px;flex-wrap:wrap}
 .hero-right{display:flex;flex-direction:column;gap:11px}
 .hr-card{background:rgba(255,255,255,.035);border:1px solid var(--bdr);border-radius:var(--r);padding:14px 16px;cursor:pointer;transition:.18s}
 .hr-card:hover{background:rgba(46,229,140,.07);border-color:rgba(46,229,140,.3);transform:translateX(-2px)}
@@ -668,21 +667,18 @@ td{padding:10px 13px;vertical-align:middle}
 .hb-n{font-size:3.1rem;letter-spacing:-1.8px}
 .hb-t strong{font-size:.9rem}
 .hero-big{gap:12px;margin-bottom:13px}
-.hero-bar{margin-bottom:18px}
+.hero-bar{margin-bottom:0;margin-bottom:18px}
 .hero-in{grid-template-columns:1fr;gap:16px}
 .hero-right{flex-direction:column;gap:9px}
-.hero-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.hero-btns .btn{width:100%;padding:10px 8px;font-size:.79rem}
-.hero-bar{margin-bottom:14px}
-.hero-mid{padding-left:0;display:grid;grid-template-columns:1fr 1fr;gap:3px}
-.hm-t{grid-column:1/-1;padding-left:8px;margin-bottom:2px}
-.hm-r{padding:6px 8px;gap:7px;border-left-width:2px}
-.hm-n{font-size:1.02rem;min-width:26px}
-.hm-l{font-size:.7rem}
+.hero-bar{margin-bottom:0;margin-bottom:14px}
+.hero-mid{padding-left:0;display:block}
+.hm-t{padding-left:8px;margin-bottom:4px}
+.hm-r{padding:7px 8px;gap:9px;border-left-width:2px}
+.hm-n{font-size:1.05rem;min-width:26px}
+.hm-l{font-size:.76rem}
 .dec{padding:13px 15px}
 .dec-v{font-size:.95rem}
 .hr-card{padding:12px 15px}
-.hero-btns .btn{width:100%}
 .tw{display:none}
 .cards{display:grid!important}
 .views{display:none}
@@ -816,6 +812,7 @@ Seu cadastro foi criado, mas um administrador precisa liberar o acesso. Você se
 <div class="uhead"><b id="uNome">—</b><span class="rb" id="uRole">—</span></div>
 <button class="uitem" id="miUsers" onclick="openUsers()">Usuários<span class="pend-badge hide" id="pendN">0</span></button>
 <button class="uitem" id="miTur" onclick="openTurmas()">Turmas</button>
+<button class="uitem" id="miNovo" onclick="openNew()">Novo participante</button>
 <button class="uitem" id="miImp" onclick="openImp()">Importar lista</button>
 <button class="uitem" id="miMerge" onclick="openMerge()">Mesclar cadastros</button>
 <button class="uitem" onclick="openHist()">Histórico</button>
@@ -843,10 +840,7 @@ Seu cadastro foi criado, mas um administrador precisa liberar o acesso. Você se
 <div class="hb-t"><strong>do ciclo concluído</strong><span id="hSub">—</span></div>
 </div>
 <div class="hero-bar"><div class="hero-bf" id="hBar"></div></div>
-<div class="hero-btns" id="heroBtns">
-<button class="btn btn-p" onclick="chOpen()">✓ Registrar chamada</button>
-<button class="btn btn-s" onclick="openNew()">+ Novo participante</button>
-</div>
+
 </div>
 <div class="hero-mid">
 <div class="hm-t">Situação do grupo <span class="hm-tot" id="k1">0</span></div>
@@ -1130,8 +1124,8 @@ async function boot(){
   $('miUsers').classList.toggle('hide', prof.role!=='admin');
   $('miMerge').classList.toggle('hide', prof.role!=='admin');
   $('miImp').classList.toggle('hide', !can());
+  $('miNovo').classList.toggle('hide', !can());
   $('miTur').classList.toggle('hide', !(can()&&HAS_TURMA));
-  $('heroBtns').classList.toggle('hide', !can());
   $('roNote').classList.toggle('hide', can());
 
   if(!$('chMod').options.length) M.forEach(m=>{const o=new Option(m,m);$('chMod').add(o)});
