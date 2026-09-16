@@ -1320,6 +1320,8 @@ function dash(){
   $('decLb').textContent = manual ? 'Aula escolhida' : 'Próxima aula';
   $('decSw').textContent = manual ? 'voltar à sugestão' : 'trocar';
 
+  const restam = fila.filter(x=>x.falta>0).length;   // módulos que ainda têm pendência
+
   if(alvo && alvo.falta>0){
     dc.classList.remove('done');
     $('decMod').textContent=alvo.mod;
@@ -1328,16 +1330,23 @@ function dash(){
       : `${alvo.falta} ${alvo.falta===1?'pessoa precisa':'pessoas precisam'} — ninguém fez ainda`;
     dc.dataset.m=alvo.mod;
     $('decActs').style.display = can()?'grid':'none';
-  } else if(alvo){
+    $('decSw').classList.remove('hide');
+  } else if(!restam){
+    // nenhum módulo pendente na turma: ciclo fechado
+    dc.classList.add('done'); dc.dataset.m='';
+    $('decLb').textContent='Tudo em dia';
+    $('decMod').innerHTML='<span style="color:var(--green)">✓</span> Ciclo completo';
+    $('decSub').textContent=`${t} ${t===1?'participante concluiu':'participantes concluíram'} os 12 módulos`;
+    $('decActs').style.display='none';
+    $('decSw').classList.add('hide');
+    $('decPick').classList.add('hide');
+  } else {
+    // o módulo escolhido à mão já está fechado, mas outros faltam
     dc.classList.add('done'); dc.dataset.m=alvo.mod;
     $('decMod').textContent=alvo.mod;
-    $('decSub').textContent='Todos já fizeram este módulo';
+    $('decSub').textContent=`Todos já fizeram — ainda faltam ${restam} ${restam===1?'módulo':'módulos'}`;
     $('decActs').style.display='none';
-  } else {
-    dc.classList.add('done'); dc.dataset.m='';
-    $('decMod').textContent='Ciclo completo';
-    $('decSub').textContent='Todos concluíram os 12 módulos';
-    $('decActs').style.display='none';
+    $('decSw').classList.remove('hide');
   }
 
   let ult=null, suspeitas=[];
@@ -1769,6 +1778,9 @@ let cvMod='', cvEnviados=new Set();
 
 function convocar(mod){
   if(!mod)return;
+  if(!DT().filter(p=>!p.modulos[mod]).length){
+    tst(`Todos já fizeram ${mod} — ninguém para convocar`,1); return;
+  }
   cvMod=mod; cvEnviados.clear();
   const falta=DT().filter(p=>!p.modulos[mod]).sort((a,b)=>a.nome.localeCompare(b.nome,'pt'));
   const comTel=falta.filter(p=>p.celular), semTel=falta.filter(p=>!p.celular);
