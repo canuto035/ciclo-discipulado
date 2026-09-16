@@ -454,10 +454,6 @@ td{padding:10px 13px;vertical-align:middle}
 .dec-sec button{background:none;border:none;color:var(--txt3);font-size:.74rem;font-weight:600;cursor:pointer;font-family:inherit;padding:3px 2px;transition:.15s;border-bottom:1px solid transparent}
 .dec-sec button:hover{color:var(--green);border-bottom-color:rgba(46,229,140,.4)}
 .dec-sec span{color:var(--bdr);font-size:.7rem}
-.dec-ft{margin-top:13px;padding-top:11px;border-top:1px solid rgba(255,255,255,.07);font-size:.73rem;color:var(--txt3);line-height:1.55;display:flex;align-items:baseline;gap:7px;flex-wrap:wrap}
-.dec-ft b{color:var(--txt2);font-weight:700}
-.dec-ft .n{font-variant-numeric:tabular-nums;font-size:.95rem;font-weight:800;color:var(--blue);letter-spacing:-.02em}
-.dec-ft .sep{color:var(--bdr)}
 
 /* ===== ANIVERSARIO EM FAIXA ===== */
 .ani-strip{display:flex;align-items:center;gap:9px;width:100%;padding:9px 14px;border-radius:11px;border:1px solid rgba(197,162,56,.28);background:rgba(197,162,56,.07);cursor:pointer;font-family:inherit;transition:.16s;text-align:left}
@@ -878,7 +874,6 @@ Seu cadastro foi criado, mas um administrador precisa liberar o acesso. Você se
 <button onclick="setPend($('decCard').dataset.m)">Ver quem falta</button>
 </div>
 </div>
-<div class="dec-ft" id="decFt" onclick="event.stopPropagation()"></div>
 </div>
 <button class="ani-strip hide" id="aniCard" onclick="openAniver()">
 <span class="ani-em">🎂</span><span class="ani-tx" id="aniTx">—</span><span class="ani-go">ver</span>
@@ -1307,18 +1302,6 @@ function dash(){
     const el=$(id), row=el&&el.closest('.hm-r');
     if(row) row.classList.toggle('zero', (el.textContent||'').trim()==='0');
   });
-  const pv=previsao(V), r30=ritmo30(V);
-  const mes=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
-  const ft=$('decFt');
-  if(!pv.aulas){
-    ft.innerHTML = `<span style="color:var(--green)">✓</span> <b>Ciclo completo</b> — todos os módulos foram dados`;
-  } else {
-    const partes = [`<span class="n">${pv.aulas}</span> ${pv.aulas===1?'aula para fechar':'aulas para fechar'}`];
-    if(pv.data) partes.push(`<b>~${pv.data.getDate()} ${mes[pv.data.getMonth()]}</b>`);
-    if(r30) partes.push(`${r30} ${r30===1?'aula':'aulas'} em 30d`);
-    ft.innerHTML = partes.join('<span class="sep">·</span>');
-  }
-
   const cel=t*12, fe=V.reduce((a,p)=>a+M.filter(m=>p.modulos[m]).length,0), gp=Math.round(fe/cel*100);
   $('hPct').textContent=gp+'%';
   $('hBar').style.width=gp+'%';
