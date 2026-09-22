@@ -1032,6 +1032,16 @@ const br2iso = d => {
   if(t.getFullYear()!==yy||t.getMonth()!==mm-1||t.getDate()!==dd) return null;
   return d.split('/').reverse().join('-');
 };
+// Nascimento tem regra própria: de 1900 até hoje (não pode ser futuro)
+const nasc2iso = d => {
+  if(!d || !/^\d{2}\/\d{2}\/\d{4}$/.test(d)) return null;
+  const [dd,mm,yy] = d.split('/').map(Number);
+  if(mm<1||mm>12||dd<1||dd>31||yy<1900) return null;
+  const t = new Date(yy,mm-1,dd);
+  if(t.getFullYear()!==yy||t.getMonth()!==mm-1||t.getDate()!==dd) return null;
+  if(t > new Date()) return null;
+  return d.split('/').reverse().join('-');
+};
 function hoje(){const d=new Date();return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear()}
 
 // ── UI helpers ────────────────────────────────────────────
@@ -1658,7 +1668,7 @@ function fIdade(){
   const el=$('fIdadeTxt'); if(!el) return;
   const v=$('fNasc').value.trim();
   if(!v){el.className='fl-hint';el.textContent='';return}
-  if(!br2iso(v)){el.className='fl-hint ruim';el.textContent='data inválida';return}
+  if(!nasc2iso(v)){el.className='fl-hint ruim';el.textContent='data inválida';return}
   const i=idade({nascimento:v});
   el.className='fl-hint ok';
   el.textContent = i===null ? '' : `${i} anos`;
@@ -1667,10 +1677,10 @@ function fIdade(){
 async function saveNew(){
   const nome=$('fNome').value.trim(), cel=$('fCel').value.trim(), ret=$('fRet').value.trim(), tur=($('fTur')?$('fTur').value.trim():'');
   const obs=($('fObs')?$('fObs').value.trim():''), nasc=($('fNasc')?$('fNasc').value.trim():'');
-  if(nasc && !br2iso(nasc)){tst('Data de nascimento inválida — use DD/MM/AAAA',1);return}
+  if(nasc && !nasc2iso(nasc)){tst('Data de nascimento inválida — use DD/MM/AAAA',1);return}
   const extra = {};
   if(HAS_OBS) extra.obs = obs || null;
-  if(HAS_NASC) extra.nascimento = nasc ? br2iso(nasc) : null;
+  if(HAS_NASC) extra.nascimento = nasc ? nasc2iso(nasc) : null;
   if(!nome){tst('Informe o nome',1);return}
   if(ret && !br2iso(ret)){tst('Data do retiro inválida — use DD/MM/AAAA',1);return}
 
@@ -1699,10 +1709,10 @@ async function saveEdit(n){
   const p=D.find(x=>x.n===n);
   const nome=$('fNome').value.trim(), cel=$('fCel').value.trim(), ret=$('fRet').value.trim(), tur=($('fTur')?$('fTur').value.trim():'');
   const obs=($('fObs')?$('fObs').value.trim():''), nasc=($('fNasc')?$('fNasc').value.trim():'');
-  if(nasc && !br2iso(nasc)){tst('Data de nascimento inválida — use DD/MM/AAAA',1);return}
+  if(nasc && !nasc2iso(nasc)){tst('Data de nascimento inválida — use DD/MM/AAAA',1);return}
   const extra = {};
   if(HAS_OBS) extra.obs = obs || null;
-  if(HAS_NASC) extra.nascimento = nasc ? br2iso(nasc) : null;
+  if(HAS_NASC) extra.nascimento = nasc ? nasc2iso(nasc) : null;
   if(!nome){tst('Informe o nome',1);return}
   if(ret && !br2iso(ret)){tst('Data do retiro inválida — use DD/MM/AAAA',1);return}
   busy('fSave',1);
