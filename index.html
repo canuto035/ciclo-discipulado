@@ -1160,7 +1160,7 @@ async function load(){
   HAS_NASC  = data.length ? Object.prototype.hasOwnProperty.call(data[0],'nascimento') : HAS_NASC;
   D = data.map(r=>{
     const mods={}; M.forEach(m=>mods[m]=iso2br(r.modulos?.[m])||null);
-    return {id:r.id,n:r.numero,nome:r.nome,celular:r.celular||'',retiro:iso2br(r.retiro)||'',
+    return {id:r.id,n:r.numero,nome:r.nome,celular:fmtTel(r.celular||''),retiro:iso2br(r.retiro)||'',
             turma:r.turma||'—',familia:!!r.familia,obs:r.obs||'',nascimento:iso2br(r.nascimento)||'',modulos:mods,pct:Math.round(M.filter(m=>mods[m]).length/12*100)};
   });
   dash(); rd();
@@ -1263,7 +1263,26 @@ const col = p => p>=100?'#2EE58C':p>=75?'#35A7FF':p>=50?'#F2C14E':'#FF9F43';
 const cls = p => p>=100?'done':p>=75?'high':p>=50?'mid':'low';
 function bdg(p){const m={done:['bd-g','🏅 Concluído'],high:['bd-b','Avançado'],mid:['bd-y','Em andamento'],low:['bd-o','Iniciado'],zero:['bd-n','Início']};
   const k=p>=100?'done':p>=75?'high':p>=50?'mid':p>0?'low':'zero';return `<span class="bdg ${m[k][0]}">${m[k][1]}</span>`}
-const wal = c => c?'https://wa.me/'+c.replace(/\D/g,''):'';
+// Telefone → dígitos internacionais. O DDD 54 (Carazinho) é o código da Argentina,
+// então número sem +55 abriria o WhatsApp no país errado.
+const DDD_PADRAO = '54';
+function telIntl(c){
+  let d=(c||'').replace(/\D/g,'');
+  if(!d) return '';
+  d=d.replace(/^0+/,'');                              // 054..., 0xx...
+  if(d.startsWith('55') && (d.length===12||d.length===13)) return d;
+  if(d.length===10||d.length===11) return '55'+d;      // DDD + número
+  if(d.length===8||d.length===9)   return '55'+DDD_PADRAO+d;  // sem DDD
+  return d;
+}
+// Formato de exibição/gravação: +55 54 99963-6489
+function fmtTel(c){
+  const d=telIntl(c);
+  if(!d) return '';
+  const m=d.match(/^55(\d{2})(\d{4,5})(\d{4})$/);
+  return m ? `+55 ${m[1]} ${m[2]}-${m[3]}` : (c||'').trim();
+}
+const wal = c => { const d=telIntl(c); return d?'https://wa.me/'+d:'' };
 const esc = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 // participantes da turma selecionada
@@ -1675,7 +1694,7 @@ function fIdade(){
 }
 
 async function saveNew(){
-  const nome=$('fNome').value.trim(), cel=$('fCel').value.trim(), ret=$('fRet').value.trim(), tur=($('fTur')?$('fTur').value.trim():'');
+  const nome=$('fNome').value.trim(), cel=fmtTel($('fCel').value.trim()), ret=$('fRet').value.trim(), tur=($('fTur')?$('fTur').value.trim():'');
   const obs=($('fObs')?$('fObs').value.trim():''), nasc=($('fNasc')?$('fNasc').value.trim():'');
   if(nasc && !nasc2iso(nasc)){tst('Data de nascimento inválida — use DD/MM/AAAA',1);return}
   const extra = {};
@@ -1707,7 +1726,7 @@ async function saveNew(){
 }
 async function saveEdit(n){
   const p=D.find(x=>x.n===n);
-  const nome=$('fNome').value.trim(), cel=$('fCel').value.trim(), ret=$('fRet').value.trim(), tur=($('fTur')?$('fTur').value.trim():'');
+  const nome=$('fNome').value.trim(), cel=fmtTel($('fCel').value.trim()), ret=$('fRet').value.trim(), tur=($('fTur')?$('fTur').value.trim():'');
   const obs=($('fObs')?$('fObs').value.trim():''), nasc=($('fNasc')?$('fNasc').value.trim():'');
   if(nasc && !nasc2iso(nasc)){tst('Data de nascimento inválida — use DD/MM/AAAA',1);return}
   const extra = {};
@@ -1775,7 +1794,7 @@ function openAniver(){
             <div class="ani-nm">${esc(p.nome)}</div>
             <div class="td-sub">${sem[alvo.getDay()]} · ${fmt(d)}${i!==null?` · faz ${i+(d===0?0:1)} anos`:''}</div>
           </div>
-          ${p.celular?`<a class="cv-wa" href="https://wa.me/${p.celular.replace(/\D/g,'')}" target="_blank" rel="noopener" onclick="event.stopPropagation()">💬</a>`:''}
+          ${p.celular?`<a class="cv-wa" href="${wal(p.celular)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">💬</a>`:''}
         </div>`}).join('')}</div>`
     : '<div class="emp"><div class="emp-i">🎂</div><div class="emp-t">Nenhum aniversário nos próximos 30 dias</div></div>';
   $('mdu').innerHTML=mdShell('🎂 Aniversários',
@@ -1844,15 +1863,14 @@ function cvCopiarGrupo(){ copiar(cvTexto(null), '✓ Mensagem copiada — cole n
 
 function cvCopiarNums(){
   const nums=DT().filter(p=>!p.modulos[cvMod]&&p.celular)
-    .map(p=>p.celular.replace(/\D/g,'').replace(/^55/,''))
-    .map(n=>'+55'+n).join('\n');
+    .map(p=>'+'+telIntl(p.celular)).join('\n');
   copiar(nums, '✓ Números copiados — use numa lista de transmissão');
 }
 
 function cvAbrir(ev,n){
   ev.preventDefault();
   const p=D.find(x=>x.n===n); if(!p)return false;
-  const url='https://wa.me/'+p.celular.replace(/\D/g,'')+'?text='+encodeURIComponent(cvTexto(p.nome.split(' ')[0]));
+  const url=wal(p.celular)+'?text='+encodeURIComponent(cvTexto(p.nome.split(' ')[0]));
   window.open(url,'_blank','noopener');
   cvEnviados.add(n);
   const e=$('cv'+n);
@@ -2248,7 +2266,7 @@ function impLer(){
     if(mt){nome=mt[1].trim(); tel=mt[2].trim()}
     nome=nome.replace(/^[\d]+[.)\s-]+/,'').replace(/[,;:\s-]+$/,'').trim();   // tira "1." do começo
     const dig=tel.replace(/\D/g,'');
-    if(dig.length>=10) tel='+55 '+dig.replace(/^55/,'').replace(/^(\d{2})(\d{4,5})(\d{4})$/,'$1 $2-$3');
+    if(dig.length>=8) tel=fmtTel(dig);
     else tel='';
 
     let estado='ok', why='';
