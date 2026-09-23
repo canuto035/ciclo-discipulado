@@ -1610,7 +1610,7 @@ function genPdf(n){
     <td>
       <h2>${esc(p.nome)}</h2>
       <div class="rp-meta">
-        Participante <b>nº ${p.n}</b> · Turma <b>${esc(p.turma)}</b>${p.celular?' · '+esc(p.celular):''}<br>
+        Participante <b>nº ${p.n}</b>${HAS_TURMA?' · Turma <b>'+esc(p.turma)+'</b>':''}${p.celular?' · '+esc(p.celular):''}<br>
         Retiro: <b>${p.retiro||'—'}</b> &nbsp;·&nbsp; Última aula: <b>${ultStr}</b>${p.familia?' &nbsp;·&nbsp; <b>Em grupo familiar</b>':''}
       </div>
     </td>
@@ -2121,7 +2121,7 @@ function rpCabecalho(){
 }
 function rpRodape(){
   return `<table class="rp-ft"><tr>
-    <td><img class="rp-seal" src="${LOGO}" alt="">Carazinho · 2026</td>
+    <td><img class="rp-seal" src="${LOGO}" alt="">Carazinho · ${new Date().getFullYear()}</td>
     <td>Emitido por ${esc(ME.nome||ME.email)}</td>
   </tr></table>`;
 }
@@ -2199,7 +2199,7 @@ function tgEditar(id){
   const n=el.querySelector('.tg-c').textContent;
   el.innerHTML=`<input class="tg-in" id="tgi${id}" value="${esc(atual)}">
     <button class="tg-b" onclick="tgSalvar('${id}')">Salvar</button>
-    <button class="tg-b" onclick="tgFechar('${id}','${esc(atual).replace(/'/g,"\\'")}')">Cancelar</button>`;
+    <button class="tg-b" onclick="tgFechar('${id}','${esc(atual.replace(/'/g,"\\'"))}')">Cancelar</button>`;
   const inp=$('tgi'+id);
   inp.focus(); inp.select();
   inp.onkeydown=e=>{ if(e.key==='Enter')tgSalvar(id); if(e.key==='Escape')tgFechar(id,atual) };
@@ -2341,14 +2341,13 @@ async function impSalvar(){
   if(!confirm(`Cadastrar ${sel.length} ${sel.length===1?'participante':'participantes'}${HAS_TURMA?` na turma "${tur}"`:''}?`))return;
 
   busy('impGo',1);
-  let base=await proximoNumero();
-  let novos=sel.map((x,i)=>comTurma({numero:base+i,nome:x.nome,celular:x.tel,retiro:br2iso(ret),modulos:{}},tur));
-  let {error}=await sb.from('participantes').insert(novos);
-  if(error && /duplicate key|unique constraint/i.test(error.message||'')){
-    // alguém cadastrou no meio: recalcula a partir do banco e tenta de novo
+  let base, novos, error;
+  // alguém pode cadastrar no meio: recalcula o número e tenta de novo (até 5x, igual ao cadastro individual)
+  for(let tentativa=0; tentativa<5; tentativa++){
     base=await proximoNumero();
     novos=sel.map((x,i)=>comTurma({numero:base+i,nome:x.nome,celular:x.tel,retiro:br2iso(ret),modulos:{}},tur));
     ({error}=await sb.from('participantes').insert(novos));
+    if(!error || !/duplicate key|unique constraint/i.test(error.message||'')) break;
   }
   busy('impGo',0,'Cadastrar marcados');
   if(error){tst('Erro: '+error.message,1);return}
@@ -2359,7 +2358,8 @@ async function impSalvar(){
 }
 
 // ═══════════ MESCLAR CADASTROS ═══════════
-const nrm = s => s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z ]/g,'').trim().split(/\s+/).filter(Boolean);
+// h\u00edfen/underscore viram espa\u00e7o (sen\u00e3o "Ana-Clara" e "Ana Clara" caem em tokens diferentes e a duplicata escapa)
+const nrm = s => s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[-_]/g,' ').replace(/[^a-z ]/g,'').trim().split(/\s+/).filter(Boolean);
 
 // distancia de edicao -> similaridade 0..1
 function sim(s,t){
@@ -2653,10 +2653,9 @@ function baixarBackup(){
   $('udrop').classList.remove('on');
   const stamp=new Date().toISOString().slice(0,10);
   const head=['Nº','Nome','Turma','Grupo familiar','Celular','Nascimento','Idade','Retiro',...M,'% Ciclo','Observações'];
-  const q=s=>'"'+String(s??'').replace(/"/g,'""')+'"';
-  const lines=[head.map(q).join(';'),...[...D].sort((a,b)=>a.n-b.n).map(p=>
+  const lines=[head.map(qCsv).join(';'),...[...D].sort((a,b)=>a.n-b.n).map(p=>
     [p.n,p.nome,p.turma,p.familia?'Sim':'Não',p.celular,p.nascimento||'',idade(p)??'',p.retiro,
-     ...M.map(m=>p.modulos[m]||''),p.pct+'%',p.obs||''].map(q).join(';'))];
+     ...M.map(m=>p.modulos[m]||''),p.pct+'%',p.obs||''].map(qCsv).join(';'))];
   baixar(new Blob(['\uFEFF'+lines.join('\n')],{type:'text/csv;charset=utf-8'}), `backup-ciclo-${stamp}.csv`);
 
   // JSON completo — permite restaurar exatamente como está
@@ -2675,13 +2674,15 @@ function baixar(blob, nome){
 }
 
 // ═══════════ CSV ═══════════
+// campo de CSV entre aspas; se começar com = + - @ prefixa aspa simples,
+// senão o Excel interpreta como fórmula ao abrir ("CSV/formula injection")
+const qCsv = s => { s=String(s??''); if(/^[=+\-@]/.test(s)) s="'"+s; return '"'+s.replace(/"/g,'""')+'"' };
 function exportCsv(){
   $('udrop').classList.remove('on');
   const head=['Nº','Nome','Turma','Grupo familiar','Celular','Nascimento','Idade','Retiro',...M,'% Ciclo','Observações'];
-  const q=s=>'"'+String(s??'').replace(/"/g,'""')+'"';
   const base=DT();
-  const lines=[head.map(q).join(';'),...[...base].sort((a,b)=>a.n-b.n).map(p=>
-    [p.n,p.nome,p.turma,p.familia?'Sim':'Não',p.celular,p.nascimento||'',idade(p)??'',p.retiro,...M.map(m=>p.modulos[m]||''),p.pct+'%',p.obs||''].map(q).join(';'))];
+  const lines=[head.map(qCsv).join(';'),...[...base].sort((a,b)=>a.n-b.n).map(p=>
+    [p.n,p.nome,p.turma,p.familia?'Sim':'Não',p.celular,p.nascimento||'',idade(p)??'',p.retiro,...M.map(m=>p.modulos[m]||''),p.pct+'%',p.obs||''].map(qCsv).join(';'))];
   const blob=new Blob(['\uFEFF'+lines.join('\n')],{type:'text/csv;charset=utf-8'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
@@ -2746,7 +2747,7 @@ function onSearch(src){
 $('q').addEventListener('input',e=>onSearch(e.target));
 $('qm').addEventListener('input',e=>onSearch(e.target));
 $('srt').addEventListener('change',e=>{s=e.target.value;lim=STEP;rd()});
-document.addEventListener('keydown',e=>{if(e.key==='Escape')['ov','ovch','ovu','ovn'].forEach(cl)});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')['ov','ovch','ovu','ovn','ovi','ovc'].forEach(cl)});
 ['inPass','inEmail'].forEach(i=>$(i).addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()}));
 ['upNome','upEmail','upPass'].forEach(i=>$(i).addEventListener('keydown',e=>{if(e.key==='Enter')doSignup()}));
 
