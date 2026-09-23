@@ -1288,9 +1288,26 @@ const esc = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>
 // participantes da turma selecionada
 function DT(){ return TU ? D.filter(p=>p.turma===TU) : D }
 
+// Nome de turma costuma ser "Mês/Ano" (ex.: "Jun/2026"). Convertemos pra um
+// número comparável pra ordenar por data real, não por ordem alfabética
+// (alfabeticamente "Set" vem depois de "Jan", mesmo sendo turma mais antiga).
+const MESES_ABR=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+function turmaOrdem(t){
+  const m=/^([a-zç]{3})\/(\d{4})$/i.exec((t||'').trim());
+  if(!m) return null;
+  const idx=MESES_ABR.indexOf(m[1].toLowerCase());
+  if(idx<0) return null;
+  return Number(m[2])*12+idx;
+}
 function turmas(){
   const c={}; D.forEach(p=>c[p.turma]=(c[p.turma]||0)+1);
-  return Object.entries(c).sort((a,b)=>b[0].localeCompare(a[0],'pt'));
+  return Object.entries(c).sort((a,b)=>{
+    const oa=turmaOrdem(a[0]), ob=turmaOrdem(b[0]);
+    if(oa!==null && ob!==null) return ob-oa;      // ambas em "Mês/Ano": ordena por data real
+    if(oa!==null) return -1;                       // datas reconhecidas vêm antes das não reconhecidas
+    if(ob!==null) return 1;
+    return b[0].localeCompare(a[0],'pt');           // nomes fora do padrão: mantém ordem alfabética
+  });
 }
 
 function barraTurmas(){
@@ -1407,7 +1424,7 @@ function dash(){
   $('bars').innerHTML = vis.map(x=>{
     const pcFalta=Math.round(x.falta/t*100), zero=x.falta===0;
     const esc2=x.mod.replace(/'/g,"\\'");
-    return `<div class="mrow ${pend===x.mod?'act':''} ${zero?'ok':''}" onclick="setPend('${pend===x.mod?'':esc2}')" title="${x.feitos} de ${t} já fizeram">
+    return `<div class="mrow ${pend===x.mod?'act':''} ${zero?'ok':''}" data-mod="${esc(x.mod)}" onclick="setPend('${pend===x.mod?'':esc2}')" title="${x.feitos} de ${t} já fizeram">
       <span class="mrow-n">${x.mod}</span>
       <div class="mrow-t"><div class="mrow-f" style="width:${pcFalta}%;background:${corFalta(x.falta)}"></div></div>
       <span class="mrow-fa" style="color:${zero?'':corFalta(x.falta)}">${zero?'completo':'faltam '+x.falta}</span></div>`}).join('')
@@ -1430,7 +1447,7 @@ function escolherAula(m){
   dash();
 }
 function setPend(m){pend=m||'';$('pendSel').value=pend;$('pendSel').classList.toggle('act',!!pend);
-  document.querySelectorAll('.mrow').forEach((r,i)=>r.classList.toggle('act',M[i]===pend));
+  document.querySelectorAll('.mrow[data-mod]').forEach(r=>r.classList.toggle('act',r.dataset.mod===pend));
   lim=STEP; rd(); if(pend)$('lista').scrollIntoView({behavior:'smooth',block:'start'})}
 
 // tira acento para comparar (ninguém digita acento numa busca rápida)
@@ -1542,6 +1559,7 @@ function te(n,i){
 }
 
 async function sv(n,m,val,i){
+  if(!can()){tst('Você não tem permissão para gravar módulos',1);return}
   if(val && !br2iso(val)){tst('Data inválida — use DD/MM/AAAA entre 2000 e 2100',1);return}
   const p=D.find(x=>x.n===n);
   const res=await gravarModulos(p.id, {[m]: val||null});
@@ -1694,6 +1712,7 @@ function fIdade(){
 }
 
 async function saveNew(){
+  if(!can()){tst('Você não tem permissão para cadastrar',1);return}
   const nome=$('fNome').value.trim(), cel=fmtTel($('fCel').value.trim()), ret=$('fRet').value.trim(), tur=($('fTur')?$('fTur').value.trim():'');
   const obs=($('fObs')?$('fObs').value.trim():''), nasc=($('fNasc')?$('fNasc').value.trim():'');
   if(nasc && !nasc2iso(nasc)){tst('Data de nascimento inválida — use DD/MM/AAAA',1);return}
@@ -1725,6 +1744,7 @@ async function saveNew(){
   cl('ovn'); await load(); tst('✓ '+nome+' cadastrado como nº'+res.numero);
 }
 async function saveEdit(n){
+  if(!can()){tst('Você não tem permissão para editar',1);return}
   const p=D.find(x=>x.n===n);
   const nome=$('fNome').value.trim(), cel=fmtTel($('fCel').value.trim()), ret=$('fRet').value.trim(), tur=($('fTur')?$('fTur').value.trim():'');
   const obs=($('fObs')?$('fObs').value.trim():''), nasc=($('fNasc')?$('fNasc').value.trim():'');
@@ -1742,6 +1762,7 @@ async function saveEdit(n){
   cl('ovn'); await load(); tst('✓ Dados atualizados');
 }
 async function delP(n){
+  if(!can('del')){tst('Só administradores podem excluir',1);return}
   const p=D.find(x=>x.n===n);
   const feitos=M.filter(m=>p.modulos[m]);
   const ult=ultimaData(p);
@@ -1964,6 +1985,7 @@ function chCnt(){
 }
 
 async function chSave(){
+  if(!can()){tst('Você não tem permissão para registrar chamada',1);return}
   const m=$('chMod').value, dt=$('chDate').value.trim();
   if(!chSel.size){tst('Marque ao menos um participante',1);return}
   if(!br2iso(dt)){tst('Data inválida — use DD/MM/AAAA entre 2000 e 2100',1);return}
