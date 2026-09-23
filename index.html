@@ -116,7 +116,6 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .hr-v{font-size:.94rem;font-weight:700;line-height:1.25;margin-bottom:3px}
 .hr-s{font-size:.72rem;color:var(--txt3)}
 
-.k-g .k-b .k-y .k-o 
 /* ===== PANELS ===== */
 .panels{display:grid;grid-template-columns:.85fr 1.15fr;gap:16px;margin-bottom:22px}
 .panel{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:22px}
@@ -799,7 +798,7 @@ Seu cadastro foi criado, mas um administrador precisa liberar o acesso. Você se
 <div class="logo-wrap">
 <img class="logo-img" id="logoHdr" alt="Integração">
 <span class="logo-div"></span>
-<div class="logo-txt"><h1>Controle de Integração</h1><p>Carazinho · 2026</p></div>
+<div class="logo-txt"><h1>Controle de Integração</h1><p id="hdrAno">Carazinho · 2026</p></div>
 </div>
 <div class="hdr-sp"></div>
 <div class="search">
@@ -2057,11 +2056,13 @@ async function openUsers(){
   <b style="color:var(--txt2)">Só leitura</b> — apenas consultar</div>`;
 }
 async function setRole(id,role){
+  if(!ME||ME.role!=='admin'){tst('Só administradores podem alterar permissões',1);return}
   const {error}=await sb.from('profiles').update({role}).eq('id',id);
   tst(error?'Erro: '+error.message:'✓ Permissão alterada',!!error);
   if(!error)openUsers();
 }
 async function setAppr(id,ok){
+  if(!ME||ME.role!=='admin'){tst('Só administradores podem aprovar/bloquear usuários',1);return}
   const {error}=await sb.from('profiles').update({aprovado:ok}).eq('id',id);
   if(error){tst('Erro: '+error.message,1);return}
   tst(ok?'✓ Acesso liberado':'Acesso bloqueado');
@@ -2212,6 +2213,7 @@ function tgFechar(id,t){
 }
 
 async function tgSalvar(id){
+  if(!can()){tst('Você não tem permissão para renomear turmas',1);return}
   const el=$('tg'+id), antigo=el.dataset.t;
   const novo=$('tgi'+id).value.trim();
   if(!novo){tst('Informe um nome',1);return}
@@ -2334,6 +2336,7 @@ function impCnt(){
 }
 
 async function impSalvar(){
+  if(!can()){tst('Você não tem permissão para importar participantes',1);return}
   const sel=impLin.filter(x=>x.on);
   if(!sel.length){tst('Marque ao menos um nome',1);return}
   const tur=($('impTur')?$('impTur').value.trim():''), ret=$('impRet').value.trim();
@@ -2486,6 +2489,10 @@ function mgPrev(){
     btn.disabled=true; return;
   }
   const a=D.find(p=>p.n===na), b=D.find(p=>p.n===nb), r=previa(a,b);
+  // quando as duas fichas têm celular/retiro diferentes, o principal (A) vence em silêncio —
+  // avisa pra quem está mesclando poder trocar A↔B se o dado de B for o certo
+  const celConflito = a.celular && b.celular && a.celular!==b.celular;
+  const retConflito = a.retiro && b.retiro && a.retiro!==b.retiro;
   box.innerHTML=`<div class="mg-prev"><div class="mg-prev-t">✓ Resultado da mesclagem</div>
     <div class="mg-r"><span>Nome</span><b>${esc(r.nome)}</b></div>
     <div class="mg-r"><span>Nº</span><b>${a.n}</b></div>
@@ -2493,11 +2500,15 @@ function mgPrev(){
     <div class="mg-r"><span>Retiro</span><b>${r.retiro||'—'}</b></div>
     <div class="mg-r"><span>Módulos</span><b>${Object.keys(r.mods).length} de 12 · ${r.pct}%${r.ganho?` <span class="mg-gain">(+${r.ganho})</span>`:''}</b></div>
     </div>
+    ${celConflito||retConflito?`<div class="mg-warn">⚠ As fichas têm ${celConflito&&retConflito?'celular e retiro':celConflito?'celular':'retiro'} diferentes — fica o de <b>nº${a.n} ${esc(a.nome)}</b>
+      (${celConflito?`celular de nº${b.n}: <b>${esc(b.celular)}</b>`:''}${celConflito&&retConflito?' · ':''}${retConflito?`retiro de nº${b.n}: <b>${b.retiro}</b>`:''} seria perdido).
+      Troque quem é "Manter"/"Absorver" se o dado certo estiver na outra ficha.</div>`:''}
     <div class="mg-warn">A ficha <b>nº${b.n} ${esc(b.nome)}</b> será apagada. Quando as duas tiverem o mesmo módulo, fica a data mais antiga. Esta ação não pode ser desfeita.</div>`;
   btn.disabled=false;
 }
 
 async function doMerge(){
+  if(!ME||ME.role!=='admin'){tst('Só administradores podem mesclar cadastros',1);return}
   const na=+$('mgA').value, nb=+$('mgB').value;
   const a=D.find(p=>p.n===na), b=D.find(p=>p.n===nb);
   if(!a||!b||na===nb)return;
@@ -2519,13 +2530,15 @@ async function doMerge(){
   A.retiro = iso2br(fa.retiro)||''; B.retiro = iso2br(fb.retiro)||'';
   const r = previa(A, B);
 
-  // avisa se algo mudou desde que a tela foi montada
-  const antes = M.filter(m=>a.modulos[m]||b.modulos[m]).length;
-  const agora = Object.keys(r.mods).length;
-  if(agora !== antes){
+  // avisa se algo mudou desde que a tela foi montada — compara módulo a módulo
+  // (não só a quantidade, senão troca de data sem mudar a contagem passava batido)
+  const antesPrev = previa(a, b);
+  const antesSig = JSON.stringify(antesPrev.mods), agoraSig = JSON.stringify(r.mods);
+  if(agoraSig !== antesSig){
     busy('mgGo',0,'Mesclar');
+    const antesQtd=Object.keys(antesPrev.mods).length, agoraQtd=Object.keys(r.mods).length;
     if(!confirm(`Alguém alterou estas fichas enquanto você decidia.\n\n`
-      + `Agora a mesclagem resulta em ${agora} módulo(s), não ${antes}.\n\nContinuar mesmo assim?`)) { openMerge(); return }
+      + `Agora a mesclagem resulta em ${agoraQtd} módulo(s)${agoraQtd!==antesQtd?' (era '+antesQtd+')':' — mas com datas diferentes das que você viu'}.\n\nContinuar mesmo assim?`)) { await load(); openMerge(); return }
     busy('mgGo',1);
   }
 
@@ -2752,6 +2765,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')['ov','ovch','ovu','
 ['upNome','upEmail','upPass'].forEach(i=>$(i).addEventListener('keydown',e=>{if(e.key==='Enter')doSignup()}));
 
 ['logoHdr','logoAuth','logoErr'].forEach(i=>{const e=$(i);if(e)e.src=LOGO});
+if($('hdrAno'))$('hdrAno').textContent='Carazinho · '+new Date().getFullYear();
 
 // só inicia depois que a biblioteca do Supabase estiver disponível
 window.__sbPronto = function(){
