@@ -84,15 +84,19 @@ mas nunca com um modal aberto.
   - *Celular/tablet (<1100px):* barra inferior (Painel · Pessoas · **Chamada** no centro · Parados · Menu).
     Só uma tela por vez (`#app[data-tab]`, função `goTab()`). A ficha e todas as janelas (`.ov`)
     **sobem de baixo** como folha. O "Menu" é o mesmo `#udrop`, que no computador fica fixo no menu lateral.
-- Painel: **como estamos** (anel de % + faixa dos 4 grupos + média de módulos + alerta de parados) ·
+- Painel: **como estamos** (anel de % + faixa dos 4 grupos, cada um clicável = filtro da lista) ·
   **próxima aula** (cartão único de chamada) · **precisam de atenção** (até 3 parados com WhatsApp).
-- Lista de pessoas: linhas com progresso em 12 traços (`rowP()`). A tabela de 12 colunas de módulos
+- Lista de pessoas: **todas** as linhas de uma vez (sem "Ver mais"), com progresso em 12 traços (`rowP()`).
+  Filtros: Todos · Parados · Concluídos · Em grupo (+ etiqueta ao filtrar por faixa pelo painel). A tabela de 12 colunas de módulos
   continua existindo como visão **Matriz** (só computador); nela a ficha abre em janela, não ao lado.
-- Ficha: módulos em grade 2 colunas (`.mi`); editar data troca o tile para "editando" (`.editing`).
+- Ficha: um só indicador de % (número grande); PDF, Histórico e Excluir ficam em "⋯ Mais". Módulos em grade 2 colunas (`.mi`); editar data troca o tile para "editando" (`.editing`).
 - Um único botão de chamada por tela (no cartão), mais o atalho no menu (lateral ou barra inferior).
 - Números em zero ficam acinzentados; painel mostra exceção, não censo.
 - Foram removidos de propósito: previsão de término e contagem de ritmo
-  (davam números enganosos com turmas misturadas). Não recoloque sem discutir.
+  (davam números enganosos com turmas misturadas), média de módulos e "atualizado em"
+  (repetiam o % / confundiam), botão laranja de parados no cartão (duplicava a lista de atenção)
+  e paginação "Ver mais". Não recoloque sem discutir.
+- Aviso de backup: só no Painel e só quando a última cópia (neste aparelho) passou de 30 dias.
 
 Paleta: fundo `#071018`, verde `#2EE58C`, azul `#35A7FF`, amarelo `#F2C14E`,
 laranja `#FF9F43`, dourado da logo `#C5A238`. Fontes: Syne (títulos) e Inter.
