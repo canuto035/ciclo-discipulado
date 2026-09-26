@@ -99,11 +99,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .p-title::after{content:'';flex:1;height:1px;background:var(--bdr)}
 .rank-i{display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:var(--r-sm);cursor:pointer;transition:.15s;margin-bottom:3px}
 .rank-i:hover{background:rgba(46,229,140,.06)}
-.rank-n{width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-variant-numeric:tabular-nums;font-feature-settings:'tnum' 1,'ss01' 1;font-size:.74rem;font-weight:800;flex-shrink:0}
-.rk1{background:linear-gradient(135deg,var(--green),var(--green-d));color:#04160D}
-.rk2{background:rgba(53,167,255,.16);color:var(--blue)}
-.rk3{background:rgba(242,193,78,.16);color:var(--yellow)}
-.rkn{background:rgba(255,255,255,.05);color:var(--txt3)}
+.rank-i .td-sub{font-size:.74rem;color:var(--txt3);margin-top:2px;line-height:1.35}
 .rank-nm{flex:1;font-size:.84rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .rank-b{width:52px;height:4px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden;flex-shrink:0}
 .rank-bf{height:100%;border-radius:4px;transition:width .9s cubic-bezier(.4,0,.2,1)}
@@ -181,10 +177,16 @@ td{padding:10px 13px;vertical-align:middle}
 .md-p{font-family:'Inter',sans-serif;font-variant-numeric:tabular-nums;font-feature-settings:'tnum' 1,'ss01' 1;font-size:2.75rem;font-weight:800;line-height:1;color:var(--green);letter-spacing:-.04em}
 .md-ps{font-size:.73rem;color:var(--txt3);padding-bottom:7px}
 .md-b{padding:22px 26px 26px}
-.md-wa{display:flex;align-items:center;gap:10px;background:rgba(46,229,140,.07);border:1px solid rgba(46,229,140,.22);border-radius:11px;padding:11px 15px;margin-bottom:20px;text-decoration:none;transition:.18s}
-.md-wa:hover{background:rgba(46,229,140,.13)}
-.md-wa b{color:var(--green);font-size:.84rem;font-weight:600}
-.md-wa i{font-style:normal;font-size:.74rem;color:var(--txt3);margin-left:auto}
+/* ficha: faixa de ações no topo (WhatsApp · Editar · ⋯) */
+.fa{display:flex;align-items:stretch;gap:8px;margin-bottom:14px}
+.fa-wa{flex:1;min-width:0;display:flex;align-items:center;gap:8px;background:rgba(46,229,140,.08);border:1px solid rgba(46,229,140,.26);border-radius:11px;padding:0 13px;min-height:42px;color:var(--green);font-size:.82rem;font-weight:600;text-decoration:none;transition:.18s}
+.fa-wa:hover{background:rgba(46,229,140,.15)}
+.fa-wa span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fa-b{padding:0 16px;min-height:42px;font-size:.82rem}
+.fa-mais{position:relative;display:flex}
+.fa-mais>summary{list-style:none;cursor:pointer;font-size:1.1rem;line-height:1;padding:0 15px}
+.fa-mais>summary::-webkit-details-marker{display:none}
+.fa-mais .mais-l{position:absolute;right:0;top:calc(100% + 6px);margin:0;min-width:170px;z-index:20;box-shadow:0 12px 32px rgba(0,0,0,.5)}
 .ml{display:flex;flex-direction:column;gap:6px}
 .mi{display:flex;align-items:center;gap:11px;padding:10px 13px;border-radius:var(--r-sm);border:1px solid transparent;transition:.15s}
 .mi-y{background:rgba(46,229,140,.06);border-color:rgba(46,229,140,.16)}
@@ -409,16 +411,14 @@ td{padding:10px 13px;vertical-align:middle}
 
 
 /* ===== MARCA FAMILIA ===== */
-.fam-btn{display:flex;align-items:center;gap:10px;width:100%;padding:11px 15px;border-radius:11px;border:1px solid var(--bdr);background:rgba(255,255,255,.03);color:var(--txt2);font-size:.84rem;font-weight:600;cursor:pointer;font-family:inherit;transition:.2s;margin-bottom:20px;text-align:left}
+.fam-btn{display:flex;align-items:center;gap:10px;width:100%;padding:9px 14px;border-radius:11px;border:1px solid var(--bdr);background:rgba(255,255,255,.03);color:var(--txt2);font-size:.82rem;font-weight:600;cursor:pointer;font-family:inherit;transition:.2s;margin-bottom:18px;text-align:left}
 .fam-btn:hover{border-color:var(--gold);color:var(--gold)}
 .fam-btn .ic{font-size:1.15rem;line-height:1;filter:grayscale(1) opacity(.55);transition:.2s}
 .fam-btn .tx{flex:1;min-width:0}
-.fam-btn .st{display:block;font-size:.71rem;color:var(--txt3);font-weight:500;margin-top:2px;line-height:1.35}
 .fam-btn .sw{width:34px;height:19px;border-radius:20px;background:rgba(255,255,255,.09);position:relative;flex-shrink:0;transition:.22s}
 .fam-btn .sw::after{content:'';position:absolute;top:2.5px;left:3px;width:14px;height:14px;border-radius:50%;background:var(--txt3);transition:.22s}
 .fam-btn.on{background:rgba(197,162,56,.11);border-color:rgba(197,162,56,.42);color:var(--gold)}
 .fam-btn.on .ic{filter:none}
-.fam-btn.on .st{color:rgba(197,162,56,.75)}
 .fam-btn.on .sw{background:var(--gold)}
 .fam-btn.on .sw::after{left:16px;background:#1A1405}
 .fam-ic{font-size:.88rem;margin-left:5px;vertical-align:-1px}
@@ -627,6 +627,9 @@ td{padding:10px 13px;vertical-align:middle}
   .p-btn{font-size:.72rem;padding:6px 11px}
   .md-nm{font-size:1.08rem}
   .mi-nm{font-size:.79rem}
+  .fa{gap:6px}
+  .fa-wa{padding:0 9px;gap:6px;font-size:.76rem}
+  .fa-b,.fa-mais>summary{padding:0 11px}
 }
 
 /* ═══════════ LAYOUT V3 — painel, lista com ficha ao lado, barra inferior ═══════════
@@ -784,6 +787,9 @@ body.menu-open .mbd{display:block}
 .md-h{border-radius:22px 22px 0 0}
 .ch-f{gap:10px}
 
+@media(max-width:760px){
+.hero2 .dec{order:-1}   /* celular: a ação (próxima aula) vem antes do resumo */
+}
 @media(min-width:761px) and (max-width:1099px){
 .hero2{grid-template-columns:1fr 1fr}
 .attn,.ani-strip{grid-column:1/-1}
@@ -873,16 +879,12 @@ body.menu-open .mbd{display:block}
 }
 
 /* ficha: ações secundárias recolhidas */
-details.mais{flex:1 1 auto;min-width:118px}
-details.mais>summary{list-style:none;justify-content:center;cursor:pointer;width:100%}
-details.mais>summary::-webkit-details-marker{display:none}
 .mais-l{display:flex;flex-direction:column;margin-top:8px;border:1px solid var(--bdr);border-radius:12px;overflow:hidden;background:var(--bg2)}
 .mais-l button{padding:12px 14px;text-align:left;background:none;border:none;border-bottom:1px solid var(--bdr);color:var(--txt2);font-family:inherit;font-size:.82rem;font-weight:600;cursor:pointer}
 .mais-l button:last-child{border-bottom:none}
 .mais-l button:hover{background:rgba(255,255,255,.05);color:var(--txt)}
 .mais-l .dang,.mais-l .dang:hover{color:#FF8B8B}
 .mais-l .dang:hover{background:rgba(255,92,92,.12)}
-.md-acts details.mais{grid-column:1/-1}
 .ni .n.gold,.pend-badge.gold{background:var(--gold);color:#1A1405}
 .uitem .pend-badge.gold{margin-left:8px}
 @media(min-width:1100px){.mobonly{display:none!important}}
@@ -1054,10 +1056,10 @@ Seu cadastro foi criado, mas um administrador precisa liberar o acesso. Você se
 <div class="panels one">
 <div class="panel panel-wide">
 <div class="p-head">
-<span class="p-title-in">Fila de aulas · por quem falta</span>
+<span class="p-title-in">Demais aulas · por quem falta</span>
 <span class="p-line"></span>
 <button class="p-btn gold" onclick="openDone()"><span class="ic">🏅</span>Concluídos<span class="n" id="nD">0</span></button>
-<button class="p-btn" onclick="openRank()"><span class="ic">🏆</span>Mais avançados<span class="n" id="nR">0</span></button>
+<button class="p-btn" onclick="openQuase()"><span class="ic">🎯</span>Quase lá<span class="n" id="nR">0</span></button>
 </div>
 <div id="bars" class="bars-grid"></div>
 </div>
@@ -1599,11 +1601,13 @@ function dash(){
       + '. Corrija abrindo a ficha da pessoa.';
   } else av.classList.add('hide');
 
-  // concluídos (100%) — saem do ranking
-  $('nD').textContent=V.filter(p=>p.pct>=100).length;
-  $('nR').textContent=V.filter(p=>p.pct<100).length;
+  // contadores dos botões "Concluídos" e "Quase lá"
+  $('nD').textContent=nDone;
+  $('nR').textContent=nHigh;
 
-  const vis = barsAll ? fila : fila.slice(0,6);
+  // a aula que já está no cartão "Próxima aula" não se repete na fila
+  const resto = restam ? fila.filter(x=>x!==alvo) : fila;
+  const vis = barsAll ? resto : resto.slice(0,6);
   const corFalta = f => { const r=f/t; return r>=.6?'#D85A30':r>=.35?'#EF9F27':r>0?'#639922':'#2EE58C' };
   $('bars').innerHTML = vis.map(x=>{
     const pcFalta=Math.round(x.falta/t*100), zero=x.falta===0;
@@ -1612,7 +1616,7 @@ function dash(){
       <span class="mrow-n">${x.mod}</span>
       <div class="mrow-t"><div class="mrow-f" style="width:${pcFalta}%;background:${corFalta(x.falta)}"></div></div>
       <span class="mrow-fa" style="color:${zero?'':corFalta(x.falta)}">${zero?'completo':'faltam '+x.falta}</span></div>`}).join('')
-    + (fila.length>6 ? `<div class="bars-more" onclick="barsAll=!barsAll;dash()">${barsAll?'Mostrar menos':`+ ${fila.length-6} módulos com menos pendências`}</div>` : '');
+    + (resto.length>6 ? `<div class="bars-more" onclick="barsAll=!barsAll;dash()">${barsAll?'Mostrar menos':`+ ${resto.length-6} módulos com menos pendências`}</div>` : '');
   $('pendSel').value=pend; $('pendSel').classList.toggle('act',!!pend);
 }
 
@@ -1715,23 +1719,22 @@ function op(n,rolar){
     <div class="md-nm">${esc(p.nome)}</div><div class="md-mt">nº${p.n}${HAS_TURMA?' · '+esc(p.turma):''} · Retiro: ${p.retiro||'—'}${(()=>{const i=idade(p);return i!==null?` · <span class="md-idade">${i} anos</span>`:''})()}</div>
     <div class="md-r"><div><div class="md-p" style="color:${col(p.pct)}">${p.pct}%</div><div class="md-ps">${dn} de 12 módulos concluídos</div></div></div>
     </div></div>
-    <div class="md-b">${p.celular?`<a class="md-wa" href="${wal(p.celular)}" target="_blank" rel="noopener"><span>💬</span><b>Abrir WhatsApp</b><i>${esc(p.celular)}</i></a>`:''}
-    ${HAS_OBS&&p.obs?`<div class="md-obs"><b>Observações</b>${esc(p.obs)}</div>`:''}
-    ${HAS_FAM?`<button class="fam-btn ${p.familia?'on':''}" id="famBtn" onclick="toggleFam(${n})" ${can()?'':'disabled style="cursor:default"'}>
-      <span class="ic">👨‍👩‍👧</span>
-      <span class="tx">Em grupo familiar<span class="st" id="famSt">${p.familia?'sim — participa de um grupo':'ainda não está em um grupo'}</span></span>
-      <span class="sw"></span></button>`:''}
-    <div class="p-title" style="margin-bottom:13px">Módulos</div>
-    <div class="ml">${M.map((m,i)=>{const d=p.modulos[m];
-      return `<div class="mi ${d?'mi-y':'mi-n'}" id="r${i}"><span class="mi-no">${String(i+1).padStart(2,'0')}</span><div class="mi-nm">${m}</div><div class="mi-r"><span class="mi-dt" id="dt${i}">${d||'Pendente'}</span>${can()?`<button class="mi-b" id="bt${i}" onclick="te(${n},${i})">${d?'Editar':'+ Data'}</button>`:''}</div></div>`}).join('')}</div>
-    <div class="md-acts">
-    ${can()?`<button class="btn btn-s" onclick="openEdit(${n})">Editar dados</button>`:''}
-    <details class="mais"><summary class="btn btn-s">⋯ Mais</summary><div class="mais-l">
+    <div class="md-b">
+    <div class="fa">
+    ${p.celular?`<a class="fa-wa" href="${wal(p.celular)}" target="_blank" rel="noopener" title="Abrir WhatsApp" aria-label="Abrir WhatsApp de ${esc(p.nome)}">${svgi('chat')}<span>${esc(p.celular)}</span></a>`:''}
+    ${can()?`<button class="btn btn-s fa-b" onclick="openEdit(${n})">Editar</button>`:''}
+    <details class="fa-mais"><summary class="btn btn-s fa-b" aria-label="Mais ações">⋯</summary><div class="mais-l">
     <button onclick="genPdf(${n})">Gerar PDF</button>
     <button onclick="cl('ov');openHist(${n})">Histórico</button>
     ${can()&&ME.role==='admin'?`<button class="dang" onclick="delP(${n})">Excluir</button>`:''}
     </div></details>
     </div>
+    ${HAS_OBS&&p.obs?`<div class="md-obs"><b>Observações</b>${esc(p.obs)}</div>`:''}
+    ${HAS_FAM?`<button class="fam-btn ${p.familia?'on':''}" id="famBtn" onclick="toggleFam(${n})" title="Marca quem já frequenta um grupo familiar (não é o módulo 11)" ${can()?'':'disabled style="cursor:default"'}>
+      <span class="ic">👨‍👩‍👧</span><span class="tx">Frequenta grupo familiar</span><span class="sw"></span></button>`:''}
+    <div class="p-title" style="margin-bottom:13px">Módulos</div>
+    <div class="ml">${M.map((m,i)=>{const d=p.modulos[m];
+      return `<div class="mi ${d?'mi-y':'mi-n'}" id="r${i}"><span class="mi-no">${String(i+1).padStart(2,'0')}</span><div class="mi-nm">${m}</div><div class="mi-r"><span class="mi-dt" id="dt${i}">${d||'Pendente'}</span>${can()?`<button class="mi-b" id="bt${i}" onclick="te(${n},${i})">${d?'Editar':'+ Data'}</button>`:''}</div></div>`}).join('')}</div>
     </div>`;
   if(split){
     FIC_N=n; $('md').innerHTML=''; $('fic').innerHTML=html; marcaSel();
@@ -1835,12 +1838,10 @@ async function toggleFam(n){
   const novo=!p.familia;
   const b=$('famBtn');
   b.classList.toggle('on',novo);
-  $('famSt').textContent = novo?'sim — participa de um grupo':'ainda não está em um grupo';
 
   const {error}=await sb.from('participantes').update({familia:novo}).eq('id',p.id);
   if(error){
     b.classList.toggle('on',!novo);
-    $('famSt').textContent = !novo?'sim — participa de um grupo':'ainda não está em um grupo';
     tst('Erro ao salvar: '+error.message,1); return;
   }
   p.familia=novo;
@@ -1879,11 +1880,10 @@ function formP(p){
     <div class="fg"><label class="fl">Nome completo *</label><input class="fi" id="fNome" value="${p?esc(p.nome):''}" placeholder="Nome do participante"></div>
     <div class="fg"><label class="fl">Celular / WhatsApp</label><input class="fi" id="fCel" value="${p?esc(p.celular):''}" placeholder="+55 54 99999-9999"></div>
     <div class="fg-2">
-      <div class="fg"><label class="fl">Data do retiro</label><input class="fi" id="fRet" value="${p?p.retiro:retiroDaTurma(TU)}" placeholder="DD/MM/AAAA" oninput="this.dataset.m=1"></div>
+      <div class="fg"><label class="fl">Data do retiro</label><input class="fi" id="fRet" value="${p?p.retiro:(HAS_TURMA?retiroDaTurma(turmaPadrao()):'')}" placeholder="DD/MM/AAAA" oninput="this.dataset.m=1"></div>
       ${HAS_NASC?`<div class="fg"><label class="fl">Nascimento</label><input class="fi" id="fNasc" value="${p?p.nascimento:''}" placeholder="DD/MM/AAAA" oninput="fIdade()"><div class="fl-hint" id="fIdadeTxt"></div></div>`:''}
     </div>
-    ${HAS_TURMA?`<div class="fg"><label class="fl">Turma</label><input class="fi" id="fTur" list="lsTur" value="${p?esc(p.turma):(TU||'')}" placeholder="Ex.: Jun/2026"${p?'':' onchange="turmaMudou(\'fTur\',\'fRet\')"'}>
-    <datalist id="lsTur">${turmas().map(([t])=>`<option value="${esc(t)}">`).join('')}</datalist></div>`:''}
+    ${HAS_TURMA?`<div class="fg"><label class="fl">Turma</label>${turmaSelect(p)}</div>`:''}
     ${HAS_OBS?`<div class="fg"><label class="fl">Observações</label>
       <textarea class="fi fi-ta" id="fObs" rows="3" placeholder="Anotações sobre a pessoa — mudou de cidade, está afastada, quem trouxe…">${p?esc(p.obs):''}</textarea></div>`:''}
     <div style="display:flex;gap:9px;margin-top:20px">
@@ -1895,7 +1895,41 @@ function turmaMudou(idTur,idRet){
   const r=$(idRet); if(!r||r.dataset.m) return;
   const v=retiroDaTurma($(idTur).value.trim()); if(v) r.value=v;
 }
-function openNew(){if(!can())return;$('mdn').innerHTML=formP(null);$('ovn').classList.add('on');setTimeout(()=>$('fNome').focus(),80)}
+// "jun/2026" digitado à mão vira "Jun/2026" se essa turma já existe (evita turma duplicada por maiúscula/minúscula)
+function turmaCanon(t){
+  t=(t||'').trim(); const k=t.toLowerCase();
+  const e=turmas().find(([x])=>x.toLowerCase()===k);
+  return e ? e[0] : t;
+}
+// turma que já vem escolhida num cadastro novo: a recém-criada, a do filtro, ou a mais recente
+const turmaPadrao = () => TU_NOVA || TU || (turmas().find(x=>x[0]!=='—')||[''])[0];
+// Turma no cadastro: lista das que existem + "Nova turma…" (texto livre só nesse caso)
+function turmaSelect(p){
+  const ts=turmas().map(x=>x[0]).filter(t=>t!=='—');
+  const atual = p ? p.turma : turmaPadrao();
+  if(atual && atual!=='—' && !ts.includes(atual)) ts.unshift(atual);   // turma criada em "Turmas", ainda sem participantes
+  const sem = p && atual==='—' ? '<option value="" selected>Sem turma</option>' : '';
+  const soNova = !ts.length && !sem;
+  return `<select class="fi" id="fTurSel"${p?'':' data-novo="1"'} onchange="turmaEscolhida()">${sem}${ts.map(t=>`<option value="${esc(t)}"${t===atual?' selected':''}>${esc(t)}</option>`).join('')}<option value="__nova"${soNova?' selected':''}>＋ Nova turma…</option></select>
+    <input class="fi${soNova?'':' hide'}" id="fTur" placeholder="Nome da nova turma — ex.: Nov/2026" style="margin-top:8px">`;
+}
+function turmaEscolhida(){
+  const s=$('fTurSel'), t=$('fTur'), nova=s.value==='__nova';
+  t.classList.toggle('hide',!nova);
+  if(nova) t.focus();
+  else if(s.dataset.novo) turmaMudou('fTurSel','fRet');
+}
+// turma escolhida no formulário ('' se não há campo de turma)
+function turmaDoForm(){
+  const s=$('fTurSel'); if(!s) return '';
+  return s.value==='__nova' ? turmaCanon($('fTur').value) : s.value;
+}
+function turmaNovaVazia(){
+  const s=$('fTurSel');
+  if(s && s.value==='__nova' && !turmaDoForm()){ tst('Informe o nome da nova turma',1); return true }
+  return false;
+}
+function openNew(){if(!can())return;$('mdn').innerHTML=formP(null);TU_NOVA='';$('ovn').classList.add('on');setTimeout(()=>$('fNome').focus(),80)}
 function openEdit(n){if(!can())return;const p=D.find(x=>x.n===n);cl('ov');$('mdn').innerHTML=formP(p);$('ovn').classList.add('on')}
 
 function fIdade(){
@@ -1910,13 +1944,14 @@ function fIdade(){
 
 async function saveNew(){
   if(!can()){tst('Você não tem permissão para cadastrar',1);return}
-  const nome=$('fNome').value.trim(), cel=fmtTel($('fCel').value.trim()), ret=$('fRet').value.trim(), tur=($('fTur')?$('fTur').value.trim():'');
+  const nome=$('fNome').value.trim(), cel=fmtTel($('fCel').value.trim()), ret=$('fRet').value.trim(), tur=turmaDoForm();
   const obs=($('fObs')?$('fObs').value.trim():''), nasc=($('fNasc')?$('fNasc').value.trim():'');
   if(nasc && !nasc2iso(nasc)){tst('Data de nascimento inválida — use DD/MM/AAAA',1);return}
   const extra = {};
   if(HAS_OBS) extra.obs = obs || null;
   if(HAS_NASC) extra.nascimento = nasc ? nasc2iso(nasc) : null;
   if(!nome){tst('Informe o nome',1);return}
+  if(turmaNovaVazia())return;
   if(ret && !br2iso(ret)){tst('Data do retiro inválida — use DD/MM/AAAA',1);return}
 
   // avisa se já existe alguém com nome igual ou muito parecido
@@ -1943,13 +1978,14 @@ async function saveNew(){
 async function saveEdit(n){
   if(!can()){tst('Você não tem permissão para editar',1);return}
   const p=D.find(x=>x.n===n);
-  const nome=$('fNome').value.trim(), cel=fmtTel($('fCel').value.trim()), ret=$('fRet').value.trim(), tur=($('fTur')?$('fTur').value.trim():'');
+  const nome=$('fNome').value.trim(), cel=fmtTel($('fCel').value.trim()), ret=$('fRet').value.trim(), tur=turmaDoForm();
   const obs=($('fObs')?$('fObs').value.trim():''), nasc=($('fNasc')?$('fNasc').value.trim():'');
   if(nasc && !nasc2iso(nasc)){tst('Data de nascimento inválida — use DD/MM/AAAA',1);return}
   const extra = {};
   if(HAS_OBS) extra.obs = obs || null;
   if(HAS_NASC) extra.nascimento = nasc ? nasc2iso(nasc) : null;
   if(!nome){tst('Informe o nome',1);return}
+  if(turmaNovaVazia())return;
   if(ret && !br2iso(ret)){tst('Data do retiro inválida — use DD/MM/AAAA',1);return}
   busy('fSave',1);
   const {error}=await sb.from('participantes').update(comTurma({nome,celular:cel,retiro:br2iso(ret),...extra},tur)).eq('id',p.id);
@@ -2290,17 +2326,21 @@ function openDone(){
   $('ovu').classList.add('on');
 }
 
-function openRank(){
-  const V=DT();
-  const lista=V.filter(p=>p.pct<100).sort((a,b)=>b.pct-a.pct).slice(0,10);
+// "Quase lá" = 75 a 99% (mesma faixa da legenda do painel), com o que falta a cada um
+const faltamDe = p => M.filter(m=>!p.modulos[m]);
+function quaseLa(V){
+  return V.filter(p=>p.pct>=75&&p.pct<100).sort((a,b)=>b.pct-a.pct||a.nome.localeCompare(b.nome,'pt'));
+}
+function openQuase(){
+  const lista=quaseLa(DT());
   const escopo = TU ? 'Turma '+esc(TU) : 'Todas as turmas';
   const corpo = lista.length
-    ? `<div class="mod-list-modal">${lista.map((p,i)=>{const fa=12-M.filter(m=>p.modulos[m]).length;
-        return `<div class="rank-i" onclick="cl('ovu');op(${p.n})"><div class="rank-n ${i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkn'}">${i+1}</div><div style="flex:1;min-width:0"><div class="rank-nm">${esc(p.nome)}</div><div class="td-sub">faltam ${fa} ${fa===1?'módulo':'módulos'}</div></div><div class="rank-b"><div class="rank-bf" style="width:${p.pct}%;background:${col(p.pct)}"></div></div><span class="rank-p" style="color:${col(p.pct)}">${p.pct}%</span></div>`}).join('')}</div>`
-    : '<div class="emp"><div class="emp-i">🏆</div><div class="emp-t">Todos concluíram o ciclo</div></div>';
-  $('mdu').innerHTML=mdShell('🏆 Mais avançados',
-    `Quem está mais perto de fechar o ciclo · ${escopo}`,
-    corpo + (lista.length?`<div class="md-acts"><button class="btn btn-p" onclick="pdfRanking()">Gerar PDF da lista</button></div>`:''));
+    ? `<div class="mod-list-modal">${lista.map(p=>
+        `<div class="rank-i" onclick="cl('ovu');op(${p.n})"><div style="flex:1;min-width:0"><div class="rank-nm">${esc(p.nome)}</div><div class="td-sub">falta: ${faltamDe(p).map(esc).join(' · ')}</div></div><div class="rank-b"><div class="rank-bf" style="width:${p.pct}%;background:${col(p.pct)}"></div></div><span class="rank-p" style="color:${col(p.pct)}">${p.pct}%</span></div>`).join('')}</div>`
+    : '<div class="emp"><div class="emp-i">🎯</div><div class="emp-t">Ninguém está na faixa de 75 a 99%</div></div>';
+  $('mdu').innerHTML=mdShell('🎯 Quase lá',
+    `${lista.length} ${lista.length===1?'pessoa falta':'pessoas faltam'} poucos módulos para fechar o ciclo · ${escopo}`,
+    corpo + (lista.length?`<div class="md-acts"><button class="btn btn-p" onclick="pdfQuase()">Gerar PDF da lista</button></div>`:''));
   $('ovu').classList.add('on');
 }
 
@@ -2337,22 +2377,22 @@ function pdfConcluidos(){
   window.print();
 }
 
-function pdfRanking(){
+function pdfQuase(){
   const V=DT();
-  const lista=V.filter(p=>p.pct<100).sort((a,b)=>b.pct-a.pct).slice(0,10);
-  if(!lista.length){tst('Todos já concluíram o ciclo',1);return}
-  const linhas=lista.map((p,i)=>{const fa=12-M.filter(m=>p.modulos[m]).length;
+  const lista=quaseLa(V);
+  if(!lista.length){tst('Ninguém está na faixa de 75 a 99%',1);return}
+  const linhas=lista.map((p,i)=>{
     return `<tr>
       <td class="rp-pos">${i+1}</td>
-      <td>${esc(p.nome)}<div style="font-size:8pt;color:#8A4F1E;margin-top:2px">faltam ${fa} ${fa===1?'módulo':'módulos'}</div></td>
+      <td>${esc(p.nome)}<div style="font-size:8pt;color:#8A4F1E;margin-top:2px">falta: ${faltamDe(p).map(esc).join(' · ')}</div></td>
       <td class="rp-tel">${esc(p.celular)||'—'}</td>
       <td class="rp-val">${p.pct}%</td></tr>`}).join('');
   const pend={};
   V.filter(p=>p.pct<100).forEach(p=>M.forEach(m=>{if(!p.modulos[m])pend[m]=(pend[m]||0)+1}));
   const top=Object.entries(pend).sort((a,b)=>b[1]-a[1]).slice(0,3);
   $('report').innerHTML = rpCabecalho() + `
-    <div class="rp-sum">Os <b>${lista.length}</b> participantes mais próximos de concluir o ciclo · ${esc(escopoTxt())}</div>
-    <div class="rp-ttl">Mais avançados</div>
+    <div class="rp-sum"><b>${lista.length}</b> ${lista.length===1?'participante está':'participantes estão'} perto de concluir o ciclo (75 a 99%) · ${esc(escopoTxt())}</div>
+    <div class="rp-ttl">Quase lá</div>
     <table class="rp-tb"><thead><tr><th class="rp-pos">#</th><th>Nome</th><th class="rp-tel">Celular</th><th class="rp-val">Progresso</th></tr></thead>
     <tbody>${linhas}</tbody></table>
     ${top.length?`<div class="rp-ttl">Módulos que mais faltam</div>
@@ -2431,9 +2471,8 @@ function tgCriar(){
   if(!nome){tst('Informe o nome da turma',1);return}
   if(turmas().some(([t])=>t===nome)){tst('Essa turma já existe',1);return}
   cl('ovu');
-  TU_NOVA=nome;
+  TU_NOVA=nome;   // openNew() a coloca na lista de turmas do formulário e depois zera
   openNew();
-  setTimeout(()=>{ const f=$('fTur'); if(f)f.value=nome; },90);
   tst(`Cadastre alguém em "${nome}" para a turma passar a existir`);
 }
 let TU_NOVA='';
@@ -2531,7 +2570,7 @@ async function impSalvar(){
   if(!can()){tst('Você não tem permissão para importar participantes',1);return}
   const sel=impLin.filter(x=>x.on);
   if(!sel.length){tst('Marque ao menos um nome',1);return}
-  const tur=($('impTur')?$('impTur').value.trim():''), ret=$('impRet').value.trim();
+  const tur=turmaCanon($('impTur')?$('impTur').value:''), ret=$('impRet').value.trim();
   if(ret && !br2iso(ret)){tst('Data do retiro inválida',1);return}
   if(!confirm(`Cadastrar ${sel.length} ${sel.length===1?'participante':'participantes'}${HAS_TURMA?` na turma "${tur}"`:''}?`))return;
 
@@ -2961,6 +3000,9 @@ function onSearch(src){
   $('ms').classList.toggle('has',!!val);
   rd();
 }
+document.addEventListener('click',e=>{   // fecha o "⋯" da ficha ao clicar fora
+  document.querySelectorAll('.fa-mais[open]').forEach(d=>{ if(!d.contains(e.target)) d.open=false });
+});
 $('q').addEventListener('input',e=>onSearch(e.target));
 $('qm').addEventListener('input',e=>onSearch(e.target));
 $('srt').addEventListener('change',e=>{s=e.target.value;rd()});

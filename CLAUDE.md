@@ -97,7 +97,15 @@ mas nunca com um modal aberto.
 - **Retiro sugerido:** `retiroDaTurma(t)` devolve a data de retiro mais comum da turma; preenche "Novo participante"
   e "Importar lista" (nunca "hoje"). Data digitada à mão não é sobrescrita ao trocar de turma.
 - Botão "+ Novo" ao lado dos filtros de Pessoas (só quem pode editar). Menu agrupado em Cadastro / Dados e acesso.
-- Ficha: um só indicador de % (número grande); PDF, Histórico e Excluir ficam em "⋯ Mais". Módulos em grade 2 colunas (`.mi`); editar data troca o tile para "editando" (`.editing`).
+- Ficha: um só indicador de % (número grande). Faixa de ações **no topo** (`.fa`): WhatsApp (mostra o número) · Editar · "⋯"
+  (PDF, Histórico, Excluir — menu flutuante, fecha ao clicar fora). Depois observações, a etiqueta "Frequenta grupo familiar"
+  (a flag `familia`; não confundir com o módulo 11 "Grupo Familiar") e os módulos em grade 2 colunas (`.mi`); editar data troca o tile para "editando" (`.editing`).
+- Painel: "Próxima aula" é o cartão; a fila abaixo se chama **"Demais aulas"** e não repete o módulo do cartão. O botão
+  **"Quase lá"** (75–99%, mesma faixa da legenda) lista cada pessoa com o módulo que falta e gera PDF; substituiu o
+  ranking "Mais avançados" (empatava quase todo mundo). No celular o cartão "Próxima aula" vem antes do resumo em %.
+- **Turma no cadastro** é lista (`turmaSelect`) com "＋ Nova turma…"; nome digitado passa por `turmaCanon()` (jun/2026 → Jun/2026
+  se a turma já existe). Na importação continua campo de texto, também com `turmaCanon()`. "Turmas › Criar" abre o cadastro
+  com a nova turma pré-selecionada (`TU_NOVA`); ela só passa a existir quando alguém é cadastrado nela.
 - Um único botão de chamada por tela (no cartão), mais o atalho no menu (lateral ou barra inferior).
 - Números em zero ficam acinzentados; painel mostra exceção, não censo.
 - Foram removidos de propósito: previsão de término e contagem de ritmo
