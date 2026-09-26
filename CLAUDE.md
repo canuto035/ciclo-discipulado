@@ -87,7 +87,9 @@ mas nunca com um modal aberto.
 - Painel: **como estamos** (anel de % + faixa dos 4 grupos, cada um clicável = filtro da lista) ·
   **próxima aula** (cartão único de chamada) · **precisam de atenção** (até 3 parados com WhatsApp).
 - Lista de pessoas: **todas** as linhas de uma vez (sem "Ver mais"), com progresso em 12 traços (`rowP()`).
-  Filtros: Todos · Parados · Concluídos · Em grupo (+ etiqueta ao filtrar por faixa pelo painel). A tabela de 12 colunas de módulos
+  Filtros: Todos · Parados · Grupo familiar · Concluídos (+ etiqueta ao filtrar por faixa pelo painel).
+  **Grupo familiar mostra sempre todos, de todas as turmas** (o filtro `familia` ignora a turma escolhida
+  e a linha mostra a turma). Atalho com contador: item "Grupo familiar" no menu lateral / no Menu do celular. A tabela de 12 colunas de módulos
   continua existindo como visão **Matriz** (só computador); nela a ficha abre em janela, não ao lado.
 - Ficha: um só indicador de % (número grande); PDF, Histórico e Excluir ficam em "⋯ Mais". Módulos em grade 2 colunas (`.mi`); editar data troca o tile para "editando" (`.editing`).
 - Um único botão de chamada por tela (no cartão), mais o atalho no menu (lateral ou barra inferior).

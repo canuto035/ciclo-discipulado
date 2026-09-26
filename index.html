@@ -868,6 +868,9 @@ details.mais>summary::-webkit-details-marker{display:none}
 .mais-l .dang,.mais-l .dang:hover{color:#FF8B8B}
 .mais-l .dang:hover{background:rgba(255,92,92,.12)}
 .md-acts details.mais{grid-column:1/-1}
+.ni .n.gold,.pend-badge.gold{background:var(--gold);color:#1A1405}
+.uitem .pend-badge.gold{margin-left:8px}
+@media(min-width:1100px){.mobonly{display:none!important}}
 </style>
 </head>
 <body>
@@ -949,10 +952,12 @@ Seu cadastro foi criado, mas um administrador precisa liberar o acesso. Você se
 <button class="ni" id="niPessoas" onclick="goTab('pessoas')"><svg class="i"><use href="#i-users"/></svg>Pessoas</button>
 <button class="ni call" id="niCall" onclick="chamarModulo()"><svg class="i"><use href="#i-checks"/></svg>Marcar chamada</button>
 <button class="ni" id="niPar" onclick="goFlt('parado')"><svg class="i"><use href="#i-alert"/></svg>Parados<span class="n hide" id="nPar">0</span></button>
+<button class="ni hide" id="niFam" onclick="goFlt('familia')"><svg class="i"><use href="#i-users"/></svg>Grupo familiar<span class="n gold" id="nFam">0</span></button>
 </nav>
 <div class="gl">Gestão</div>
 <div class="udrop" id="udrop">
 <div class="uhead"><b id="uNome">—</b><span class="rb" id="uRole">—</span></div>
+<button class="uitem mobonly hide" id="miFam" onclick="goFlt('familia')">Grupo familiar<span class="pend-badge gold" id="nFam2">0</span></button>
 <button class="uitem" id="miUsers" onclick="openUsers()">Usuários<span class="pend-badge hide" id="pendN">0</span></button>
 <button class="uitem" id="miTur" onclick="openTurmas()">Turmas</button>
 <button class="uitem" id="miNovo" onclick="openNew()">Novo participante</button>
@@ -1057,8 +1062,8 @@ Seu cadastro foi criado, mas um administrador precisa liberar o acesso. Você se
 <div class="chips">
 <button class="chip on" onclick="flt('all',this)">Todos</button>
 <button class="chip warn" onclick="flt('parado',this)">Parados</button>
+<button class="chip fam hide" id="chipFam" onclick="flt('familia',this)">👨‍👩‍👧 Grupo familiar</button>
 <button class="chip" onclick="flt('done',this)">Concluídos</button>
-<button class="chip fam hide" id="chipFam" onclick="flt('familia',this)">👨‍👩‍👧 Em grupo</button>
 </div>
 <div class="tb-r">
 <select class="sel sel-pend" id="pendSel" onchange="setPend(this.value)"><option value="">Falta o módulo…</option></select>
@@ -1473,7 +1478,8 @@ function rowAttn(p){
 }
 function rowP(p){
   const c=col(p.pct), feitos=M.filter(m=>p.modulos[m]).length, fa=12-feitos, par=estaParado(p), ud=ultDias(p);
-  const sub = p.pct>=100 ? 'ciclo concluído' : (par?`parado há ${diasParado(p)} dias · `:'')+`faltam ${fa}`;
+  const tur = f==='familia' && HAS_TURMA && p.turma && p.turma!=='—' ? ` · ${esc(p.turma)}` : '';
+  const sub = (p.pct>=100 ? 'ciclo concluído' : (par?`parado há ${diasParado(p)} dias · `:'')+`faltam ${fa}`) + tur;
   const mo = ud!==null && p.pct<100 && !par ? `<span class="mo"> · ${haDias(ud)}</span>` : '';
   return `<div class="pr${FIC_N===p.n?' cur':''}" id="pr${p.n}" onclick="op(${p.n})"><div class="nmw"><span class="av${par?' warn':''}">${esc(ini(p.nome))}</span><div class="pr-t"><b>${esc(p.nome)}${p.familia?'<span class="fam-ic" title="Em grupo familiar">👨‍👩‍👧</span>':''}${p.obs?`<span class="obs-ic" title="${esc(p.obs).slice(0,120)}">📝</span>`:''}</b><small class="${par?'w':''}">${sub}${mo}</small></div></div><div class="pr-p">${segs(feitos,c)}<span class="pr-pc" style="color:${c}">${p.pct}%</span></div><span class="pr-ua${par?' w':''}">${ud!==null?haDias(ud):'—'}</span>${waBtn(p)}</div>`;
 }
@@ -1506,6 +1512,9 @@ function dash(){
   const dc=$('decCard');
 
   $('chipFam').classList.toggle('hide',!HAS_FAM);
+  const nFam=D.filter(p=>p.familia).length;   // todas as turmas
+  ['niFam','miFam'].forEach(id=>$(id).classList.toggle('hide',!HAS_FAM));
+  ['nFam','nFam2'].forEach(id=>{ $(id).textContent=nFam });
   aniverCard();
   avisoBackup();
   const sel=$('decPick');
@@ -1600,7 +1609,7 @@ function setPend(m){pend=m||'';$('pendSel').value=pend;$('pendSel').classList.to
 const semAcento = s => (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
 function getQ(){return semAcento((($('q').value||$('qm').value)||'').trim())}
 function flist(){const q=getQ();
-  let d=DT().filter(p=>(semAcento(p.nome).includes(q)||(p.obs&&semAcento(p.obs).includes(q))||p.celular.replace(/\D/g,'').includes(q.replace(/\D/g,''))&&q.replace(/\D/g,'')!=='')&&(f==='all'||(f==='parado'?estaParado(p):f==='familia'?p.familia:cls(p.pct)===f))&&(!pend||!p.modulos[pend]));
+  let d=(f==='familia'?D:DT()).filter(p=>(semAcento(p.nome).includes(q)||(p.obs&&semAcento(p.obs).includes(q))||p.celular.replace(/\D/g,'').includes(q.replace(/\D/g,''))&&q.replace(/\D/g,'')!=='')&&(f==='all'||(f==='parado'?estaParado(p):f==='familia'?p.familia:cls(p.pct)===f))&&(!pend||!p.modulos[pend]));
   if(s==='n')d.sort((a,b)=>a.n-b.n); else if(s==='nome')d.sort((a,b)=>dir.nome*a.nome.localeCompare(b.nome,'pt'));
   else if(s==='pd')d.sort((a,b)=>b.pct-a.pct); else if(s==='pa')d.sort((a,b)=>a.pct-b.pct);
   return d}
@@ -1609,7 +1618,7 @@ const FAIXA={high:'quase lá · 75 a 99%',mid:'na metade · 50 a 74%',low:'come�
 function rd(){
   const all=flist();
   const d=all;
-  $('cnt').innerHTML=(all.length===DT().length?all.length+' participantes':all.length+' de '+DT().length)+(pend?` <span class="tag">falta ${pend}<button onclick="setPend('')">×</button></span>`:'')
+  $('cnt').innerHTML=(f==='familia'?all.length+' em grupo familiar · todas as turmas':all.length===DT().length?all.length+' participantes':all.length+' de '+DT().length)+(pend?` <span class="tag">falta ${pend}<button onclick="setPend('')">×</button></span>`:'')
     +(f==='parado'?` <span class="tag">parados 30d+<button onclick="goFlt('all')">×</button></span>`:'')
     +(FAIXA[f]?` <span class="tag">${FAIXA[f]}<button onclick="goFlt('all')">×</button></span>`:'');
   $('tb').innerHTML=d.length?d.map(p=>{const c=col(p.pct);
@@ -1621,7 +1630,7 @@ function rd(){
 
 function clrQ(){$('q').value='';$('qm').value='';$('ms').classList.remove('has');rd()}
 function goFlt(x){
-  const idx={all:0,parado:1,done:2}[x];
+  const idx={all:0,parado:1,familia:2,done:3}[x];
   setPend('');
   f=x;
   if(idx===undefined) document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
