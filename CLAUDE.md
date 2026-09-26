@@ -98,7 +98,8 @@ mas nunca com um modal aberto.
   e "Importar lista" (nunca "hoje"). Data digitada à mão não é sobrescrita ao trocar de turma.
 - **Módulos 6–12 do retiro:** "Novo participante" e "Importar lista" têm a caixa "Já fez os módulos 6 a 12 no retiro"
   (desligada por padrão; exige data do retiro). Marca os 7 módulos com essa data via `modsRetiro()`. Não existe na edição.
-- Botão "+ Novo" ao lado dos filtros de Pessoas (só quem pode editar). Menu agrupado em Cadastro / Dados e acesso.
+- Botão "+ Novo" ao lado dos filtros de Pessoas (só quem pode editar). Menu agrupado em Cadastro / Dados / Manutenção (Mesclar e Usuários, só admin); "Sair" fica num rodapé fixo (`.ufoot`), em vermelho;
+  o item Backup mostra a data da última cópia (`backupNoMenu()`, laranja se nunca fez ou passou de 30 dias).
 - Ficha: um só indicador de % (número grande). Faixa de ações **no topo** (`.fa`): WhatsApp (mostra o número) · Editar · "⋯"
   (PDF, Histórico, Excluir — menu flutuante, fecha ao clicar fora). Depois observações, a etiqueta "Frequenta grupo familiar"
   (a flag `familia`; não confundir com o módulo 11 "Grupo Familiar") e os módulos em grade 2 colunas (`.mi`); editar data troca o tile para "editando" (`.editing`).

@@ -81,7 +81,11 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .uhead b{display:block;font-size:.83rem;font-weight:600;margin-bottom:3px;word-break:break-word}
 .uitem{width:100%;text-align:left;padding:9px 11px;border-radius:8px;border:none;background:none;color:var(--txt2);font-size:.81rem;cursor:pointer;font-family:inherit;transition:.14s;display:flex;align-items:center;gap:8px}
 .uitem:hover{background:rgba(255,255,255,.05);color:var(--txt)}
+.uitem.dang{color:#FF8B8B}
 .uitem.dang:hover{background:rgba(255,92,92,.1);color:#FF8B8B}
+.ut2{display:block;min-width:0}
+.ut2 small{display:block;font-size:.7rem;color:var(--txt3);margin-top:2px;font-weight:400}
+.ut2 small.old{color:var(--orange)}
 .rb{display:inline-block;padding:2px 8px;border-radius:20px;font-size:.62rem;font-weight:800;letter-spacing:.4px;text-transform:uppercase}
 .rb-a{background:rgba(46,229,140,.14);color:var(--green)}
 .rb-e{background:rgba(53,167,255,.14);color:var(--blue)}
@@ -658,11 +662,13 @@ td{padding:10px 13px;vertical-align:middle}
 /* menu: folha que sobe de baixo (celular/tablet) */
 .side{width:0;height:0;overflow:visible}
 .side-logo,.side-nav,.gl{display:none}
-.udrop{position:fixed;left:0;right:0;bottom:0;top:auto;width:auto;max-width:520px;margin-inline:auto;border-radius:22px 22px 0 0;border-bottom:none;padding:14px 12px calc(16px + env(safe-area-inset-bottom));max-height:82vh;overflow-y:auto;z-index:700}
+.udrop{position:fixed;left:0;right:0;bottom:0;top:auto;width:auto;max-width:520px;margin-inline:auto;border-radius:22px 22px 0 0;border-bottom:none;padding:14px 12px 0;max-height:82vh;overflow-y:auto;z-index:700}
 .udrop.on{animation:sheet .26s cubic-bezier(.2,.9,.3,1) both}
 .udrop .uitem{padding:13px 12px;font-size:.9rem}
 .uhead{padding:4px 12px 14px}
-.uver{padding:10px 12px 2px;font-size:.66rem;color:var(--txt3);border-top:1px solid var(--bdr);margin-top:6px}
+.uver{padding:2px 12px 0;font-size:.66rem;color:var(--txt3)}
+/* rodapé do menu (Sair) fica sempre à vista, mesmo com a lista rolando */
+.ufoot{position:sticky;bottom:0;background:var(--card);border-top:1px solid var(--bdr);margin-top:8px;padding:6px 0 calc(12px + env(safe-area-inset-bottom))}
 .ug{font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--txt3);font-weight:700;padding:12px 12px 3px}
 .tt-m{display:flex;align-items:center;justify-content:space-between}
 .novo-b{padding:7px 15px;border-radius:20px;border:1px solid rgba(46,229,140,.4);background:rgba(46,229,140,.1);color:var(--green);font:600 .78rem 'Inter',sans-serif;cursor:pointer;transition:.15s}
@@ -822,8 +828,8 @@ body.menu-open .mbd{display:block}
 .udrop .uitem{padding:9px 11px;font-size:.84rem}
 .uhead{order:99;margin-top:auto;border-top:1px solid var(--bdr);border-bottom:none;padding:12px 11px 0;margin-bottom:0;display:flex;align-items:center;gap:8px}
 .uhead b{margin:0;flex:1}
-.uitem.dang{order:100;margin-top:6px}
-.uver{order:101;border:none;margin:0;padding:8px 11px 0}
+.ufoot{order:100;position:static;background:none;border:none;margin-top:6px;padding:0}
+.uver{padding:8px 11px 0}
 .hdr-brand,.uavt{display:none}
 .hdr-in{padding:12px 28px;flex-wrap:nowrap}
 .tbar{order:0;width:auto;flex:1;min-width:0}
@@ -984,15 +990,18 @@ Seu cadastro foi criado, mas um administrador precisa liberar o acesso. Você se
 <div class="ug" id="ugCad">Cadastro</div>
 <button class="uitem" id="miNovo" onclick="openNew()">Novo participante</button>
 <button class="uitem" id="miImp" onclick="openImp()">Importar lista</button>
-<button class="uitem" id="miMerge" onclick="openMerge()">Mesclar cadastros</button>
 <button class="uitem" id="miTur" onclick="openTurmas()">Turmas</button>
-<div class="ug">Dados e acesso</div>
+<div class="ug">Dados</div>
 <button class="uitem" onclick="openHist()">Histórico</button>
 <button class="uitem" onclick="exportCsv()">Planilha da turma (CSV)</button>
-<button class="uitem" onclick="baixarBackup()">Backup de todas as turmas</button>
+<button class="uitem" id="miBkp" onclick="baixarBackup()"><span class="ut2">Backup de todas as turmas<small id="bkpSub"></small></span></button>
+<div class="ug" id="ugMan">Manutenção</div>
+<button class="uitem" id="miMerge" onclick="openMerge()">Mesclar cadastros</button>
 <button class="uitem" id="miUsers" onclick="openUsers()">Usuários<span class="pend-badge hide" id="pendN">0</span></button>
+<div class="ufoot">
 <button class="uitem dang" onclick="doLogout()">Sair</button>
 <div class="uver">versão 3.0</div>
+</div>
 </div>
 </aside>
 
@@ -1340,7 +1349,7 @@ async function boot(){
   rb.className='rb rb-'+prof.role.charAt(0);
 
   $('miUsers').classList.toggle('hide', prof.role!=='admin');
-  $('miMerge').classList.toggle('hide', prof.role!=='admin');
+  ['miMerge','ugMan'].forEach(id=>$(id).classList.toggle('hide', prof.role!=='admin'));
   $('miImp').classList.toggle('hide', !can());
   $('miNovo').classList.toggle('hide', !can());
   ['btnNovoM','btnNovoD','ugCad'].forEach(id=>$(id).classList.toggle('hide',!can()));
@@ -2901,7 +2910,15 @@ function diasSemBackup(){
   const u=ultimoBackup(); if(!u) return null;
   return Math.floor((Date.now()-u.getTime())/DIA);
 }
+// texto sob o item "Backup" do menu (laranja quando nunca fez ou passou de 30 dias, como o aviso do Painel)
+function backupNoMenu(){
+  const s=$('bkpSub'); if(!s) return;
+  const d=diasSemBackup();
+  s.textContent = d===null ? 'nenhuma cópia neste aparelho' : 'última cópia '+haDias(d);
+  s.classList.toggle('old', d===null || d>=30);
+}
 function avisoBackup(){
+  backupNoMenu();
   const el=$('bkpAviso'); if(!el) return;
   if(!D.length){ el.classList.add('hide'); return }
   const d=diasSemBackup();
