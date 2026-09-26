@@ -733,6 +733,241 @@ td{padding:10px 13px;vertical-align:middle}
   .md-nm{font-size:1.08rem}
   .mi-nm{font-size:.79rem}
 }
+
+/* ═══════════ LAYOUT V3 — painel, lista com ficha ao lado, barra inferior ═══════════
+   Base = compacto (celular e tablet). A partir de 1100px vira layout de computador. */
+.i{width:18px;height:18px;flex:none}
+.col{min-width:0}
+.card{background:var(--card);border:1px solid var(--bdr);border-radius:16px}
+
+/* cabeçalho */
+.hdr-in{max-width:none;margin:0;height:auto;min-height:56px;padding:9px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.hdr-brand{flex:1;min-width:0;display:flex;align-items:center}
+.hdr-brand .logo-img{height:30px}
+.uavt{order:2}
+.tbar{margin:0;order:3;width:100%;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding-bottom:2px;gap:7px}
+.tbar::-webkit-scrollbar{display:none}
+.tbar-l{display:none}
+.tpill{flex:none;padding:6px 13px;font-size:.76rem}
+.search{display:none}
+
+/* menu: folha que sobe de baixo (celular/tablet) */
+.side{width:0;height:0;overflow:visible}
+.side-logo,.side-nav,.gl{display:none}
+.udrop{position:fixed;left:0;right:0;bottom:0;top:auto;width:auto;max-width:520px;margin-inline:auto;border-radius:22px 22px 0 0;border-bottom:none;padding:14px 12px calc(16px + env(safe-area-inset-bottom));max-height:82vh;overflow-y:auto;z-index:700}
+.udrop.on{animation:sheet .26s cubic-bezier(.2,.9,.3,1) both}
+.udrop .uitem{padding:13px 12px;font-size:.9rem}
+.uhead{padding:4px 12px 14px}
+.uver{padding:10px 12px 2px;font-size:.66rem;color:var(--txt3);border-top:1px solid var(--bdr);margin-top:6px}
+@keyframes sheet{from{transform:translateY(46px);opacity:0}to{transform:none;opacity:1}}
+.mbd{display:none;position:fixed;inset:0;background:rgba(3,8,12,.72);backdrop-filter:blur(3px);z-index:650}
+body.menu-open .mbd{display:block}
+
+/* barra inferior */
+.bn{position:fixed;left:0;right:0;bottom:0;z-index:500;height:calc(64px + env(safe-area-inset-bottom));padding:0 6px env(safe-area-inset-bottom);background:rgba(10,21,29,.97);backdrop-filter:blur(14px);border-top:1px solid var(--bdr);display:flex;align-items:flex-end;justify-content:space-around}
+.bn button{position:relative;flex:1;max-width:86px;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 0;background:none;border:none;color:var(--txt3);font-size:.66rem;font-weight:600;font-family:inherit;line-height:1;cursor:pointer}
+.bn button.on{color:var(--green)}
+.bn .fab{color:var(--green)}
+.bn .fab span{width:52px;height:52px;border-radius:50%;margin-top:-30px;background:linear-gradient(135deg,var(--green),var(--green-d));color:#04160D;display:flex;align-items:center;justify-content:center;border:4px solid var(--bg);box-shadow:0 8px 22px rgba(46,229,140,.28)}
+.bn .fab .i{width:24px;height:24px}
+.bn .n{position:absolute;top:5px;left:calc(50% + 5px);font-style:normal;background:var(--orange);color:#1A0F02;border-radius:10px;padding:1px 5px;font-size:.6rem;font-weight:800;line-height:1.3}
+
+/* telas (celular alterna entre Painel e Pessoas) */
+.screen{display:none}
+#app[data-tab=painel] .s-painel,#app[data-tab=pessoas] .s-pessoas{display:block}
+.wrap{max-width:none;padding:12px 14px calc(96px + env(safe-area-inset-bottom))}
+.tst.on{transform:translateX(-50%) translateY(calc(-62px - env(safe-area-inset-bottom)))}
+.tt-m{margin:2px 2px 10px}
+.tt-m b{font:800 1.45rem 'Syne',sans-serif;letter-spacing:-.015em}
+.msearch{display:flex}
+
+/* painel */
+.hero2{display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:16px}
+.sumc{padding:16px}
+.sum-top{display:flex;align-items:center;gap:14px}
+.ring{flex:none}
+.sum-t{min-width:0}
+.sum-t b{display:block;font-size:.95rem;font-weight:700}
+.sum-t small{display:block;font-size:.75rem;color:var(--txt2);line-height:1.45;margin-top:2px}
+.sum-t small b{display:inline;font-size:inherit;color:var(--txt)}
+.sum-t small.upd{color:var(--txt3);font-size:.68rem}
+.stack{display:flex;gap:2px;height:6px;margin:14px 0 8px}
+.stack i{display:block;border-radius:3px;min-width:0;transition:flex .6s}
+.stack .g{background:var(--green)}.stack .b{background:var(--blue)}.stack .y{background:var(--yellow)}.stack .o{background:var(--orange)}
+.lg{display:grid;grid-template-columns:1fr 1fr;gap:1px 8px}
+.lgb{display:flex;align-items:center;gap:8px;padding:6px 6px;border-radius:9px;border:none;background:none;color:var(--txt2);font-size:.78rem;font-family:inherit;cursor:pointer;text-align:left;transition:.15s}
+.lgb:hover{background:rgba(255,255,255,.05)}
+.lgb i{width:8px;height:8px;border-radius:50%;flex:none}
+.lgb b{font-weight:800;color:var(--txt);font-variant-numeric:tabular-nums}
+.lgb.g i{background:var(--green)}.lgb.b i{background:var(--blue)}.lgb.y i{background:var(--yellow)}.lgb.o i{background:var(--orange)}
+.lgb.zero,.lgb.zero b{color:var(--txt3)}
+.park{display:flex;align-items:center;gap:9px;width:100%;margin-top:8px;padding:10px 12px;border-radius:11px;border:1px solid rgba(255,159,67,.3);background:rgba(255,159,67,.07);color:var(--orange);font-size:.78rem;font-family:inherit;cursor:pointer;text-align:left;transition:.15s}
+.park:hover{background:rgba(255,159,67,.13)}
+.park b{font-weight:800;font-size:.95rem}
+.park.zero{border-color:var(--bdr);background:none;color:var(--txt3)}
+.dec{border-radius:16px;padding:16px;background:linear-gradient(160deg,rgba(46,229,140,.1),rgba(46,229,140,.02))}
+.dec-v{font:700 1.35rem/1.15 'Syne',sans-serif;letter-spacing:-.01em;margin:2px 0 4px}
+.dec-s{font-size:.78rem;margin-bottom:14px}
+.dec-b.p{display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--green),var(--green-d));font-size:.9rem;box-shadow:0 6px 18px rgba(46,229,140,.2)}
+.attn{background:var(--card);border:1px solid var(--bdr);border-radius:16px;padding:12px 14px 6px}
+.sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:2px;font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--txt3);font-weight:700}
+.sh span{background:rgba(255,159,67,.16);color:var(--orange);border-radius:10px;padding:0 8px;letter-spacing:0}
+.attn .pr{display:flex;padding:10px 0}
+.attn .pr:last-of-type{border-bottom:none}
+.more-l{display:block;width:100%;padding:10px;background:none;border:none;border-top:1px solid var(--bdr);color:var(--txt3);font-size:.76rem;font-weight:600;font-family:inherit;cursor:pointer}
+.more-l:hover{color:var(--green)}
+
+/* lista de pessoas */
+.tb{display:flex;flex-direction:column;flex-wrap:nowrap;align-items:stretch;gap:10px;margin-bottom:12px}
+.chips{display:flex;flex-wrap:nowrap;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 -14px;padding:2px 14px}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;white-space:nowrap;padding:6px 13px}
+.chip.warn{color:var(--orange);border-color:rgba(255,159,67,.4)}
+.chip.warn:hover{border-color:var(--orange)}
+.chip.warn.on{background:var(--orange);color:#1A0F02;border-color:var(--orange)}
+.tb-r{display:flex;gap:8px;align-items:center}
+.tb-r .sel{flex:1;min-width:0;width:auto;max-width:none}
+.views{display:none}
+.vb{width:auto;height:auto;padding:6px 13px;border-radius:20px;font-size:.74rem;font-weight:600;font-family:inherit}
+.tw{display:none!important}
+.rows{display:block}
+.lst{padding:0}
+.pr{display:flex;align-items:center;gap:11px;padding:10px 4px;border-bottom:1px solid var(--bdr);cursor:pointer;transition:background .14s}
+.pr:hover{background:rgba(46,229,140,.04)}
+.pr.cur{background:rgba(46,229,140,.08);box-shadow:inset 3px 0 0 var(--green)}
+.nmw{display:flex;align-items:center;gap:11px;flex:1;min-width:0}
+.av{width:34px;height:34px;border-radius:50%;background:var(--bdr);display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:var(--txt2);flex:none}
+.av.warn{background:rgba(255,159,67,.14);color:var(--orange)}
+.pr-t{min-width:0}
+.pr-t b{display:block;font-size:.88rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pr-t small{display:block;font-size:.72rem;color:var(--txt3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pr-t small.w{color:var(--orange)}
+.pr-p{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex:none}
+.pr-pc{font-weight:800;font-size:.8rem;font-variant-numeric:tabular-nums}
+.pr-ua{display:none;font-size:.78rem;color:var(--txt2)}
+.pr-ua.w{color:var(--orange)}
+.pr-wa{width:34px;height:34px;border-radius:50%;background:rgba(46,229,140,.12);color:var(--green);display:flex;align-items:center;justify-content:center;flex:none;transition:.15s}
+.pr-wa:hover{background:rgba(46,229,140,.22)}
+.pr-wa.off{visibility:hidden}
+.pr-wa .i{width:16px;height:16px}
+.pr-h{display:none}
+.seg{display:inline-flex;gap:2px}
+.seg i{width:5px;height:11px;border-radius:2px;background:#2A3E4B;opacity:.55}
+.seg i.on{opacity:1;background:var(--c,var(--green))}
+.fic{display:none}
+
+/* ficha: módulos em grade */
+.ml{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.mi{flex-direction:column;align-items:stretch;gap:4px;padding:9px 11px;border-radius:12px;border:1px dashed #2A3E4B;background:none;min-width:0}
+.mi-y{border:1px solid rgba(46,229,140,.32);background:rgba(46,229,140,.07)}
+.mi-n{border:1px dashed #2A3E4B;background:none}
+.mi-no{font-size:.64rem;font-weight:700;color:var(--txt3);letter-spacing:.04em}
+.mi-nm{font-size:.78rem;font-weight:600;line-height:1.25}
+.mi-y .mi-nm{color:var(--txt)}
+.mi-n .mi-nm{color:var(--txt2)}
+.mi-r{display:flex;align-items:center;gap:6px;margin-top:auto;padding-top:3px}
+.mi-dt{flex:1;font-size:.72rem;color:var(--txt3);margin:0}
+.mi-y .mi-dt{color:var(--green);font-weight:600}
+.mi.editing{grid-column:1/-1}
+.mi.editing .mi-dt{display:none}
+.mi-i{flex:1;min-width:0;width:auto}
+.fic-empty{padding:56px 28px;text-align:center;color:var(--txt3);font-size:.85rem;line-height:1.6}
+.fic-empty b{display:block;color:var(--txt2);font-size:.95rem;margin-bottom:4px}
+
+/* chamada */
+.ch-pb{height:4px;background:var(--bdr);margin:0 24px 8px;border-radius:3px;overflow:hidden;flex-shrink:0}
+.ch-pb i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--green),#7BFFC4);border-radius:3px;transition:width .25s}
+.ch-i{padding:11px 12px}
+.ch-cb{width:24px;height:24px;border-radius:8px;font-size:.78rem}
+#chSave{background:linear-gradient(135deg,var(--green),var(--green-d))}
+
+/* folhas (celular/tablet): janelas sobem de baixo */
+.ov{align-items:flex-end;padding:0}
+.md,.ch{width:100%;border-radius:22px 22px 0 0;max-height:92vh;animation:sheet .28s cubic-bezier(.2,.9,.3,1) both}
+.md-h{border-radius:22px 22px 0 0}
+.ch-f{gap:10px}
+
+@media(min-width:761px) and (max-width:1099px){
+.hero2{grid-template-columns:1fr 1fr}
+.attn,.ani-strip{grid-column:1/-1}
+.wrap{padding-inline:22px}
+}
+
+/* ═══════════ COMPUTADOR (menu lateral + lista com ficha ao lado) ═══════════ */
+@media(min-width:1100px){
+#app{display:flex;align-items:flex-start}
+.col{flex:1}
+.side{position:sticky;top:0;width:240px;height:100vh;flex:none;overflow-y:auto;background:var(--bg2);border-right:1px solid var(--bdr);padding:20px 12px 14px;display:flex;flex-direction:column;gap:2px}
+.side-logo,.side-nav,.gl{display:flex}
+.side-logo{flex-direction:column;align-items:flex-start;gap:9px;padding:2px 8px 18px}
+.side-logo .logo-img{height:36px}
+.side-nav{flex-direction:column;gap:2px}
+.ni{display:flex;align-items:center;gap:11px;width:100%;padding:10px 11px;border-radius:11px;border:none;background:none;color:var(--txt2);font-size:.86rem;font-weight:500;font-family:inherit;cursor:pointer;text-align:left;transition:.15s}
+.ni:hover{background:rgba(255,255,255,.05);color:var(--txt)}
+.ni.on{background:rgba(46,229,140,.1);color:var(--green)}
+.ni.call{background:linear-gradient(135deg,var(--green),var(--green-d));color:#04160D;font-weight:700;margin:6px 0 8px}
+.ni.call:hover{filter:brightness(1.06);color:#04160D}
+.ni .n{margin-left:auto;background:var(--orange);color:#1A0F02;border-radius:10px;padding:0 7px;font-size:.68rem;font-weight:800}
+.gl{font-size:.64rem;letter-spacing:.12em;text-transform:uppercase;color:var(--txt3);font-weight:700;padding:16px 11px 4px}
+.udrop{position:static;display:flex;flex-direction:column;flex:1;width:auto;max-width:none;margin:0;background:none;border:none;box-shadow:none;border-radius:0;padding:0;max-height:none;overflow:visible;animation:none}
+.udrop .uitem{padding:9px 11px;font-size:.84rem}
+.uhead{order:99;margin-top:auto;border-top:1px solid var(--bdr);border-bottom:none;padding:12px 11px 0;margin-bottom:0;display:flex;align-items:center;gap:8px}
+.uhead b{margin:0;flex:1}
+.uitem.dang{order:100;margin-top:6px}
+.uver{order:101;border:none;margin:0;padding:8px 11px 0}
+.hdr-brand,.uavt{display:none}
+.hdr-in{padding:12px 28px;flex-wrap:nowrap}
+.tbar{order:0;width:auto;flex:1;min-width:0}
+.tbar-l{display:block}
+.search{display:flex;margin-left:auto}
+.search input{width:230px}
+.bn,.mbd{display:none!important}
+.screen{display:block!important}
+.wrap{max-width:1560px;padding:22px 28px 60px}
+.tst.on{transform:translateX(-50%) translateY(0)}
+.tt-m,.msearch{display:none}
+.hero2{grid-template-columns:minmax(0,1.25fr) minmax(0,1.05fr) minmax(0,1fr);align-items:stretch;gap:14px}
+.ani-strip{grid-column:1/-1}
+.dec{display:flex;flex-direction:column;justify-content:center}
+.tb{flex-direction:row;flex-wrap:wrap;align-items:center;gap:10px 12px}
+.chips{overflow:visible;flex-wrap:wrap;margin:0;padding:0}
+.tb-r{margin-left:auto}
+.tb-r .sel{flex:none}
+.views{display:flex;gap:5px}
+.cnt{order:5;width:100%}
+.split{display:grid;grid-template-columns:minmax(0,1fr) 390px;gap:14px;align-items:start}
+.split.mx{grid-template-columns:minmax(0,1fr)}
+.split.mx .fic{display:none}
+.split.mx .tw{display:block!important}
+.split.mx .lst{display:none}
+.lst{background:var(--card);border:1px solid var(--bdr);border-radius:16px;overflow:hidden}
+.pr-h,.pr{display:grid;grid-template-columns:minmax(0,1fr) 172px 104px 34px;gap:12px;align-items:center;padding:9px 16px}
+.pr-h{font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;color:var(--txt3);font-weight:700;border-bottom:1px solid var(--bdr)}
+.pr:last-child{border-bottom:none}
+.pr-p{flex-direction:row;align-items:center;gap:10px;justify-content:flex-start}
+.pr-pc{width:38px;text-align:right}
+.pr-ua{display:block}
+.mo{display:none}
+.fic{display:block;position:sticky;top:84px;max-height:calc(100vh - 104px);overflow-y:auto;background:var(--card);border:1px solid var(--bdr);border-radius:16px}
+.fic .md-h{border-radius:0}
+.fic .md-b{padding:16px 20px 22px}
+.ov{align-items:center;padding:20px}
+.md,.ch{border-radius:var(--r-lg);animation:pop .3s cubic-bezier(.34,1.4,.64,1) both}
+.md-h{border-radius:var(--r-lg) var(--r-lg) 0 0}
+.ch{max-width:780px}
+.ch-l{display:grid;grid-template-columns:1fr 1fr;column-gap:14px;align-content:start}
+}
+
+/* computador mais estreito: ficha menor e coluna Última aula some (o "há N dias" vai pro subtítulo) */
+@media(min-width:1100px) and (max-width:1359px){
+.split{grid-template-columns:minmax(0,1fr) 340px}
+.pr-h,.pr{grid-template-columns:minmax(0,1fr) 150px 34px}
+.pr-h span:nth-child(3),.pr-ua{display:none}
+.mo{display:inline}
+.wrap{padding-inline:20px}
+.hero2{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.attn{grid-column:1/-1}
+}
 </style>
 </head>
 <body>
@@ -791,22 +1026,31 @@ Seu cadastro foi criado, mas um administrador precisa liberar o acesso. Você se
 </div>
 
 <!-- ============ APP ============ -->
-<div id="app" class="hide">
+<div id="app" class="hide" data-tab="painel">
 
-<header class="hdr">
-<div class="hdr-in">
-<div class="logo-wrap">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2EE58C"/><stop offset="1" stop-color="#7BFFC4"/></linearGradient>
+<symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></symbol>
+<symbol id="i-checks" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L7 17l-5-5"/><path d="M22 10l-7.5 7.5L13 16"/></symbol>
+<symbol id="i-dash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></symbol>
+<symbol id="i-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+<symbol id="i-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></symbol>
+<symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></symbol>
+<symbol id="i-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></symbol>
+</defs></svg>
+
+<aside class="side">
+<div class="side-logo">
 <img class="logo-img" id="logoHdr" alt="Integração">
-<span class="logo-div"></span>
 <div class="logo-txt"><h1>Controle de Integração</h1><p id="hdrAno">Carazinho · 2026</p></div>
 </div>
-<div class="hdr-sp"></div>
-<div class="search">
-<svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
-<input type="text" id="q" placeholder="Buscar participante...">
-</div>
-<div class="umenu">
-<button class="uavt" id="uavt" onclick="uTog(event)">?</button>
+<nav class="side-nav">
+<button class="ni on" id="niPainel" onclick="goTab('painel')"><svg class="i"><use href="#i-dash"/></svg>Painel</button>
+<button class="ni" id="niPessoas" onclick="goTab('pessoas')"><svg class="i"><use href="#i-users"/></svg>Pessoas</button>
+<button class="ni call" id="niCall" onclick="chamarModulo()"><svg class="i"><use href="#i-checks"/></svg>Marcar chamada</button>
+<button class="ni" id="niPar" onclick="goFlt('parado')"><svg class="i"><use href="#i-alert"/></svg>Parados<span class="n hide" id="nPar">0</span></button>
+</nav>
+<div class="gl">Gestão</div>
 <div class="udrop" id="udrop">
 <div class="uhead"><b id="uNome">—</b><span class="rb" id="uRole">—</span></div>
 <button class="uitem" id="miUsers" onclick="openUsers()">Usuários<span class="pend-badge hide" id="pendN">0</span></button>
@@ -818,8 +1062,19 @@ Seu cadastro foi criado, mas um administrador precisa liberar o acesso. Você se
 <button class="uitem" onclick="exportCsv()">Baixar CSV</button>
 <button class="uitem" onclick="baixarBackup()">Backup completo</button>
 <button class="uitem dang" onclick="doLogout()">Sair</button>
-<div style="padding:8px 11px 4px;font-size:.64rem;color:var(--txt3);border-top:1px solid var(--bdr);margin-top:5px">versão 2.4 · PDF</div>
+<div class="uver">versão 3.0 · PDF</div>
 </div>
+</aside>
+
+<div class="col">
+<header class="hdr">
+<div class="hdr-in">
+<div class="hdr-brand"><img class="logo-img" id="logoM" alt="Integração"></div>
+<button class="uavt" id="uavt" onclick="uTog(event)" aria-label="Menu">?</button>
+<div class="tbar" id="tbar"></div>
+<div class="search">
+<svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+<input type="text" id="q" placeholder="Buscar participante...">
 </div>
 </div>
 </header>
@@ -830,27 +1085,26 @@ Seu cadastro foi criado, mas um administrador precisa liberar o acesso. Você se
 <div class="dt-warn hide" id="avDt"></div>
 <div class="ro-note hide" id="roNote">Seu acesso é somente leitura — você pode consultar tudo, mas não alterar.</div>
 
-<section class="hero">
-<div class="hero-in">
-<div class="hero-left">
-<div class="eyebrow"><span class="dot"></span>Atualizado em <span id="hUpd">—</span></div>
-<div class="hero-big">
-<div class="hb-n" id="hPct">0%</div>
-<div class="hb-t"><strong>do ciclo concluído</strong><span id="hSub">—</span></div>
-</div>
-<div class="hero-bar"><div class="hero-bf" id="hBar"></div></div>
+<section class="screen s-painel">
 
+<div class="hero2">
+<div class="card sumc">
+<div class="sum-top">
+<svg class="ring" width="76" height="76" viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="none" stroke="#1D2C35" stroke-width="7"/><circle id="hRing" cx="32" cy="32" r="26" fill="none" stroke="url(#rg)" stroke-width="7" stroke-linecap="round" stroke-dasharray="0 163.4" transform="rotate(-90 32 32)"/><text id="hPct" x="32" y="37" text-anchor="middle" font-family="Inter,sans-serif" font-size="12.5" font-weight="800" fill="#E8F0F4">0%</text></svg>
+<div class="sum-t"><b>do ciclo concluído</b>
+<small><span id="k1">0</span> · <span id="hSub">—</span></small>
+<small class="upd">Atualizado em <span id="hUpd">—</span></small></div>
 </div>
-<div class="hero-mid">
-<div class="hm-t">Situação do grupo <span class="hm-tot" id="k1">0</span></div>
-<button class="hm-r r-g" onclick="goFlt('done')"><span class="hm-n" id="k2">0</span><span class="hm-l">Concluíram o ciclo</span></button>
-<button class="hm-r r-b" onclick="goFlt('high')"><span class="hm-n" id="k3">0</span><span class="hm-l">Quase lá · 75 a 99%</span></button>
-<button class="hm-r r-y" onclick="goFlt('mid')"><span class="hm-n" id="k4">0</span><span class="hm-l">Na metade · 50 a 74%</span></button>
-<button class="hm-r r-w" onclick="goFlt('low')"><span class="hm-n" id="k6">0</span><span class="hm-l">Começando · até 49%</span></button>
-<button class="hm-r r-o alerta" onclick="goFlt('parado')"><span class="hm-n" id="k5">0</span><span class="hm-l">Parados há 30d+</span></button>
+<div class="stack" id="hStack"><i class="g"></i><i class="b"></i><i class="y"></i><i class="o"></i></div>
+<div class="lg">
+<button class="lgb g" onclick="goFlt('done')" title="Concluíram o ciclo"><i></i><b id="k2">0</b> concluíram</button>
+<button class="lgb b" onclick="goFlt('high')" title="Quase lá · 75 a 99%"><i></i><b id="k3">0</b> quase lá</button>
+<button class="lgb y" onclick="goFlt('mid')" title="Na metade · 50 a 74%"><i></i><b id="k4">0</b> na metade</button>
+<button class="lgb o" onclick="goFlt('low')" title="Começando · até 49%"><i></i><b id="k6">0</b> começando</button>
+</div>
+<button class="park" onclick="goFlt('parado')"><svg class="i"><use href="#i-alert"/></svg><span><b id="k5">0</b> parados há 30 dias ou mais</span></button>
 </div>
 
-<div class="hero-right">
 <div class="dec" id="decCard">
 <div class="dec-hd">
 <span class="dec-lb" id="decLb">Próxima aula</span>
@@ -860,7 +1114,7 @@ Seu cadastro foi criado, mas um administrador precisa liberar o acesso. Você se
 <div class="dec-v" id="decMod">—</div>
 <div class="dec-s" id="decSub">—</div>
 <div class="dec-acts" id="decActs">
-<button class="dec-b p" onclick="chamarModulo()">✓ Marcar chamada</button>
+<button class="dec-b p" onclick="chamarModulo()"><svg class="i"><use href="#i-checks"/></svg>Marcar chamada</button>
 <div class="dec-sec">
 <button onclick="convocar($('decCard').dataset.m)">Convocar</button>
 <span>·</span>
@@ -868,14 +1122,13 @@ Seu cadastro foi criado, mas um administrador precisa liberar o acesso. Você se
 </div>
 </div>
 </div>
+
+<div class="attn hide" id="attn"></div>
+
 <button class="ani-strip hide" id="aniCard" onclick="openAniver()">
 <span class="ani-em">🎂</span><span class="ani-tx" id="aniTx">—</span><span class="ani-go">ver</span>
 </button>
 </div>
-</div>
-</section>
-
-<div class="tbar" id="tbar"></div>
 
 <div class="panels one">
 <div class="panel panel-wide">
@@ -888,6 +1141,12 @@ Seu cadastro foi criado, mas um administrador precisa liberar o acesso. Você se
 <div id="bars" class="bars-grid"></div>
 </div>
 </div>
+
+</section>
+
+<section class="screen s-pessoas">
+
+<div class="tt-m"><b>Pessoas</b></div>
 
 <div class="msearch" id="ms">
 <svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
@@ -902,8 +1161,10 @@ Seu cadastro foi criado, mas um administrador precisa liberar o acesso. Você se
 <button class="chip" onclick="flt('high',this)">+75%</button>
 <button class="chip" onclick="flt('mid',this)">50–74%</button>
 <button class="chip" onclick="flt('low',this)">-50%</button>
+<button class="chip warn" onclick="flt('parado',this)">Parados</button>
 <button class="chip fam hide" id="chipFam" onclick="flt('familia',this)">👨‍👩‍👧 Em grupo</button>
 </div>
+<div class="tb-r">
 <select class="sel sel-pend" id="pendSel" onchange="setPend(this.value)"><option value="">Falta o módulo…</option></select>
 <select class="sel" id="srt">
 <option value="n">Ordenar: Nº</option>
@@ -911,14 +1172,16 @@ Seu cadastro foi criado, mas um administrador precisa liberar o acesso. Você se
 <option value="pd">Maior progresso</option>
 <option value="pa">Menor progresso</option>
 </select>
-<span class="cnt" id="cnt"></span>
-<div class="tb-sp"></div>
 <div class="views">
-<button class="vb on" id="vt" onclick="vw('t')">☰</button>
-<button class="vb" id="vc" onclick="vw('c')">⊞</button>
+<button class="vb on" id="vc" onclick="vw('c')" title="Lista com ficha ao lado">Lista</button>
+<button class="vb" id="vt" onclick="vw('t')" title="Todos os módulos de cada pessoa">Matriz</button>
 </div>
+</div>
+<span class="cnt" id="cnt"></span>
 </div>
 
+<div class="split" id="split">
+<div class="lcol">
 <div class="tw" id="tw">
 <table><thead><tr>
 <th>Nº</th><th class="srt" onclick="srtBy('nome')">Nome</th><th>WhatsApp</th>
@@ -931,10 +1194,29 @@ Seu cadastro foi criado, mas um administrador precisa liberar o acesso. Você se
 <th class="srt" onclick="srtBy('pct')">Progresso</th><th>Status</th>
 </tr></thead><tbody id="tb"></tbody></table>
 </div>
-
-<div class="cards" id="cd"></div>
+<div class="lst" id="lst">
+<div class="pr-h"><span>Nome</span><span>Progresso</span><span>Última aula</span><span></span></div>
+<div class="rows" id="cd"></div>
+</div>
 <div class="more" id="more"><button class="more-b" onclick="expand()" id="moreB"></button></div>
 </div>
+<aside class="fic" id="fic"></aside>
+</div>
+
+</section>
+
+</div>
+</div>
+
+<nav class="bn" id="bn">
+<button class="on" id="bnPainel" onclick="goTab('painel')"><svg class="i"><use href="#i-dash"/></svg>Painel</button>
+<button id="bnPessoas" onclick="goTab('pessoas')"><svg class="i"><use href="#i-users"/></svg>Pessoas</button>
+<button class="fab" id="bnCall" onclick="chamarModulo()"><span><svg class="i"><use href="#i-checks"/></svg></span>Chamada</button>
+<button id="bnPar" onclick="goFlt('parado')"><svg class="i"><use href="#i-alert"/></svg>Parados<em class="n hide" id="nPar2">0</em></button>
+<button id="bnMenu" onclick="uTog(event)"><svg class="i"><use href="#i-menu"/></svg>Menu</button>
+</nav>
+<div class="mbd" id="mbd" onclick="fechaMenu()"></div>
+
 </div>
 
 <!-- MODAIS -->
@@ -955,6 +1237,7 @@ Seu cadastro foi criado, mas um administrador precisa liberar o acesso. Você se
 <button class="ch-bsc-x hide" id="chQx" onclick="chLimparBusca()">✕</button></div>
 <span class="ch-cnt" id="chCnt">—</span><div class="ch-sp"></div>
 <button class="ch-mini" id="chMarcar" onclick="chAll(1)">Marcar todos</button><button class="ch-mini" onclick="chAll(0)">Limpar</button></div>
+<div class="ch-pb"><i id="chPb"></i></div>
 <div class="ch-l" id="chList"></div>
 <div class="ch-ft"><button class="btn btn-s" onclick="cl('ovch')">Cancelar</button><button class="btn btn-p" id="chSave" onclick="chSave()">Salvar chamada</button></div>
 </div>
@@ -1006,8 +1289,9 @@ const LOGO='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAoAAAAD4CAMAAABL/aeUAA
 const M=["Aliança de Sangue","Relacionando-me com o Pai","Cinco Ministérios","Autoridade Espiritual","Panorama da Obra Divina","Mente Renova","Batalha Espiritual","Perdão","Dízimo","Espírito Santo","Grupo Familiar","Batismo nas Águas"];
 const AB=["A.S","R.P","5M","A.E","P.O","M.R","B.E","Pd","Dz","E.S","G.F","B.A"];
 
-let ME=null, D=[], f='all', s='n', v='t', pend='', dir={nome:1,pct:-1}, chSel=new Set();
-const STEP=5; let lim=STEP; let TU='';   // '' = todas as turmas
+let ME=null, D=[], f='all', s='n', v='c', pend='', dir={nome:1,pct:-1}, chSel=new Set();
+let FIC_N=null;   // ficha aberta ao lado da lista (só no computador)
+const STEP=12; let lim=STEP; let TU='';   // '' = todas as turmas
 let barsAll=false;
 let decSel='';   // aula escolhida à mão ('' = sugestão automática)
 // ═══ TURMAS: mude para true quando quiser reativar o recurso ═══
@@ -1136,11 +1420,14 @@ async function boot(){
   $('miNovo').classList.toggle('hide', !can());
   $('miTur').classList.toggle('hide', !(can()&&HAS_TURMA));
   $('roNote').classList.toggle('hide', can());
+  ['niCall','bnCall'].forEach(id=>$(id).classList.toggle('hide',!can()));
+  $('fic').innerHTML=FIC_VAZIA;
 
   if(!$('chMod').options.length) M.forEach(m=>{const o=new Option(m,m);$('chMod').add(o)});
   if($('pendSel').options.length<2) M.forEach(m=>$('pendSel').add(new Option('Falta: '+m,m)));
 
   await load();
+  $('miTur').classList.toggle('hide', !(can()&&HAS_TURMA));   // só sabemos se há turmas depois de carregar
 
   // abre na turma mais recente em vez do consolidado (evita misturar estágios)
   if(HAS_TURMA && !TU){
@@ -1163,6 +1450,7 @@ async function load(){
             turma:r.turma||'—',familia:!!r.familia,obs:r.obs||'',nascimento:iso2br(r.nascimento)||'',modulos:mods,pct:Math.round(M.filter(m=>mods[m]).length/12*100)};
   });
   dash(); rd();
+  if(FIC_N!==null){ D.some(x=>x.n===FIC_N) ? op(FIC_N) : fecharFic() }
   ultimaSync = Date.now();
 }
 
@@ -1327,23 +1615,46 @@ function barraTurmas(){
 function setTurma(t){ TU=t; lim=STEP; pend=''; decSel=''; $('decPick').classList.add('hide'); barraTurmas(); dash(); rd();
   $('lista').scrollIntoView({behavior:'smooth',block:'start'}) }
 
+// ═══════════ LINHAS DA LISTA ═══════════
+const svgi=(id,c)=>`<svg class="i${c?' '+c:''}"><use href="#i-${id}"/></svg>`;
+const ini=nome=>{const w=(nome||'?').trim().split(/\s+/).filter(Boolean);return ((w[0]||'?')[0]+(w.length>1?w[w.length-1][0]:'')).toUpperCase()};
+const haDias=d=>d===0?'hoje':d===1?'ontem':`há ${d} dias`;
+const segs=(n,c)=>`<span class="seg" style="--c:${c}">${Array.from({length:12},(_,i)=>`<i${i<n?' class="on"':''}></i>`).join('')}</span>`;
+function ultDias(p){const u=ultObj(p);return u?Math.max(0,Math.floor((Date.now()-u.getTime())/DIA)):null}
+const waBtn=p=>p.celular?`<a class="pr-wa" href="${wal(p.celular)}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Abrir WhatsApp" aria-label="WhatsApp de ${esc(p.nome)}">${svgi('chat')}</a>`:'<span class="pr-wa off"></span>';
+function rowAttn(p){
+  return `<div class="pr" onclick="op(${p.n},1)"><div class="nmw"><span class="av warn">${esc(ini(p.nome))}</span><div class="pr-t"><b>${esc(p.nome)}</b><small class="w">parado há ${diasParado(p)} dias</small></div></div>${waBtn(p)}</div>`;
+}
+function rowP(p){
+  const c=col(p.pct), feitos=M.filter(m=>p.modulos[m]).length, fa=12-feitos, par=estaParado(p), ud=ultDias(p);
+  const sub = p.pct>=100 ? 'ciclo concluído' : (par?`parado há ${diasParado(p)} dias · `:'')+`faltam ${fa}`;
+  const mo = ud!==null && p.pct<100 && !par ? `<span class="mo"> · ${haDias(ud)}</span>` : '';
+  return `<div class="pr${FIC_N===p.n?' cur':''}" id="pr${p.n}" onclick="op(${p.n})"><div class="nmw"><span class="av${par?' warn':''}">${esc(ini(p.nome))}</span><div class="pr-t"><b>${esc(p.nome)}${p.familia?'<span class="fam-ic" title="Em grupo familiar">👨‍👩‍👧</span>':''}${p.obs?`<span class="obs-ic" title="${esc(p.obs).slice(0,120)}">📝</span>`:''}</b><small class="${par?'w':''}">${sub}${mo}</small></div></div><div class="pr-p">${segs(feitos,c)}<span class="pr-pc" style="color:${c}">${p.pct}%</span></div><span class="pr-ua${par?' w':''}">${ud!==null?haDias(ud):'—'}</span>${waBtn(p)}</div>`;
+}
+
 function dash(){
   barraTurmas();
   const V=DT(); const t=V.length; if(!t){$('cnt').textContent='';return}
+  const nDone=V.filter(p=>p.pct>=100).length, nHigh=V.filter(p=>p.pct>=75&&p.pct<100).length,
+        nMid=V.filter(p=>p.pct>=50&&p.pct<75).length, nLow=V.filter(p=>p.pct<50).length, par=V.filter(estaParado);
   $('k1').textContent=t+(t===1?' pessoa':' pessoas');
-  $('k2').textContent=V.filter(p=>p.pct>=100).length;
-  $('k3').textContent=V.filter(p=>p.pct>=75&&p.pct<100).length;
-  $('k4').textContent=V.filter(p=>p.pct>=50&&p.pct<75).length;
-  $('k6').textContent=V.filter(p=>p.pct<50).length;
-  $('k5').textContent=V.filter(estaParado).length;
+  $('k2').textContent=nDone; $('k3').textContent=nHigh; $('k4').textContent=nMid; $('k6').textContent=nLow;
+  $('k5').textContent=par.length;
   // números em zero recuam visualmente
-  [['k2',1],['k3',1],['k4',1],['k6',1],['k5',1]].forEach(([id])=>{
-    const el=$(id), row=el&&el.closest('.hm-r');
-    if(row) row.classList.toggle('zero', (el.textContent||'').trim()==='0');
-  });
+  [['k2',nDone],['k3',nHigh],['k4',nMid],['k6',nLow]].forEach(([id,n])=>{ const b=$(id).closest('.lgb'); if(b) b.classList.toggle('zero',!n) });
+  $('k5').closest('.park').classList.toggle('zero',!par.length);
+  ['nPar','nPar2'].forEach(id=>{ const e=$(id); e.textContent=par.length; e.classList.toggle('hide',!par.length) });
   const cel=t*12, fe=V.reduce((a,p)=>a+M.filter(m=>p.modulos[m]).length,0), gp=Math.round(fe/cel*100);
   $('hPct').textContent=gp+'%';
-  $('hBar').style.width=gp+'%';
+  $('hRing').setAttribute('stroke-dasharray',(gp/100*163.36).toFixed(1)+' 163.4');
+  [nDone,nHigh,nMid,nLow].forEach((n,i)=>{ $('hStack').children[i].style.flex=n });
+  const at=$('attn');
+  at.classList.toggle('hide',!par.length);
+  at.innerHTML = par.length
+    ? `<div class="sh"><b>Precisam de atenção</b><span>${par.length}</span></div>`
+      + [...par].sort((a,b)=>diasParado(b)-diasParado(a)).slice(0,3).map(rowAttn).join('')
+      + (par.length>3?`<button class="more-l" onclick="goFlt('parado')">Ver todos (${par.length})</button>`:'')
+    : '';
   const mediaMod = t ? (V.reduce((s,p)=>s+M.filter(m=>p.modulos[m]).length,0)/t) : 0;
   const mm = Math.round(mediaMod*10)/10;
   $('hSub').innerHTML = mediaMod>=11.95
@@ -1447,7 +1758,7 @@ function escolherAula(m){
 }
 function setPend(m){pend=m||'';$('pendSel').value=pend;$('pendSel').classList.toggle('act',!!pend);
   document.querySelectorAll('.mrow[data-mod]').forEach(r=>r.classList.toggle('act',r.dataset.mod===pend));
-  lim=STEP; rd(); if(pend)$('lista').scrollIntoView({behavior:'smooth',block:'start'})}
+  lim=STEP; rd(); if(pend)goTab('pessoas')}
 
 // tira acento para comparar (ninguém digita acento numa busca rápida)
 const semAcento = s => (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
@@ -1472,16 +1783,15 @@ function rd(){
   $('tb').innerHTML=d.length?d.map(p=>{const c=col(p.pct);
     return `<tr onclick="op(${p.n})"><td class="t-n">${p.n}</td><td><div class="t-nm">${esc(p.nome)}${p.familia?'<span class="fam-ic" title="Em grupo familiar">👨‍👩‍👧</span>':''}${p.obs?`<span class="obs-ic" title="${esc(p.obs).slice(0,120)}">📝</span>`:''}</div><div class="t-sub">Retiro: ${p.retiro||'—'}</div></td><td>${p.celular?`<a class="wa" href="${wal(p.celular)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">💬 ${esc(p.celular)}</a>`:'<span style="color:var(--txt3)">—</span>'}</td>${M.map(m=>`<td style="text-align:center"><span class="${p.modulos[m]?'tick':'tick tick-n'}">${p.modulos[m]?'✓':'·'}</span></td>`).join('')}<td><div class="pg"><div class="pg-t"><div class="pg-f" style="width:${p.pct}%;background:${c}"></div></div><span class="pg-l" style="color:${c}">${p.pct}%</span></div></td><td>${bdg(p.pct)}</td></tr>`}).join('')
     :`<tr><td colspan="17"><div class="emp"><div class="emp-i">🔍</div><div class="emp-t">Nenhum resultado</div><div class="emp-s">Tente outro nome ou filtro</div></div></td></tr>`;
-  $('cd').innerHTML=d.length?d.map((p,i)=>{const c=col(p.pct),fa=12-M.filter(m=>p.modulos[m]).length;
-    return `<div class="pc pc-${cls(p.pct)==='done'?'g':cls(p.pct)==='high'?'b':cls(p.pct)==='mid'?'y':'o'}" onclick="op(${p.n})" style="animation-delay:${Math.min(i*.028,.5)}s"><div class="pc-h"><div class="pc-nm">${esc(p.nome)}${p.familia?'<span class="fam-ic" title="Em grupo familiar">👨‍👩‍👧</span>':''}${p.obs?`<span class="obs-ic" title="${esc(p.obs).slice(0,120)}">📝</span>`:''}</div>${bdg(p.pct)}</div><div class="pc-mt">nº${p.n} · ${esc(p.celular)||'Sem telefone'}</div><div class="miss">${fa?`faltam <b>${fa}</b> módulos`:'ciclo completo'}</div><div class="pc-dots">${M.map((m,j)=>`<span class="dt ${p.modulos[m]?'dt-y':'dt-n'}" title="${m}${p.modulos[m]?' — '+p.modulos[m]:''}">${AB[j]}</span>`).join('')}</div><div class="pc-pg"><div class="pc-t"><div class="pc-f" style="width:${p.pct}%;background:${c}"></div></div><span class="pc-p" style="color:${c}">${p.pct}%</span></div></div>`}).join('')
-    :`<div style="grid-column:1/-1"><div class="emp"><div class="emp-i">🔍</div><div class="emp-t">Nenhum resultado</div></div></div>`;
+  $('cd').innerHTML=d.length?d.map(rowP).join('')
+    :`<div class="emp"><div class="emp-i">🔍</div><div class="emp-t">Nenhum resultado</div><div class="emp-s">Tente outro nome ou filtro</div></div>`;
 }
 
 function expand(){const t=flist().length;lim = lim>=t ? STEP : t;rd();
   if(lim===STEP)$('lista').scrollIntoView({behavior:'smooth',block:'start'})}
 function clrQ(){$('q').value='';$('qm').value='';$('ms').classList.remove('has');lim=STEP;rd()}
 function goFlt(x){
-  const idx={all:0,done:1,high:2,mid:3,low:4}[x];
+  const idx={all:0,done:1,high:2,mid:3,low:4,parado:5}[x];
   setPend('');
   f=x;
   if(idx===undefined) document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
@@ -1489,12 +1799,14 @@ function goFlt(x){
   $('q').value='';$('qm').value='';$('ms').classList.remove('has');
   lim=Math.max(flist().length,STEP);
   rd();
-  $('lista').scrollIntoView({behavior:'smooth',block:'start'});
+  goTab('pessoas');
 }
 function flt(x,b){f=x;lim=STEP;document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));if(b)b.classList.add('on');rd()}
 function srtBy(c){s=c;dir[c]*=-1;lim=STEP;rd()}
 function vw(x){v=x;$('vt').classList.toggle('on',x==='t');$('vc').classList.toggle('on',x==='c');
-  $('tw').style.display=x==='t'?'block':'none';const cd=$('cd');cd.style.display=x==='c'?'grid':'none';if(x==='c')cd.classList.add('on')}
+  $('split').classList.toggle('mx',x==='t');
+  if(x==='t') fecharFic();
+  rd()}
 
 // ═══════════ LOG ═══════════
 async function log(pn,nome,acao,det){
@@ -1519,11 +1831,20 @@ async function gravarModulos(id, alteracoes){
   return {modulos:atual, mudou};
 }
 
-// ═══════════ MODAL PARTICIPANTE ═══════════
-function op(n){
+// ═══════════ FICHA DO PARTICIPANTE ═══════════
+// No computador abre ao lado da lista; no celular/tablet sobe de baixo (janela).
+const FIC_VAZIA='<div class="fic-empty"><b>Nenhuma pessoa selecionada</b>Clique em alguém da lista para ver a ficha aqui.</div>';
+const isDesk=()=>window.matchMedia('(min-width:1100px)').matches;
+const isSplit=()=>isDesk() && v==='c';
+function marcaSel(){
+  document.querySelectorAll('.pr.cur').forEach(r=>r.classList.remove('cur'));
+  const r=FIC_N!==null?$('pr'+FIC_N):null; if(r) r.classList.add('cur');
+}
+function fecharFic(){ FIC_N=null; $('fic').innerHTML=FIC_VAZIA; marcaSel() }
+function op(n,rolar){
   const p=D.find(x=>x.n===n); if(!p)return;
-  const dn=M.filter(m=>p.modulos[m]).length;
-  $('md').innerHTML=`<div class="md-h"><button class="md-x" onclick="cl('ov')">✕</button><div class="md-in">
+  const dn=M.filter(m=>p.modulos[m]).length, split=isSplit();
+  const html=`<div class="md-h">${split?'':'<button class="md-x" onclick="cl(\'ov\')">✕</button>'}<div class="md-in">
     <div class="md-nm">${esc(p.nome)}</div><div class="md-mt">nº${p.n}${HAS_TURMA?' · '+esc(p.turma):''} · Retiro: ${p.retiro||'—'}${(()=>{const i=idade(p);return i!==null?` · <span class="md-idade">${i} anos</span>`:''})()}</div>
     <div class="md-r"><div><div class="md-p" style="color:${col(p.pct)}">${p.pct}%</div><div class="md-ps">${dn} de 12 módulos concluídos</div></div>${bdg(p.pct)}</div>
     <div class="md-bar"><div class="md-bf" style="width:${p.pct}%"></div></div></div></div>
@@ -1535,7 +1856,7 @@ function op(n){
       <span class="sw"></span></button>`:''}
     <div class="p-title" style="margin-bottom:13px">Módulos</div>
     <div class="ml">${M.map((m,i)=>{const d=p.modulos[m];
-      return `<div class="mi ${d?'mi-y':'mi-n'}" id="r${i}"><span class="mi-ic">${d?'✅':'⬜'}</span><div class="mi-t"><div class="mi-nm">${m}</div><div class="mi-dt" id="dt${i}">${d||'Pendente'}</div></div>${can()?`<button class="mi-b" id="bt${i}" onclick="te(${n},${i})">${d?'Editar':'+ Data'}</button>`:''}</div>`}).join('')}</div>
+      return `<div class="mi ${d?'mi-y':'mi-n'}" id="r${i}"><span class="mi-no">${String(i+1).padStart(2,'0')}</span><div class="mi-nm">${m}</div><div class="mi-r"><span class="mi-dt" id="dt${i}">${d||'Pendente'}</span>${can()?`<button class="mi-b" id="bt${i}" onclick="te(${n},${i})">${d?'Editar':'+ Data'}</button>`:''}</div></div>`}).join('')}</div>
     <div class="md-acts">
     <button class="btn btn-p" onclick="genPdf(${n})">Gerar PDF</button>
     <button class="btn btn-s" onclick="cl('ov');openHist(${n})">Histórico</button>
@@ -1543,17 +1864,22 @@ function op(n){
     ${can()&&ME.role==='admin'?`<button class="btn btn-d" onclick="delP(${n})">Excluir</button>`:''}
     </div>
     </div>`;
-  $('ov').classList.add('on');
+  if(split){
+    FIC_N=n; $('md').innerHTML=''; $('fic').innerHTML=html; marcaSel();
+    if(rolar) $('fic').scrollIntoView({behavior:'smooth',block:'nearest'});
+  } else {
+    FIC_N=null; $('fic').innerHTML=FIC_VAZIA; $('md').innerHTML=html; $('ov').classList.add('on');
+  }
 }
 
 function te(n,i){
   const m=M[i], r=$('r'+i), b=$('bt'+i), ex=r.querySelector('.mi-i');
-  if(ex){ex.remove();b.textContent=D.find(x=>x.n===n).modulos[m]?'Editar':'+ Data';b.onclick=()=>te(n,i);return}
+  if(ex){ex.remove();r.classList.remove('editing');b.textContent=D.find(x=>x.n===n).modulos[m]?'Editar':'+ Data';b.onclick=()=>te(n,i);return}
   const inp=document.createElement('input');
   inp.type='text';inp.placeholder='DD/MM/AAAA';inp.className='mi-i';
   const cur=D.find(x=>x.n===n).modulos[m]; if(cur)inp.value=cur;
-  inp.onkeydown=e=>{if(e.key==='Enter')sv(n,m,inp.value.trim(),i);if(e.key==='Escape'){inp.remove();b.textContent=cur?'Editar':'+ Data';b.onclick=()=>te(n,i)}};
-  b.after(inp); b.textContent='Salvar'; b.onclick=()=>sv(n,m,inp.value.trim(),i);
+  inp.onkeydown=e=>{if(e.key==='Enter')sv(n,m,inp.value.trim(),i);if(e.key==='Escape'){inp.remove();r.classList.remove('editing');b.textContent=cur?'Editar':'+ Data';b.onclick=()=>te(n,i)}};
+  b.before(inp); r.classList.add('editing'); b.textContent='Salvar'; b.onclick=()=>sv(n,m,inp.value.trim(),i);
   inp.focus(); inp.select();
 }
 
@@ -1570,7 +1896,6 @@ async function sv(n,m,val,i){
   const r=$('r'+i),b=$('bt'+i),inp=r.querySelector('.mi-i');
   if(inp)inp.remove();
   r.className='mi '+(val?'mi-y':'mi-n');
-  r.querySelector('.mi-ic').textContent=val?'✅':'⬜';
   $('dt'+i).textContent=val||'Pendente';
   b.textContent=val?'Editar':'+ Data'; b.onclick=()=>te(n,i);
   const dn=M.filter(k=>p.modulos[k]).length;
@@ -1980,7 +2305,9 @@ function chCnt(){
   const t=chElegiveis().length, q=($('chQ')?$('chQ').value.trim():''), v=chVisiveis().length;
   $('chCnt').innerHTML=`<b>${chSel.size}</b> de ${t} marcados`
     + (q?` <span class="filt">· mostrando ${v}</span>`:'');
-  $('chSave').style.opacity=chSel.size?'1':'.45';
+  const pb=$('chPb'); if(pb) pb.style.width=(t?Math.round(chSel.size/t*100):0)+'%';
+  const sb=$('chSave'); sb.style.opacity=chSel.size?'1':'.45';
+  if(!sb.disabled) sb.textContent = chSel.size?`Salvar chamada · ${chSel.size}`:'Salvar chamada';
 }
 
 async function chSave(){
@@ -2033,7 +2360,7 @@ async function checkPend(){
 }
 async function openUsers(){
   if(ME.role!=='admin')return;
-  $('udrop').classList.remove('on');
+  fechaMenu();
   $('mdu').innerHTML=`<div class="md-h"><button class="md-x" onclick="cl('ovu')">✕</button><div class="md-in"><div class="ch-t">Usuários</div><div class="ch-s">Aprove acessos e defina permissões</div></div></div><div class="md-b"><div class="emp"><div class="spin" style="border-color:var(--bdr);border-top-color:var(--green)"></div></div></div>`;
   $('ovu').classList.add('on');
   const {data,error}=await sb.from('profiles').select('*').order('created_at');
@@ -2173,7 +2500,7 @@ function pdfRanking(){
 // ═══════════ GERIR TURMAS ═══════════
 function openTurmas(){
   if(!can()||!HAS_TURMA)return;
-  $('udrop').classList.remove('on');
+  fechaMenu();
   const ts=turmas();
   $('mdu').innerHTML=mdShell('Turmas','Renomeie ou mova participantes entre turmas',
     `<div id="tgL">${ts.map(([t,n])=>tgLinha(t,n)).join('')}</div>
@@ -2251,7 +2578,7 @@ let impLin=[];
 
 function openImp(){
   if(!can())return;
-  $('udrop').classList.remove('on');
+  fechaMenu();
   impLin=[];
   const ts=turmas();
   $('mdi').innerHTML=`<div class="md-h"><button class="md-x" onclick="cl('ovi')">✕</button><div class="md-in">
@@ -2440,7 +2767,7 @@ function previa(a,b){
 
 function openMerge(){
   if(ME.role!=='admin')return;
-  $('udrop').classList.remove('on');
+  fechaMenu();
   const sug=sugestoes();
   const opts=[...D].sort((x,y)=>x.nome.localeCompare(y.nome,'pt'))
     .map(p=>`<option value="${p.n}">nº${p.n} · ${esc(p.nome)} (${p.pct}%)</option>`).join('');
@@ -2560,7 +2887,7 @@ async function doMerge(){
 // ═══════════ HISTÓRICO ═══════════
 let HIST=[];
 async function openHist(n){
-  $('udrop').classList.remove('on');
+  fechaMenu();
   const alvo = n ? D.find(p=>p.n===n) : null;
   $('mdu').innerHTML=`<div class="md-h"><button class="md-x" onclick="cl('ovu')">✕</button><div class="md-in">
     <div class="ch-t">Histórico</div><div class="ch-s">${alvo?esc(alvo.nome):'Todas as alterações no sistema'}</div></div></div>
@@ -2663,7 +2990,7 @@ function avisoBackup(){
 
 // Baixa TUDO (todas as turmas), independente do filtro — é uma cópia de segurança
 function baixarBackup(){
-  $('udrop').classList.remove('on');
+  fechaMenu();
   const stamp=new Date().toISOString().slice(0,10);
   const head=['Nº','Nome','Turma','Grupo familiar','Celular','Nascimento','Idade','Retiro',...M,'% Ciclo','Observações'];
   const lines=[head.map(qCsv).join(';'),...[...D].sort((a,b)=>a.n-b.n).map(p=>
@@ -2691,7 +3018,7 @@ function baixar(blob, nome){
 // senão o Excel interpreta como fórmula ao abrir ("CSV/formula injection")
 const qCsv = s => { s=String(s??''); if(/^[=+\-@]/.test(s)) s="'"+s; return '"'+s.replace(/"/g,'""')+'"' };
 function exportCsv(){
-  $('udrop').classList.remove('on');
+  fechaMenu();
   const head=['Nº','Nome','Turma','Grupo familiar','Celular','Nascimento','Idade','Retiro',...M,'% Ciclo','Observações'];
   const base=DT();
   const lines=[head.map(qCsv).join(';'),...[...base].sort((a,b)=>a.n-b.n).map(p=>
@@ -2717,7 +3044,7 @@ async function sincronizar(motivo){
   const aberto = ['ov','ovch','ovu','ovn','ovi','ovc'].some(i=>{
     const e=$(i); return e && e.classList.contains('on');
   });
-  if(aberto) return;
+  if(aberto || document.querySelector('#fic .mi-i')) return;
 
   sincronizando = true;
   const antes = D.length;
@@ -2749,8 +3076,20 @@ window.addEventListener('focus', ()=>{
 });
 
 // ═══════════ EVENTOS ═══════════
-function uTog(e){e.stopPropagation();$('udrop').classList.toggle('on')}
-document.addEventListener('click',()=>$('udrop').classList.remove('on'));
+function uTog(e){e.stopPropagation();const d=$('udrop'),on=!d.classList.contains('on');d.classList.toggle('on',on);document.body.classList.toggle('menu-open',on)}
+function fechaMenu(){$('udrop').classList.remove('on');document.body.classList.remove('menu-open')}
+
+// alterna entre Painel e Pessoas (celular/tablet); no computador rola até o trecho
+function goTab(t){
+  $('app').dataset.tab=t;
+  ['Painel','Pessoas'].forEach(k=>{ const on=k.toLowerCase()===t; ['ni','bn'].forEach(p=>{ const e=$(p+k); if(e) e.classList.toggle('on',on) }) });
+  fechaMenu();
+  if(isDesk()){ if(t==='pessoas') $('lista').scrollIntoView({behavior:'smooth',block:'start'}); else window.scrollTo({top:0,behavior:'smooth'}) }
+  else window.scrollTo({top:0});
+}
+// ao cruzar a largura de 1100px a ficha muda de lugar (ao lado <-> janela)
+window.matchMedia('(min-width:1100px)').addEventListener('change',()=>{ FIC_N=null; $('md').innerHTML=''; $('fic').innerHTML=FIC_VAZIA; cl('ov'); rd() });
+document.addEventListener('click',fechaMenu);
 function onSearch(src){
   const val=src.value;
   (src.id==='q'?$('qm'):$('q')).value=val;
@@ -2764,7 +3103,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')['ov','ovch','ovu','
 ['inPass','inEmail'].forEach(i=>$(i).addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()}));
 ['upNome','upEmail','upPass'].forEach(i=>$(i).addEventListener('keydown',e=>{if(e.key==='Enter')doSignup()}));
 
-['logoHdr','logoAuth','logoErr'].forEach(i=>{const e=$(i);if(e)e.src=LOGO});
+['logoHdr','logoM','logoAuth','logoErr'].forEach(i=>{const e=$(i);if(e)e.src=LOGO});
 if($('hdrAno'))$('hdrAno').textContent='Carazinho · '+new Date().getFullYear();
 
 // só inicia depois que a biblioteca do Supabase estiver disponível
