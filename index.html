@@ -1880,7 +1880,7 @@ function formP(p){
     <div class="fg"><label class="fl">Nome completo *</label><input class="fi" id="fNome" value="${p?esc(p.nome):''}" placeholder="Nome do participante"></div>
     <div class="fg"><label class="fl">Celular / WhatsApp</label><input class="fi" id="fCel" value="${p?esc(p.celular):''}" placeholder="+55 54 99999-9999"></div>
     <div class="fg-2">
-      <div class="fg"><label class="fl">Data do retiro</label><input class="fi" id="fRet" value="${p?p.retiro:(HAS_TURMA?retiroDaTurma(turmaPadrao()):'')}" placeholder="DD/MM/AAAA" oninput="this.dataset.m=1"></div>
+      <div class="fg"><label class="fl">Data do retiro</label><input class="fi" id="fRet" value="${p?p.retiro:(HAS_TURMA?retiroDaTurma(turmaPadrao()):'')}" data-auto="${p?'':(HAS_TURMA?retiroDaTurma(turmaPadrao()):'')}" placeholder="DD/MM/AAAA"></div>
       ${HAS_NASC?`<div class="fg"><label class="fl">Nascimento</label><input class="fi" id="fNasc" value="${p?p.nascimento:''}" placeholder="DD/MM/AAAA" oninput="fIdade()"><div class="fl-hint" id="fIdadeTxt"></div></div>`:''}
     </div>
     ${HAS_TURMA?`<div class="fg"><label class="fl">Turma</label>${turmaSelect(p)}</div>`:''}
@@ -1892,8 +1892,10 @@ function formP(p){
 }
 // trocou a turma no cadastro/importação: sugere o retiro dela, a menos que a data já tenha sido digitada à mão
 function turmaMudou(idTur,idRet){
-  const r=$(idRet); if(!r||r.dataset.m) return;
-  const v=retiroDaTurma($(idTur).value.trim()); if(v) r.value=v;
+  const r=$(idRet); if(!r) return;
+  if(r.value && r.value!==r.dataset.auto) return;   // a data foi digitada à mão: não mexe
+  const v=retiroDaTurma($(idTur).value.trim());
+  if(v){ r.value=v; r.dataset.auto=v }
 }
 // "jun/2026" digitado à mão vira "Jun/2026" se essa turma já existe (evita turma duplicada por maiúscula/minúscula)
 function turmaCanon(t){
@@ -2493,7 +2495,7 @@ function openImp(){
         <input class="ch-in" id="impTur" list="lsTur2" placeholder="Ex.: Nov/2026" value="${TU||''}" onchange="turmaMudou('impTur','impRet')">
         <datalist id="lsTur2">${ts.map(([t])=>`<option value="${esc(t)}">`).join('')}</datalist></div>`:''}
       <div><label class="ch-lb">Data do retiro</label>
-        <input class="ch-in" id="impRet" placeholder="DD/MM/AAAA" value="${retiroDaTurma(TU)}" oninput="this.dataset.m=1"></div>
+        <input class="ch-in" id="impRet" placeholder="DD/MM/AAAA" value="${retiroDaTurma(TU)}" data-auto="${retiroDaTurma(TU)}"></div>
     </div>
     <div class="imp-hint">Um por linha. O telefone é opcional — separe por vírgula, tabulação ou traço.<br>
       <code>Maria Silva, 54 99999-1234</code> &nbsp; <code>João Souza</code></div>
