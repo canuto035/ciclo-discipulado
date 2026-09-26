@@ -364,6 +364,12 @@ td{padding:10px 13px;vertical-align:middle}
 .fg-2{display:grid;grid-template-columns:1fr 1fr;gap:13px}
 @media(max-width:430px){.fg-2{grid-template-columns:1fr;gap:0}}
 .fi-ta{min-height:76px;resize:vertical;line-height:1.55;font-family:inherit;padding-top:11px}
+.ret-chk{display:flex;align-items:flex-start;gap:11px;padding:11px 13px;margin:0 0 16px;border:1px solid var(--bdr);border-radius:11px;background:rgba(255,255,255,.03);cursor:pointer;transition:.15s}
+.ret-chk:hover{border-color:rgba(46,229,140,.35)}
+.ret-chk input{width:18px;height:18px;margin-top:2px;accent-color:var(--green);flex:none;cursor:pointer}
+.ret-chk span{display:block;min-width:0}
+.ret-chk b{display:block;font-size:.83rem;font-weight:600;color:var(--txt)}
+.ret-chk small{display:block;font-size:.72rem;color:var(--txt3);margin-top:2px}
 .fl-hint{font-size:.68rem;color:var(--txt3);margin-top:5px;min-height:13px}
 .fl-hint.ok{color:var(--blue)}
 .fl-hint.ruim{color:var(--red)}
@@ -1444,6 +1450,14 @@ const esc = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>
 
 // participantes da turma selecionada
 function DT(){ return TU ? D.filter(p=>p.turma===TU) : D }
+// os módulos 6 a 12 costumam ser dados no próprio retiro: opção (desligada por padrão) de já marcá-los com a data do retiro
+const M_RETIRO = M.slice(5);
+function modsRetiro(retBr){
+  const iso=br2iso(retBr), o={};
+  if(iso) M_RETIRO.forEach(m=>{ o[m]=iso });
+  return o;
+}
+const chkRetiro = id => `<label class="ret-chk"><input type="checkbox" id="${id}"><span><b>Já fez os módulos 6 a 12 no retiro</b><small>marca esses 7 módulos com a data do retiro</small></span></label>`;
 // data de retiro que a turma já tem (a mais comum) — evita digitar de novo e evita usar "hoje" por engano
 function retiroDaTurma(t){
   const c={}; D.forEach(p=>{ if(p.turma===t && p.retiro) c[p.retiro]=(c[p.retiro]||0)+1 });
@@ -1883,6 +1897,7 @@ function formP(p){
       <div class="fg"><label class="fl">Data do retiro</label><input class="fi" id="fRet" value="${p?p.retiro:(HAS_TURMA?retiroDaTurma(turmaPadrao()):'')}" data-auto="${p?'':(HAS_TURMA?retiroDaTurma(turmaPadrao()):'')}" placeholder="DD/MM/AAAA"></div>
       ${HAS_NASC?`<div class="fg"><label class="fl">Nascimento</label><input class="fi" id="fNasc" value="${p?p.nascimento:''}" placeholder="DD/MM/AAAA" oninput="fIdade()"><div class="fl-hint" id="fIdadeTxt"></div></div>`:''}
     </div>
+    ${p?'':chkRetiro('fMod612')}
     ${HAS_TURMA?`<div class="fg"><label class="fl">Turma</label>${turmaSelect(p)}</div>`:''}
     ${HAS_OBS?`<div class="fg"><label class="fl">Observações</label>
       <textarea class="fi fi-ta" id="fObs" rows="3" placeholder="Anotações sobre a pessoa — mudou de cidade, está afastada, quem trouxe…">${p?esc(p.obs):''}</textarea></div>`:''}
@@ -1955,6 +1970,8 @@ async function saveNew(){
   if(!nome){tst('Informe o nome',1);return}
   if(turmaNovaVazia())return;
   if(ret && !br2iso(ret)){tst('Data do retiro inválida — use DD/MM/AAAA',1);return}
+  const doRetiro = !!($('fMod612') && $('fMod612').checked);
+  if(doRetiro && !ret){tst('Informe a data do retiro para marcar os módulos 6 a 12',1);return}
 
   // avisa se já existe alguém com nome igual ou muito parecido
   const chave=nrm(nome).join(' ');
@@ -1971,10 +1988,10 @@ async function saveNew(){
   }
 
   busy('fSave',1);
-  const res=await inserirParticipante(comTurma({nome,celular:cel,retiro:br2iso(ret),modulos:{},...extra},tur));
+  const res=await inserirParticipante(comTurma({nome,celular:cel,retiro:br2iso(ret),modulos:doRetiro?modsRetiro(ret):{},...extra},tur));
   busy('fSave',0,'Salvar');
   if(res.error){tst('Erro: '+res.error.message,1);return}
-  log(res.numero,nome,'Participante cadastrado','');
+  log(res.numero,nome,'Participante cadastrado',doRetiro?'com módulos 6 a 12 do retiro ('+ret+')':'');
   cl('ovn'); await load(); tst('✓ '+nome+' cadastrado como nº'+res.numero);
 }
 async function saveEdit(n){
@@ -2497,6 +2514,7 @@ function openImp(){
       <div><label class="ch-lb">Data do retiro</label>
         <input class="ch-in" id="impRet" placeholder="DD/MM/AAAA" value="${retiroDaTurma(TU)}" data-auto="${retiroDaTurma(TU)}"></div>
     </div>
+    ${chkRetiro('impMod612')}
     <div class="imp-hint">Um por linha. O telefone é opcional — separe por vírgula, tabulação ou traço.<br>
       <code>Maria Silva, 54 99999-1234</code> &nbsp; <code>João Souza</code></div>
     <textarea class="imp-ta" id="impTa" placeholder="Maria Silva, 54 99999-1234&#10;João Souza&#10;Ana Paula - 54 98888-4321"></textarea>
@@ -2574,21 +2592,23 @@ async function impSalvar(){
   if(!sel.length){tst('Marque ao menos um nome',1);return}
   const tur=turmaCanon($('impTur')?$('impTur').value:''), ret=$('impRet').value.trim();
   if(ret && !br2iso(ret)){tst('Data do retiro inválida',1);return}
-  if(!confirm(`Cadastrar ${sel.length} ${sel.length===1?'participante':'participantes'}${HAS_TURMA?` na turma "${tur}"`:''}?`))return;
+  const doRetiro = !!($('impMod612') && $('impMod612').checked);
+  if(doRetiro && !ret){tst('Informe a data do retiro para marcar os módulos 6 a 12',1);return}
+  if(!confirm(`Cadastrar ${sel.length} ${sel.length===1?'participante':'participantes'}${HAS_TURMA?` na turma "${tur}"`:''}?${doRetiro?`\n\nOs módulos 6 a 12 serão marcados com a data do retiro (${ret}).`:''}`))return;
 
   busy('impGo',1);
   let base, novos, error;
   // alguém pode cadastrar no meio: recalcula o número e tenta de novo (até 5x, igual ao cadastro individual)
   for(let tentativa=0; tentativa<5; tentativa++){
     base=await proximoNumero();
-    novos=sel.map((x,i)=>comTurma({numero:base+i,nome:x.nome,celular:x.tel,retiro:br2iso(ret),modulos:{}},tur));
+    novos=sel.map((x,i)=>comTurma({numero:base+i,nome:x.nome,celular:x.tel,retiro:br2iso(ret),modulos:doRetiro?modsRetiro(ret):{}},tur));
     ({error}=await sb.from('participantes').insert(novos));
     if(!error || !/duplicate key|unique constraint/i.test(error.message||'')) break;
   }
   busy('impGo',0,'Cadastrar marcados');
   if(error){tst('Erro: '+error.message,1);return}
 
-  await log(null,null,'Importação em lote',`${novos.length} participante(s) · turma ${tur}`);
+  await log(null,null,'Importação em lote',`${novos.length} participante(s) · turma ${tur}${doRetiro?' · módulos 6 a 12 do retiro '+ret:''}`);
   cl('ovi'); if(HAS_TURMA)TU=tur; await load();
   tst(`✓ ${novos.length} cadastrados${HAS_TURMA?' na turma '+tur:''}`);
 }

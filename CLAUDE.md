@@ -96,6 +96,8 @@ mas nunca com um modal aberto.
   Matriz: colunas numeradas 1–12 (nome do módulo no tooltip), sem coluna Status e sem "Retiro" repetido.
 - **Retiro sugerido:** `retiroDaTurma(t)` devolve a data de retiro mais comum da turma; preenche "Novo participante"
   e "Importar lista" (nunca "hoje"). Data digitada à mão não é sobrescrita ao trocar de turma.
+- **Módulos 6–12 do retiro:** "Novo participante" e "Importar lista" têm a caixa "Já fez os módulos 6 a 12 no retiro"
+  (desligada por padrão; exige data do retiro). Marca os 7 módulos com essa data via `modsRetiro()`. Não existe na edição.
 - Botão "+ Novo" ao lado dos filtros de Pessoas (só quem pode editar). Menu agrupado em Cadastro / Dados e acesso.
 - Ficha: um só indicador de % (número grande). Faixa de ações **no topo** (`.fa`): WhatsApp (mostra o número) · Editar · "⋯"
   (PDF, Histórico, Excluir — menu flutuante, fecha ao clicar fora). Depois observações, a etiqueta "Frequenta grupo familiar"
