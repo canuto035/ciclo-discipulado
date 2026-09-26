@@ -9,7 +9,7 @@ em linguagem simples, e sempre diga o que ele precisa fazer do lado dele.
 
 ## Stack
 
-- **Um único arquivo:** `index.html` (~2.750 linhas: HTML + CSS + JS, sem build)
+- **Um único arquivo:** `index.html` (~3.100 linhas: HTML + CSS + JS, sem build)
 - **Backend:** Supabase (Postgres + Auth), projeto "Integração", região sa-east-1
   URL: `https://kectvdncelzrfquhrqrh.supabase.co`
 - **Hospedagem:** GitHub Pages, branch `main` → https://canuto035.github.io/ciclo-discipulado/
@@ -77,9 +77,19 @@ mas nunca com um modal aberto.
 
 ## Estrutura do painel (decisões de produto já tomadas)
 
-- Hero em 3 colunas: **como estamos** (% e média de módulos) · **situação do grupo**
-  (4 faixas que somam o total + alerta de parados) · **o que fazer** (cartão da próxima aula)
-- Um único botão de chamada, no cartão. "Novo participante" fica no menu do avatar.
+- **Layout V3** (menu lateral + lista com ficha ao lado). Dois modos, cortados em **1100px**:
+  - *Computador (≥1100px):* menu lateral fixo (Painel, Pessoas, **Marcar chamada**, Parados,
+    e o bloco "Gestão" = o antigo menu do avatar), turmas e busca no topo, painel e lista na
+    mesma página. Clicar numa pessoa abre a **ficha ao lado da lista** (`#fic`, variável `FIC_N`).
+  - *Celular/tablet (<1100px):* barra inferior (Painel · Pessoas · **Chamada** no centro · Parados · Menu).
+    Só uma tela por vez (`#app[data-tab]`, função `goTab()`). A ficha e todas as janelas (`.ov`)
+    **sobem de baixo** como folha. O "Menu" é o mesmo `#udrop`, que no computador fica fixo no menu lateral.
+- Painel: **como estamos** (anel de % + faixa dos 4 grupos + média de módulos + alerta de parados) ·
+  **próxima aula** (cartão único de chamada) · **precisam de atenção** (até 3 parados com WhatsApp).
+- Lista de pessoas: linhas com progresso em 12 traços (`rowP()`). A tabela de 12 colunas de módulos
+  continua existindo como visão **Matriz** (só computador); nela a ficha abre em janela, não ao lado.
+- Ficha: módulos em grade 2 colunas (`.mi`); editar data troca o tile para "editando" (`.editing`).
+- Um único botão de chamada por tela (no cartão), mais o atalho no menu (lateral ou barra inferior).
 - Números em zero ficam acinzentados; painel mostra exceção, não censo.
 - Foram removidos de propósito: previsão de término e contagem de ritmo
   (davam números enganosos com turmas misturadas). Não recoloque sem discutir.
@@ -89,17 +99,22 @@ laranja `#FF9F43`, dourado da logo `#C5A238`. Fontes: Syne (títulos) e Inter.
 
 ## Publicar
 
-1. Validar o JS: `node -e "new Function(require('fs').readFileSync('index.html','utf8').match(/<script>([\s\S]*?)<\/script>\s*<\/body>/)[1])"`
-2. Testar no navegador (celular 320–430px e desktop), sem estouro horizontal
+1. Validar o JS (o arquivo tem 2 blocos `<script>`; o principal é o segundo):
+   `node -e "const h=require('fs').readFileSync('index.html','utf8');const m=[...h.matchAll(/<script>([\s\S]*?)<\/script>/g)];new Function(m[1][1])"`
+2. Testar no navegador (celular 320–430px, tablet ~800px e computador ≥1100px), sem estouro horizontal
 3. `git commit` e `git push origin main`
 4. GitHub Pages publica em ~1 minuto
 
 ## Testes
 
-Não há suíte automatizada ainda. O método usado até aqui: Playwright abrindo o
-`index.html` com um stub de `window.supabase` injetado antes do script, alimentado
-com dados de exemplo (inclusive nomes com apóstrofo, HTML e telefones em vários formatos).
-Transformar isso em testes versionados é uma boa próxima tarefa.
+Não há suíte automatizada ainda. O método usado até aqui: `playwright-core` + Chrome instalado
+abrindo uma cópia do `index.html` com um stub de `window.supabase` (banco falso em memória, com
+`.select/.eq/.in/.insert/.update/.delete`) injetado antes do script, alimentado com dados de exemplo
+(nomes com apóstrofo, parados, turmas, papel admin/viewer via `?role=`). O stub troca o papel
+sem tocar no banco real. Transformar isso em testes versionados é uma boa próxima tarefa.
+
+Cuidado ao criar classes CSS novas: o arquivo já tem muitas (`.sel`, `.chip`, `.on`, `.hide`…).
+Já houve colisão de `.sel` (estilo de `<select>`) com a "linha selecionada" da lista — checar antes de nomear.
 
 ## Operação
 
