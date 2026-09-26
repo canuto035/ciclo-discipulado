@@ -91,6 +91,12 @@ mas nunca com um modal aberto.
   **Grupo familiar mostra sempre todos, de todas as turmas** (o filtro `familia` ignora a turma escolhida
   e a linha mostra a turma). Atalho com contador: item "Grupo familiar" no menu lateral / no Menu do celular. A tabela de 12 colunas de módulos
   continua existindo como visão **Matriz** (só computador); nela a ficha abre em janela, não ao lado.
+- Linha da lista: sem "faltam N" (o % e os 12 traços já dizem). O "há N dias" só aparece no subtítulo quando a
+  coluna "Última aula" está oculta (<1360px); no computador largo o subtítulo do parado é só "parado".
+  Matriz: colunas numeradas 1–12 (nome do módulo no tooltip), sem coluna Status e sem "Retiro" repetido.
+- **Retiro sugerido:** `retiroDaTurma(t)` devolve a data de retiro mais comum da turma; preenche "Novo participante"
+  e "Importar lista" (nunca "hoje"). Data digitada à mão não é sobrescrita ao trocar de turma.
+- Botão "+ Novo" ao lado dos filtros de Pessoas (só quem pode editar). Menu agrupado em Cadastro / Dados e acesso.
 - Ficha: um só indicador de % (número grande); PDF, Histórico e Excluir ficam em "⋯ Mais". Módulos em grade 2 colunas (`.mi`); editar data troca o tile para "editando" (`.editing`).
 - Um único botão de chamada por tela (no cartão), mais o atalho no menu (lateral ou barra inferior).
 - Números em zero ficam acinzentados; painel mostra exceção, não censo.

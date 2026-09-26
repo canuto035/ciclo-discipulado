@@ -145,6 +145,7 @@ td{padding:10px 13px;vertical-align:middle}
 .t-n{font-variant-numeric:tabular-nums;color:var(--txt3);font-weight:700;font-size:.7rem;font-variant-numeric:tabular-nums}
 .t-nm{font-weight:600;font-size:.85rem}
 .t-sub{font-size:.68rem;color:var(--txt3);margin-top:1px}
+.tw .wa{white-space:nowrap}
 .wa{color:var(--green);text-decoration:none;font-size:.73rem;display:inline-flex;align-items:center;gap:4px}
 .wa:hover{color:#7BFFC4}
 .tick{color:var(--green);font-size:.95rem;font-weight:700}
@@ -155,10 +156,7 @@ td{padding:10px 13px;vertical-align:middle}
 .pg-l{font-variant-numeric:tabular-nums;font-size:.74rem;font-weight:800;width:33px;font-variant-numeric:tabular-nums}
 .bdg{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.66rem;font-weight:700;white-space:nowrap}
 .bd-g{background:rgba(46,229,140,.13);color:var(--green)}
-.bd-b{background:rgba(53,167,255,.13);color:var(--blue)}
-.bd-y{background:rgba(242,193,78,.13);color:var(--yellow)}
 .bd-o{background:rgba(255,159,67,.13);color:var(--orange)}
-.bd-n{background:rgba(255,255,255,.05);color:var(--txt3)}
 
 /* ===== CARDS ===== */
 @keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
@@ -584,7 +582,11 @@ td{padding:10px 13px;vertical-align:middle}
 .md,.ch{max-height:94vh}
 .md-h{padding:20px 18px 18px}
 .md-b{padding:18px 18px 22px}
-.ch-f{flex-direction:column;gap:12px}
+.ch-f{flex-direction:row;align-items:flex-start;gap:10px;padding-top:12px;padding-bottom:12px}
+.ch-f .ch-fg:last-child{flex:0 0 124px}
+.ch .ch-s{display:none}
+.ch .md-h{padding:16px 18px 14px}
+.ch-bsc{flex:1 1 100%}
 .ch-f,.ch-bar,.ch-ft{padding-left:18px;padding-right:18px}
 .ch-l{padding-left:18px;padding-right:12px}
 .ch-i{padding:11px}
@@ -652,6 +654,12 @@ td{padding:10px 13px;vertical-align:middle}
 .udrop .uitem{padding:13px 12px;font-size:.9rem}
 .uhead{padding:4px 12px 14px}
 .uver{padding:10px 12px 2px;font-size:.66rem;color:var(--txt3);border-top:1px solid var(--bdr);margin-top:6px}
+.ug{font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--txt3);font-weight:700;padding:12px 12px 3px}
+.tt-m{display:flex;align-items:center;justify-content:space-between}
+.novo-b{padding:7px 15px;border-radius:20px;border:1px solid rgba(46,229,140,.4);background:rgba(46,229,140,.1);color:var(--green);font:600 .78rem 'Inter',sans-serif;cursor:pointer;transition:.15s}
+.novo-b:hover{background:rgba(46,229,140,.2)}
+.novo-d{display:none}
+.pd{display:none}
 @keyframes sheet{from{transform:translateY(46px);opacity:0}to{transform:none;opacity:1}}
 .mbd{display:none;position:fixed;inset:0;background:rgba(3,8,12,.72);backdrop-filter:blur(3px);z-index:650}
 body.menu-open .mbd{display:block}
@@ -730,6 +738,7 @@ body.menu-open .mbd{display:block}
 .pr-t b{display:block;font-size:.88rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pr-t small{display:block;font-size:.72rem;color:var(--txt3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pr-t small.w{color:var(--orange)}
+.pr-t small .tm+.tu::before,.pr-t small .pd+.tu::before{content:' · '}
 .pr-p{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex:none}
 .pr-pc{font-weight:800;font-size:.8rem;font-variant-numeric:tabular-nums}
 .pr-ua{display:none;font-size:.78rem;color:var(--txt2)}
@@ -815,6 +824,7 @@ body.menu-open .mbd{display:block}
 .tst.on{transform:translateX(-50%) translateY(0)}
 .tt-m,.msearch{display:none}
 .hero2{grid-template-columns:minmax(0,1.25fr) minmax(0,1.05fr) minmax(0,1fr);align-items:stretch;gap:14px}
+.hero2.sem-atencao{grid-template-columns:minmax(0,1.25fr) minmax(0,1.05fr)}
 .ani-strip{grid-column:1/-1}
 .dec{display:flex;flex-direction:column;justify-content:center}
 .tb{flex-direction:row;flex-wrap:wrap;align-items:center;gap:10px 12px}
@@ -835,7 +845,10 @@ body.menu-open .mbd{display:block}
 .pr-p{flex-direction:row;align-items:center;gap:10px;justify-content:flex-start}
 .pr-pc{width:38px;text-align:right}
 .pr-ua{display:block}
-.mo{display:none}
+.tm{display:none}
+.pr-t small .tm+.tu::before{content:none}
+.pd{display:inline}
+.novo-d{display:inline-flex}
 .fic{display:block;position:sticky;top:84px;max-height:calc(100vh - 104px);overflow-y:auto;background:var(--card);border:1px solid var(--bdr);border-radius:16px}
 .fic .md-h{border-radius:0}
 .fic .md-b{padding:16px 20px 22px}
@@ -851,7 +864,9 @@ body.menu-open .mbd{display:block}
 .split{grid-template-columns:minmax(0,1fr) 340px}
 .pr-h,.pr{grid-template-columns:minmax(0,1fr) 150px 34px}
 .pr-h span:nth-child(3),.pr-ua{display:none}
-.mo{display:inline}
+.tm{display:inline}
+.pr-t small .tm+.tu::before{content:' · '}
+.pd{display:none}
 .wrap{padding-inline:20px}
 .hero2{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
 .attn{grid-column:1/-1}
@@ -958,16 +973,18 @@ Seu cadastro foi criado, mas um administrador precisa liberar o acesso. Você se
 <div class="udrop" id="udrop">
 <div class="uhead"><b id="uNome">—</b><span class="rb" id="uRole">—</span></div>
 <button class="uitem mobonly hide" id="miFam" onclick="goFlt('familia')">Grupo familiar<span class="pend-badge gold" id="nFam2">0</span></button>
-<button class="uitem" id="miUsers" onclick="openUsers()">Usuários<span class="pend-badge hide" id="pendN">0</span></button>
-<button class="uitem" id="miTur" onclick="openTurmas()">Turmas</button>
+<div class="ug" id="ugCad">Cadastro</div>
 <button class="uitem" id="miNovo" onclick="openNew()">Novo participante</button>
 <button class="uitem" id="miImp" onclick="openImp()">Importar lista</button>
 <button class="uitem" id="miMerge" onclick="openMerge()">Mesclar cadastros</button>
+<button class="uitem" id="miTur" onclick="openTurmas()">Turmas</button>
+<div class="ug">Dados e acesso</div>
 <button class="uitem" onclick="openHist()">Histórico</button>
-<button class="uitem" onclick="exportCsv()">Baixar CSV</button>
-<button class="uitem" onclick="baixarBackup()">Backup completo</button>
+<button class="uitem" onclick="exportCsv()">Planilha da turma (CSV)</button>
+<button class="uitem" onclick="baixarBackup()">Backup de todas as turmas</button>
+<button class="uitem" id="miUsers" onclick="openUsers()">Usuários<span class="pend-badge hide" id="pendN">0</span></button>
 <button class="uitem dang" onclick="doLogout()">Sair</button>
-<div class="uver">versão 3.0 · PDF</div>
+<div class="uver">versão 3.0</div>
 </div>
 </aside>
 
@@ -1050,7 +1067,7 @@ Seu cadastro foi criado, mas um administrador precisa liberar o acesso. Você se
 
 <section class="screen s-pessoas">
 
-<div class="tt-m"><b>Pessoas</b></div>
+<div class="tt-m"><b>Pessoas</b><button class="novo-b hide" id="btnNovoM" onclick="openNew()">+ Novo</button></div>
 
 <div class="msearch" id="ms">
 <svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
@@ -1066,6 +1083,7 @@ Seu cadastro foi criado, mas um administrador precisa liberar o acesso. Você se
 <button class="chip" onclick="flt('done',this)">Concluídos</button>
 </div>
 <div class="tb-r">
+<button class="novo-b novo-d hide" id="btnNovoD" onclick="openNew()" title="Cadastrar novo participante">+ Novo</button>
 <select class="sel sel-pend" id="pendSel" onchange="setPend(this.value)"><option value="">Falta o módulo…</option></select>
 <select class="sel" id="srt">
 <option value="n">Ordenar: Nº</option>
@@ -1086,13 +1104,13 @@ Seu cadastro foi criado, mas um administrador precisa liberar o acesso. Você se
 <div class="tw" id="tw">
 <table><thead><tr>
 <th>Nº</th><th class="srt" onclick="srtBy('nome')">Nome</th><th>WhatsApp</th>
-<th title="Aliança de Sangue">A.S</th><th title="Relacionando-me com o Pai">R.P</th>
-<th title="Cinco Ministérios">5M</th><th title="Autoridade Espiritual">A.E</th>
-<th title="Panorama da Obra Divina">P.O</th><th title="Mente Renova">M.R</th>
-<th title="Batalha Espiritual">B.E</th><th title="Perdão">Pd</th>
-<th title="Dízimo">Dz</th><th title="Espírito Santo">E.S</th>
-<th title="Grupo Familiar">G.F</th><th title="Batismo nas Águas">B.A</th>
-<th class="srt" onclick="srtBy('pct')">Progresso</th><th>Status</th>
+<th title="1 · Aliança de Sangue">1</th><th title="2 · Relacionando-me com o Pai">2</th>
+<th title="3 · Cinco Ministérios">3</th><th title="4 · Autoridade Espiritual">4</th>
+<th title="5 · Panorama da Obra Divina">5</th><th title="6 · Mente Renova">6</th>
+<th title="7 · Batalha Espiritual">7</th><th title="8 · Perdão">8</th>
+<th title="9 · Dízimo">9</th><th title="10 · Espírito Santo">10</th>
+<th title="11 · Grupo Familiar">11</th><th title="12 · Batismo nas Águas">12</th>
+<th class="srt" onclick="srtBy('pct')">Progresso</th>
 </tr></thead><tbody id="tb"></tbody></table>
 </div>
 <div class="lst" id="lst">
@@ -1317,6 +1335,7 @@ async function boot(){
   $('miMerge').classList.toggle('hide', prof.role!=='admin');
   $('miImp').classList.toggle('hide', !can());
   $('miNovo').classList.toggle('hide', !can());
+  ['btnNovoM','btnNovoD','ugCad'].forEach(id=>$(id).classList.toggle('hide',!can()));
   $('miTur').classList.toggle('hide', !(can()&&HAS_TURMA));
   $('roNote').classList.toggle('hide', can());
   ['niCall','bnCall'].forEach(id=>$(id).classList.toggle('hide',!can()));
@@ -1399,8 +1418,6 @@ function filaModulos(V){
 }
 const col = p => p>=100?'#2EE58C':p>=75?'#35A7FF':p>=50?'#F2C14E':'#FF9F43';
 const cls = p => p>=100?'done':p>=75?'high':p>=50?'mid':'low';
-function bdg(p){const m={done:['bd-g','🏅 Concluído'],high:['bd-b','Avançado'],mid:['bd-y','Em andamento'],low:['bd-o','Iniciado'],zero:['bd-n','Início']};
-  const k=p>=100?'done':p>=75?'high':p>=50?'mid':p>0?'low':'zero';return `<span class="bdg ${m[k][0]}">${m[k][1]}</span>`}
 // Telefone → dígitos internacionais. O DDD 54 (Carazinho) é o código da Argentina,
 // então número sem +55 abriria o WhatsApp no país errado.
 const DDD_PADRAO = '54';
@@ -1425,6 +1442,12 @@ const esc = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>
 
 // participantes da turma selecionada
 function DT(){ return TU ? D.filter(p=>p.turma===TU) : D }
+// data de retiro que a turma já tem (a mais comum) — evita digitar de novo e evita usar "hoje" por engano
+function retiroDaTurma(t){
+  const c={}; D.forEach(p=>{ if(p.turma===t && p.retiro) c[p.retiro]=(c[p.retiro]||0)+1 });
+  const e=Object.entries(c).sort((a,b)=>b[1]-a[1]);
+  return e.length ? e[0][0] : '';
+}
 
 // Nome de turma costuma ser "Mês/Ano" (ex.: "Jun/2026"). Convertemos pra um
 // número comparável pra ordenar por data real, não por ordem alfabética
@@ -1477,11 +1500,16 @@ function rowAttn(p){
   return `<div class="pr" onclick="op(${p.n},1)"><div class="nmw"><span class="av warn">${esc(ini(p.nome))}</span><div class="pr-t"><b>${esc(p.nome)}</b><small class="w">parado há ${diasParado(p)} dias</small></div></div>${waBtn(p)}</div>`;
 }
 function rowP(p){
-  const c=col(p.pct), feitos=M.filter(m=>p.modulos[m]).length, fa=12-feitos, par=estaParado(p), ud=ultDias(p);
-  const tur = f==='familia' && HAS_TURMA && p.turma && p.turma!=='—' ? ` · ${esc(p.turma)}` : '';
-  const sub = (p.pct>=100 ? 'ciclo concluído' : (par?`parado há ${diasParado(p)} dias · `:'')+`faltam ${fa}`) + tur;
-  const mo = ud!==null && p.pct<100 && !par ? `<span class="mo"> · ${haDias(ud)}</span>` : '';
-  return `<div class="pr${FIC_N===p.n?' cur':''}" id="pr${p.n}" onclick="op(${p.n})"><div class="nmw"><span class="av${par?' warn':''}">${esc(ini(p.nome))}</span><div class="pr-t"><b>${esc(p.nome)}${p.familia?'<span class="fam-ic" title="Em grupo familiar">👨‍👩‍👧</span>':''}${p.obs?`<span class="obs-ic" title="${esc(p.obs).slice(0,120)}">📝</span>`:''}</b><small class="${par?'w':''}">${sub}${mo}</small></div></div><div class="pr-p">${segs(feitos,c)}<span class="pr-pc" style="color:${c}">${p.pct}%</span></div><span class="pr-ua${par?' w':''}">${ud!==null?haDias(ud):'—'}</span>${waBtn(p)}</div>`;
+  const c=col(p.pct), feitos=M.filter(m=>p.modulos[m]).length, par=estaParado(p), ud=ultDias(p);
+  const tur = f==='familia' && HAS_TURMA && p.turma && p.turma!=='—' ? `<span class="tu">${esc(p.turma)}</span>` : '';
+  // "há N dias" só no subtítulo quando a coluna "Última aula" não está visível (celular e computador estreito);
+  // no computador largo essa informação já está na coluna, então o subtítulo só marca "parado".
+  let sub='';
+  if(p.pct>=100) sub='ciclo concluído';
+  else if(par)   sub=`<span class="tm">parado há ${diasParado(p)} dias</span>`+(ud!==null?'<span class="pd">parado</span>':'');
+  else if(ud!==null) sub=`<span class="tm">${haDias(ud)}</span>`;
+  if(par && ud===null) sub=`parado há ${diasParado(p)} dias`;   // sem aula registrada: a coluna mostra "—", então o texto fica
+  return `<div class="pr${FIC_N===p.n?' cur':''}" id="pr${p.n}" onclick="op(${p.n})"><div class="nmw"><span class="av${par?' warn':''}">${esc(ini(p.nome))}</span><div class="pr-t"><b>${esc(p.nome)}${p.familia?'<span class="fam-ic" title="Em grupo familiar">👨‍👩‍👧</span>':''}${p.obs?`<span class="obs-ic" title="${esc(p.obs).slice(0,120)}">📝</span>`:''}</b><small class="${par?'w':''}">${sub}${tur}</small></div></div><div class="pr-p">${segs(feitos,c)}<span class="pr-pc" style="color:${c}">${p.pct}%</span></div><span class="pr-ua${par?' w':''}">${ud!==null?haDias(ud):'—'}</span>${waBtn(p)}</div>`;
 }
 
 function dash(){
@@ -1495,6 +1523,7 @@ function dash(){
   [['k2',nDone],['k3',nHigh],['k4',nMid],['k6',nLow]].forEach(([id,n])=>{ const b=$(id).closest('.lgb'); if(b) b.classList.toggle('zero',!n) });
   ['nPar','nPar2'].forEach(id=>{ const e=$(id); e.textContent=par.length; e.classList.toggle('hide',!par.length) });
   const cel=t*12, fe=V.reduce((a,p)=>a+M.filter(m=>p.modulos[m]).length,0), gp=Math.round(fe/cel*100);
+  document.querySelector('.hero2').classList.toggle('sem-atencao',!par.length);   // sem parados: 2 colunas no computador
   $('hPct').textContent=gp+'%';
   $('hRing').setAttribute('stroke-dasharray',(gp/100*163.36).toFixed(1)+' 163.4');
   [nDone,nHigh,nMid,nLow].forEach((n,i)=>{ $('hStack').children[i].style.flex=n });
@@ -1622,8 +1651,8 @@ function rd(){
     +(f==='parado'?` <span class="tag">parados 30d+<button onclick="goFlt('all')">×</button></span>`:'')
     +(FAIXA[f]?` <span class="tag">${FAIXA[f]}<button onclick="goFlt('all')">×</button></span>`:'');
   $('tb').innerHTML=d.length?d.map(p=>{const c=col(p.pct);
-    return `<tr onclick="op(${p.n})"><td class="t-n">${p.n}</td><td><div class="t-nm">${esc(p.nome)}${p.familia?'<span class="fam-ic" title="Em grupo familiar">👨‍👩‍👧</span>':''}${p.obs?`<span class="obs-ic" title="${esc(p.obs).slice(0,120)}">📝</span>`:''}</div><div class="t-sub">Retiro: ${p.retiro||'—'}</div></td><td>${p.celular?`<a class="wa" href="${wal(p.celular)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">💬 ${esc(p.celular)}</a>`:'<span style="color:var(--txt3)">—</span>'}</td>${M.map(m=>`<td style="text-align:center"><span class="${p.modulos[m]?'tick':'tick tick-n'}">${p.modulos[m]?'✓':'·'}</span></td>`).join('')}<td><div class="pg"><div class="pg-t"><div class="pg-f" style="width:${p.pct}%;background:${c}"></div></div><span class="pg-l" style="color:${c}">${p.pct}%</span></div></td><td>${bdg(p.pct)}</td></tr>`}).join('')
-    :`<tr><td colspan="17"><div class="emp"><div class="emp-i">🔍</div><div class="emp-t">Nenhum resultado</div><div class="emp-s">Tente outro nome ou filtro</div></div></td></tr>`;
+    return `<tr onclick="op(${p.n})"><td class="t-n">${p.n}</td><td><div class="t-nm">${esc(p.nome)}${p.familia?'<span class="fam-ic" title="Em grupo familiar">👨‍👩‍👧</span>':''}${p.obs?`<span class="obs-ic" title="${esc(p.obs).slice(0,120)}">📝</span>`:''}</div>${!TU&&HAS_TURMA?`<div class="t-sub">${esc(p.turma)}</div>`:''}</td><td>${p.celular?`<a class="wa" href="${wal(p.celular)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">💬 ${esc(p.celular)}</a>`:'<span style="color:var(--txt3)">—</span>'}</td>${M.map(m=>`<td style="text-align:center"><span class="${p.modulos[m]?'tick':'tick tick-n'}">${p.modulos[m]?'✓':'·'}</span></td>`).join('')}<td><div class="pg"><div class="pg-t"><div class="pg-f" style="width:${p.pct}%;background:${c}"></div></div><span class="pg-l" style="color:${c}">${p.pct}%</span></div></td></tr>`}).join('')
+    :`<tr><td colspan="16"><div class="emp"><div class="emp-i">🔍</div><div class="emp-t">Nenhum resultado</div><div class="emp-s">Tente outro nome ou filtro</div></div></td></tr>`;
   $('cd').innerHTML=d.length?d.map(rowP).join('')
     :`<div class="emp"><div class="emp-i">🔍</div><div class="emp-t">Nenhum resultado</div><div class="emp-s">Tente outro nome ou filtro</div></div>`;
 }
@@ -1850,16 +1879,21 @@ function formP(p){
     <div class="fg"><label class="fl">Nome completo *</label><input class="fi" id="fNome" value="${p?esc(p.nome):''}" placeholder="Nome do participante"></div>
     <div class="fg"><label class="fl">Celular / WhatsApp</label><input class="fi" id="fCel" value="${p?esc(p.celular):''}" placeholder="+55 54 99999-9999"></div>
     <div class="fg-2">
-      <div class="fg"><label class="fl">Data do retiro</label><input class="fi" id="fRet" value="${p?p.retiro:''}" placeholder="DD/MM/AAAA"></div>
+      <div class="fg"><label class="fl">Data do retiro</label><input class="fi" id="fRet" value="${p?p.retiro:retiroDaTurma(TU)}" placeholder="DD/MM/AAAA" oninput="this.dataset.m=1"></div>
       ${HAS_NASC?`<div class="fg"><label class="fl">Nascimento</label><input class="fi" id="fNasc" value="${p?p.nascimento:''}" placeholder="DD/MM/AAAA" oninput="fIdade()"><div class="fl-hint" id="fIdadeTxt"></div></div>`:''}
     </div>
-    ${HAS_TURMA?`<div class="fg"><label class="fl">Turma</label><input class="fi" id="fTur" list="lsTur" value="${p?esc(p.turma):(TU||'')}" placeholder="Ex.: Jun/2026">
+    ${HAS_TURMA?`<div class="fg"><label class="fl">Turma</label><input class="fi" id="fTur" list="lsTur" value="${p?esc(p.turma):(TU||'')}" placeholder="Ex.: Jun/2026"${p?'':' onchange="turmaMudou(\'fTur\',\'fRet\')"'}>
     <datalist id="lsTur">${turmas().map(([t])=>`<option value="${esc(t)}">`).join('')}</datalist></div>`:''}
     ${HAS_OBS?`<div class="fg"><label class="fl">Observações</label>
       <textarea class="fi fi-ta" id="fObs" rows="3" placeholder="Anotações sobre a pessoa — mudou de cidade, está afastada, quem trouxe…">${p?esc(p.obs):''}</textarea></div>`:''}
     <div style="display:flex;gap:9px;margin-top:20px">
     <button class="btn btn-s" style="flex:1" onclick="cl('ovn')">Cancelar</button>
     <button class="btn btn-p" style="flex:1" id="fSave" onclick="${p?`saveEdit(${p.n})`:'saveNew()'}">Salvar</button></div></div>`;
+}
+// trocou a turma no cadastro/importação: sugere o retiro dela, a menos que a data já tenha sido digitada à mão
+function turmaMudou(idTur,idRet){
+  const r=$(idRet); if(!r||r.dataset.m) return;
+  const v=retiroDaTurma($(idTur).value.trim()); if(v) r.value=v;
 }
 function openNew(){if(!can())return;$('mdn').innerHTML=formP(null);$('ovn').classList.add('on');setTimeout(()=>$('fNome').focus(),80)}
 function openEdit(n){if(!can())return;const p=D.find(x=>x.n===n);cl('ov');$('mdn').innerHTML=formP(p);$('ovn').classList.add('on')}
@@ -2333,7 +2367,7 @@ function openTurmas(){
   if(!can()||!HAS_TURMA)return;
   fechaMenu();
   const ts=turmas();
-  $('mdu').innerHTML=mdShell('Turmas','Renomeie ou mova participantes entre turmas',
+  $('mdu').innerHTML=mdShell('Turmas','Renomeie uma turma ou crie a próxima',
     `<div id="tgL">${ts.map(([t,n])=>tgLinha(t,n)).join('')}</div>
      <div class="tg-new">
        <input id="tgNova" placeholder="Nome da nova turma — ex.: Nov/2026">
@@ -2417,10 +2451,10 @@ function openImp(){
     <div class="md-b">
     <div class="mg-pick" style="grid-template-columns:${HAS_TURMA?'1fr 1fr':'1fr'};align-items:end">
       ${HAS_TURMA?`<div><label class="ch-lb">Turma</label>
-        <input class="ch-in" id="impTur" list="lsTur2" placeholder="Ex.: Nov/2026" value="${TU||''}">
+        <input class="ch-in" id="impTur" list="lsTur2" placeholder="Ex.: Nov/2026" value="${TU||''}" onchange="turmaMudou('impTur','impRet')">
         <datalist id="lsTur2">${ts.map(([t])=>`<option value="${esc(t)}">`).join('')}</datalist></div>`:''}
       <div><label class="ch-lb">Data do retiro</label>
-        <input class="ch-in" id="impRet" placeholder="DD/MM/AAAA" value="${hoje()}"></div>
+        <input class="ch-in" id="impRet" placeholder="DD/MM/AAAA" value="${retiroDaTurma(TU)}" oninput="this.dataset.m=1"></div>
     </div>
     <div class="imp-hint">Um por linha. O telefone é opcional — separe por vírgula, tabulação ou traço.<br>
       <code>Maria Silva, 54 99999-1234</code> &nbsp; <code>João Souza</code></div>
